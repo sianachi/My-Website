@@ -1,0 +1,673 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Osinachi Nwagboso — Brand Kit, Vol. 01</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300..600;1,6..72,300..600&family=Cormorant+Garamond:ital,wght@0,300..700;1,300..700&family=Instrument+Serif:ital@0;1&family=Fraunces:ital,opsz,wght@0,9..144,300..700;1,9..144,300..700&family=Fira+Code:wght@300;400;500&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+
+<script>
+/* TWEAKS — palette, type pairing, motif density (persist via edit-mode) */
+const TWEAKS = /*EDITMODE-BEGIN*/{
+  "palette": "midnight"
+}/*EDITMODE-END*/;
+</script>
+
+<link rel="stylesheet" href="styles.css?v=12" />
+</head>
+<body data-palette="daylight" data-type="dmserif" data-motif="high">
+
+<!-- NAV ----------------------------------------------------- -->
+<nav class="nav" aria-label="Brand kit navigation">
+  <a class="nav-mark" href="index.html" title="Back to portfolio">← Osinachi · BK/01</a>
+  <div class="nav-list">
+    <a href="#cover" data-page="01">01 Cover</a>
+    <a href="#bio" data-page="02">02 Manifesto</a>
+    <a href="#logo" data-page="03">03 Wordmark</a>
+    <a href="#type" data-page="04">04 Type</a>
+    <a href="#color" data-page="05">05 Color</a>
+    <a href="#grid" data-page="06">06 Grid</a>
+    <a href="#projects" data-page="07">07 Work</a>
+    <a href="#contact" data-page="08">08 Contact</a>
+  </div>
+  <div class="nav-right">
+    <button type="button" id="menu-trigger" class="menu-trigger" aria-label="Open navigation menu" aria-expanded="false" aria-controls="mobile-menu">
+      <svg class="mt-icon" viewBox="0 0 20 20" aria-hidden="true">
+        <line class="mt-line mt-line--a" x1="5" y1="5" x2="15" y2="15"/>
+        <line class="mt-line mt-line--b" x1="15" y1="5" x2="5" y2="15"/>
+        <circle class="mt-dot mt-dot--tl" cx="6.5"  cy="7.5"  r="1.4"/>
+        <circle class="mt-dot mt-dot--tr" cx="14"   cy="5.5"  r="1.8"/>
+        <circle class="mt-dot mt-dot--bl" cx="5.5"  cy="14"   r="1.3"/>
+        <circle class="mt-dot mt-dot--br" cx="14.5" cy="14.5" r="1.5"/>
+      </svg>
+    </button>
+    <div class="nav-num"><span id="nav-cur">01</span> / 08</div>
+    <button type="button" id="theme-toggle" class="theme-toggle" aria-label="Toggle light and dark theme" title="Toggle light / dark">
+      <span class="theme-orb"></span>
+      <span class="theme-rays" aria-hidden="true">
+        <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+      </span>
+    </button>
+  </div>
+</nav>
+
+<!-- MOBILE MENU (takeover) ---------------------------------- -->
+<div id="mobile-menu" class="mobile-menu" aria-hidden="true">
+  <nav class="mm-inner" aria-label="Mobile navigation">
+    <div class="mm-eyebrow label-accent">§ Navigation · Brand Kit, Vol. 01</div>
+    <ul class="mm-list">
+      <li><a href="#cover"><span class="mm-no">01</span><span class="mm-name">Cover</span></a></li>
+      <li><a href="#bio"><span class="mm-no">02</span><span class="mm-name">Manifesto</span></a></li>
+      <li><a href="#logo"><span class="mm-no">03</span><span class="mm-name">Wordmark</span></a></li>
+      <li><a href="#type"><span class="mm-no">04</span><span class="mm-name">Type</span></a></li>
+      <li><a href="#color"><span class="mm-no">05</span><span class="mm-name">Color</span></a></li>
+      <li><a href="#grid"><span class="mm-no">06</span><span class="mm-name">Grid</span></a></li>
+      <li><a href="#projects"><span class="mm-no">07</span><span class="mm-name">Work</span></a></li>
+      <li><a href="#contact"><span class="mm-no">08</span><span class="mm-name">Contact</span></a></li>
+    </ul>
+    <div class="mm-foot">
+      <a href="index.html">← Back to Portfolio</a>
+    </div>
+  </nav>
+</div>
+
+<!-- 01 · COVER ---------------------------------------------- -->
+<section id="cover" class="page cover page--plain" data-label="01 Cover">
+  <div class="stars" id="stars"></div>
+  <div class="orbits" aria-hidden="true">
+    <svg viewBox="0 0 1000 1000">
+      <defs>
+        <radialGradient id="sunGlow" cx="50%" cy="50%" r="50%">
+          <stop offset="0%"  stop-color="var(--accent)" stop-opacity="1"/>
+          <stop offset="40%" stop-color="var(--accent)" stop-opacity=".55"/>
+          <stop offset="100%" stop-color="var(--accent)" stop-opacity="0"/>
+        </radialGradient>
+      </defs>
+      <g class="orbit-rings">
+        <circle cx="500" cy="500" r="140"/>
+        <circle cx="500" cy="500" r="220"/>
+        <circle cx="500" cy="500" r="310"/>
+        <circle cx="500" cy="500" r="410"/>
+        <circle cx="500" cy="500" r="78" stroke-dasharray="2 4" opacity=".6"/>
+      </g>
+      <circle class="sun-halo" cx="500" cy="500" r="130" fill="url(#sunGlow)"/>
+      <circle class="sun" cx="500" cy="500" r="22"/>
+      <g class="p-spin p1"><circle class="planet" cx="640" cy="500" r="3"/></g>
+      <g class="p-spin p2"><circle class="planet" cx="720" cy="500" r="4.5"/></g>
+      <g class="p-spin p3"><circle class="planet accent-2" cx="810" cy="500" r="6"/></g>
+      <g class="p-spin p4"><circle class="planet" cx="910" cy="500" r="3.5"/></g>
+    </svg>
+  </div>
+
+  <div class="page-head">
+    <div>Brand Kit — Vol. 01</div>
+    <div>·</div>
+    <div>Est. 2026 · Birmingham, UK</div>
+  </div>
+
+  <div class="page-body cover-body">
+    <div class="cover-eyebrow label-accent" style="font-size: 13px">
+      <span class="chev">‹</span>
+      <span>Software Engineer</span>
+      <span class="dot"></span>
+      <span>C# / .NET</span>
+      <span class="dot"></span>
+      <span>Azure &amp; AWS</span>
+      <span class="dot"></span>
+      <span>Edge / Jetson</span>
+    </div>
+
+    <h1>
+      <span class="given"><em>Osi</em>nachi</span>
+      <span class="family">Nwagboso</span>
+    </h1>
+
+    <div class="cover-meta">
+      <p class="lede">
+        I build <em>performance-sensitive</em> backends — encrypted pipelines,
+        memory-constrained services, things that run quietly and don't fall over.
+      </p>
+      <div class="stack">
+        <div><span class="tab">C#</span><span>.NET 10</span></div>
+        <div><span class="tab">☁</span><span>Azure · AWS</span></div>
+        <div><span class="tab">⌘</span><span>Jetson Orin</span></div>
+        <div><span class="tab">§4</span><span>yrs @ Redspeed</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="page-foot">
+    <div>↓ &nbsp; Identity System</div>
+    <div></div>
+    <div>01 / 08</div>
+  </div>
+</section>
+
+<!-- SECTION DIVIDER -->
+<div class="page-divider" aria-hidden="true">
+  <svg viewBox="0 0 1000 60" preserveAspectRatio="none">
+    <polyline class="pd-trail" points="60,34 180,22 320,40 460,14 560,30 700,20 840,38 940,26" />
+    <circle class="pd-star"   cx="60"  cy="34" r="1.8"/>
+    <circle class="pd-star pd-star--big" cx="180" cy="22" r="3"/>
+    <circle class="pd-star"   cx="320" cy="40" r="1.5"/>
+    <circle class="pd-star pd-star--accent" cx="460" cy="14" r="4"/>
+    <circle class="pd-star"   cx="560" cy="30" r="2"/>
+    <circle class="pd-star pd-star--big" cx="700" cy="20" r="2.8"/>
+    <circle class="pd-star"   cx="840" cy="38" r="1.8"/>
+    <circle class="pd-star"   cx="940" cy="26" r="1.5"/>
+  </svg>
+</div>
+
+<!-- 02 · BIO / MANIFESTO ------------------------------------ -->
+<section id="bio" class="page bio page--plain" data-label="02 Manifesto">
+  <div class="page-head">
+    <div>02 — Manifesto</div><div>·</div><div>The Work</div>
+  </div>
+
+  <div class="page-body two-col">
+    <div>
+      <div class="label label-accent" style="margin-bottom:20px">§ 02.1 — Premise</div>
+      <h2>Legible systems <em>beat</em> clever ones.</h2>
+    </div>
+    <div class="bio-body">
+      <p class="bio-lede" style="margin-bottom:28px">
+        Backend engineer with 4+ years of production C# and .NET —
+        <em>performance-sensitive</em>, encrypted, memory-constrained.
+      </p>
+      <p>
+        I ship ASP.NET Core microservices, Azure Functions, and containerised
+        workers that handle tens of thousands of jobs a day without manual
+        intervention. Earlier work on NVIDIA Jetson edge software taught me
+        to respect memory budgets and latency ceilings.
+      </p>
+      <p>
+        Comfortable extending into cloud infrastructure (Azure, AWS), DevOps,
+        and frontend when the problem requires it — TypeScript, React, Node,
+        FastAPI, Terraform, Ansible.
+      </p>
+      <p>
+        Based in Birmingham, UK. Open to roles where the problem is load-bearing.
+      </p>
+    </div>
+  </div>
+
+  <div class="pillars">
+    <div class="pillar">
+      <div class="no">No. 01</div>
+      <h4>Measure, then cut</h4>
+      <p>Eliminated a memory leak in a .NET image pipeline by replacing per-frame allocations with pooled <em>IMemoryOwner</em> buffers — verified with dotMemory, not vibes.</p>
+    </div>
+    <div class="pillar">
+      <div class="no">No. 02</div>
+      <h4>Contracts before code</h4>
+      <p>ASP.NET Core Minimal APIs using the REPR pattern. xUnit, Moq, TestContainers, FluentAssertions — team-wide standards, rigorous peer review.</p>
+    </div>
+    <div class="pillar">
+      <div class="no">No. 03</div>
+      <h4>Legible from a distance</h4>
+      <p>Mentoring juniors on design patterns, testing strategies, and the difference between a service that's fast and one that's merely quick.</p>
+    </div>
+  </div>
+
+  <div class="page-foot" style="margin-top:48px">
+    <div>↓ &nbsp; Wordmark</div><div></div><div>02 / 08</div>
+  </div>
+</section>
+
+<!-- SECTION DIVIDER -->
+<div class="page-divider" aria-hidden="true">
+  <svg viewBox="0 0 1000 60" preserveAspectRatio="none">
+    <polyline class="pd-trail" points="80,28 220,40 360,16 500,34 640,20 780,38 920,24" />
+    <circle class="pd-star pd-star--big" cx="80" cy="28" r="2.6"/>
+    <circle class="pd-star"   cx="220" cy="40" r="1.5"/>
+    <circle class="pd-star pd-star--accent" cx="360" cy="16" r="4"/>
+    <circle class="pd-star"   cx="500" cy="34" r="2"/>
+    <circle class="pd-star pd-star--big" cx="640" cy="20" r="3"/>
+    <circle class="pd-star"   cx="780" cy="38" r="1.8"/>
+    <circle class="pd-star"   cx="920" cy="24" r="1.5"/>
+  </svg>
+</div>
+
+<!-- 03 · LOGO / WORDMARK ----------------------------------- -->
+<section id="logo" class="page logo-page page--plain" data-label="03 Wordmark">
+  <div class="page-head">
+    <div>03 — Wordmark</div><div>·</div><div>Primary + variants</div>
+  </div>
+
+  <div class="page-body">
+    <div class="label label-accent" style="margin-bottom:18px">§ 03.1 — Primary lockup</div>
+    <h2 style="max-width:22ch">The wordmark is the <em>constellation</em>.</h2>
+
+    <div class="wordmark-frame" style="margin-top:24px">
+      <span class="corner tl"></span><span class="corner tr"></span>
+      <span class="corner bl"></span><span class="corner br"></span>
+      <div class="wm-primary">
+        <span class="g"><em>Osi</em>nachi</span>
+        <span class="f">Nwagboso</span>
+      </div>
+    </div>
+
+    <div class="wm-grid">
+      <div class="wm-cell">
+        <div class="label" style="margin-bottom:16px">§ 03.2 — Stacked, small</div>
+        <div class="wm-small"><span class="g"><em>Osi</em>nachi</span><span class="f">Nwagboso</span></div>
+        <div class="label label-faint">Use: document headers, email sig, favicons ≥ 64px</div>
+      </div>
+      <div class="wm-cell" style="display:flex;flex-direction:column;justify-content:space-between;align-items:flex-start">
+        <div class="label" style="margin-bottom:16px">§ 03.3 — Monogram</div>
+        <div class="monogram">O<span style="color:var(--accent);font-style:italic">n</span><span class="slash"></span></div>
+        <div class="label label-faint" style="margin-top:12px">Avatar · punctum · 32–128px</div>
+      </div>
+      <div class="wm-cell invert">
+        <div class="label" style="margin-bottom:16px">§ 03.4 — Inverted</div>
+        <div class="wm-small"><span class="g"><em>Osi</em>nachi</span><span class="f">Nwagboso</span></div>
+        <div class="label" style="color:rgba(14,10,40,.55)">On ink, light surfaces, print</div>
+      </div>
+      <div class="wm-cell" style="display:flex;flex-direction:column;justify-content:space-between;align-items:flex-start">
+        <div class="label" style="margin-bottom:16px">§ 03.5 — Mono token</div>
+        <code style="font-family:var(--font-mono);font-size:13px;color:var(--accent-2);letter-spacing:.05em;line-height:1.9">
+          &gt; osinachi.nwagboso<br>
+          &gt; &nbsp;&nbsp;{ role: "SWE" }<br>
+          &gt; &nbsp;&nbsp;@ systems/edge
+        </code>
+        <div class="label label-faint" style="margin-top:12px">Code contexts · CLI · terminals</div>
+      </div>
+    </div>
+  </div>
+
+  <div class="page-foot" style="margin-top:56px">
+    <div>↓ &nbsp; Type System</div><div></div><div>03 / 08</div>
+  </div>
+</section>
+
+<!-- SECTION DIVIDER -->
+<div class="page-divider" aria-hidden="true">
+  <svg viewBox="0 0 1000 60" preserveAspectRatio="none">
+    <polyline class="pd-trail" points="40,30 200,18 340,36 460,22 600,40 740,18 860,34 960,22" />
+    <circle class="pd-star"   cx="40"  cy="30" r="1.8"/>
+    <circle class="pd-star pd-star--big" cx="200" cy="18" r="2.8"/>
+    <circle class="pd-star"   cx="340" cy="36" r="1.5"/>
+    <circle class="pd-star"   cx="460" cy="22" r="2"/>
+    <circle class="pd-star pd-star--accent" cx="600" cy="40" r="4"/>
+    <circle class="pd-star pd-star--big" cx="740" cy="18" r="2.6"/>
+    <circle class="pd-star"   cx="860" cy="34" r="1.8"/>
+    <circle class="pd-star"   cx="960" cy="22" r="1.5"/>
+  </svg>
+</div>
+
+<!-- 04 · TYPE ---------------------------------------------- -->
+<section id="type" class="page type-page page--plain" data-label="04 Type">
+  <div class="page-head">
+    <div>04 — Type System</div><div>·</div><div>Display · Body · Mono</div>
+  </div>
+
+  <div class="page-body">
+    <div class="label label-accent" style="margin-bottom:18px">§ 04.1 — Families</div>
+    <h2 style="max-width:20ch">Two voices, <em>one</em> posture.</h2>
+
+    <div class="type-spec">
+      <div class="type-sidebar">
+        <div class="label">§ 04.2 — Display</div>
+        <h5 id="type-display-name">Fraunces</h5>
+        <p>A warm, flexible serif for names, titles, and moments that want to be quoted. Italic is the voice; use it liberally.</p>
+        <dl>
+          <dt>Use</dt><dd>Names, H1–H3, pull quotes</dd>
+          <dt>Sizes</dt><dd>48 / 64 / 96 / 128</dd>
+          <dt>Track</dt><dd>−0.02em · Lead 0.92</dd>
+          <dt>Licence</dt><dd>OFL · Google Fonts</dd>
+        </dl>
+      </div>
+      <div>
+        <div class="type-sample-display">
+          <em>Osi</em>nachi
+          <span class="alt">Nwagboso</span>
+        </div>
+        <div class="glyphs" aria-hidden="true">
+          <span>A</span><span>a</span><span>g</span><span>Q</span><span>R</span>
+          <span>&amp;</span><span>§</span><span>¶</span><span>1</span><span>0</span>
+          <span style="font-style:italic">A</span><span style="font-style:italic">g</span>
+          <span style="font-style:italic">Q</span><span style="font-style:italic">&amp;</span>
+        </div>
+      </div>
+    </div>
+
+    <div class="type-spec">
+      <div class="type-sidebar">
+        <div class="label">§ 04.3 — Body (italic)</div>
+        <h5>Display, italic</h5>
+        <p>Short ledes, manifesto lines, and epigraphs. Keep to one or two sentences. Never set long prose in italic.</p>
+        <dl>
+          <dt>Use</dt><dd>Lede, pull quote</dd>
+          <dt>Sizes</dt><dd>18 / 22 / 28</dd>
+          <dt>Lead</dt><dd>1.35 – 1.45</dd>
+        </dl>
+      </div>
+      <div>
+        <p class="type-sample-body">
+          Backend systems, drawn like constellations — discrete points,
+          deliberate lines, legible from a distance.
+        </p>
+      </div>
+    </div>
+
+    <div class="type-spec">
+      <div class="type-sidebar">
+        <div class="label">§ 04.4 — Mono</div>
+        <h5 id="type-mono-name">Fira Code</h5>
+        <p>All-caps tracked labels, metadata, code, footers. The structural grid of the kit — everything that's <em>not</em> the voice.</p>
+        <dl>
+          <dt>Use</dt><dd>Labels, nav, code</dd>
+          <dt>Sizes</dt><dd>10.5 / 12 / 14</dd>
+          <dt>Track</dt><dd>+0.22em (caps)</dd>
+        </dl>
+      </div>
+      <div>
+        <div class="type-sample-mono">
+          <span class="caps">§ 04.4 — Sample</span>
+          <code>
+            // a service is a promise you keep on purpose<br>
+            const ship = async (change) =&gt; {<br>
+            &nbsp;&nbsp;const plan = await review(change);<br>
+            &nbsp;&nbsp;if (!plan.legible) throw new Error("rewrite");<br>
+            &nbsp;&nbsp;return deploy(plan, { canary: 0.05 });<br>
+            };
+          </code>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="page-foot" style="margin-top:48px">
+    <div>↓ &nbsp; Color</div><div></div><div>04 / 08</div>
+  </div>
+</section>
+
+<!-- SECTION DIVIDER -->
+<div class="page-divider" aria-hidden="true">
+  <svg viewBox="0 0 1000 60" preserveAspectRatio="none">
+    <polyline class="pd-trail" points="70,22 210,34 340,18 500,40 620,24 760,38 880,20 960,32" />
+    <circle class="pd-star"   cx="70"  cy="22" r="1.5"/>
+    <circle class="pd-star pd-star--big" cx="210" cy="34" r="2.8"/>
+    <circle class="pd-star"   cx="340" cy="18" r="1.8"/>
+    <circle class="pd-star pd-star--accent" cx="500" cy="40" r="4"/>
+    <circle class="pd-star"   cx="620" cy="24" r="2"/>
+    <circle class="pd-star pd-star--big" cx="760" cy="38" r="2.6"/>
+    <circle class="pd-star"   cx="880" cy="20" r="1.5"/>
+    <circle class="pd-star"   cx="960" cy="32" r="1.8"/>
+  </svg>
+</div>
+
+<!-- 05 · COLOR --------------------------------------------- -->
+<section id="color" class="page color-page page--plain" data-label="05 Color">
+  <div class="page-head">
+    <div>05 — Color</div><div>·</div><div>Tokens &amp; usage</div>
+  </div>
+
+  <div class="page-body">
+    <div class="label label-accent" style="margin-bottom:18px">§ 05.1 — Two palettes</div>
+    <h2 style="max-width:22ch">One system, <em>day</em> and <em>night</em>.</h2>
+
+    <div class="palette-pair" style="margin-top:36px">
+      <div class="palette-block">
+        <div class="palette-head">
+          <div class="label label-accent">§ 05.1a — Daylight</div>
+          <div class="palette-title"><em>Daylight.</em> Paper &amp; deep gold.</div>
+          <p class="palette-desc">The default. Long-form reading, print-safe, AA everywhere.</p>
+        </div>
+        <div class="swatches" id="swatches-daylight"></div>
+      </div>
+
+      <div class="palette-block">
+        <div class="palette-head">
+          <div class="label label-accent">§ 05.1b — Midnight</div>
+          <div class="palette-title"><em>Midnight.</em> Void &amp; gold.</div>
+          <p class="palette-desc">The brand surface. Signals, title cards, anything that needs to glow.</p>
+        </div>
+        <div class="swatches" id="swatches-midnight"></div>
+      </div>
+    </div>
+
+    <div class="color-notes">
+      <div>
+        <div class="label label-accent">§ 05.2 — Rule</div>
+        <h5>Ink dominates</h5>
+        <p>80% of any surface is <code style="font-family:var(--font-mono);color:var(--ink)">--bg</code> or <code style="font-family:var(--font-mono);color:var(--ink)">--bg-2</code>. Accent is punctuation, not language.</p>
+      </div>
+      <div>
+        <div class="label label-accent">§ 05.3 — Rule</div>
+        <h5>Gold is for names</h5>
+        <p>Accent colors the surname, key verbs, and destinations. If everything is gold, nothing is.</p>
+      </div>
+      <div>
+        <div class="label label-accent">§ 05.4 — Rule</div>
+        <h5>Lilac is for data</h5>
+        <p>Secondary accent is reserved for technical signal: tags, code tokens, metadata. Never decorative.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="page-foot" style="margin-top:48px">
+    <div>↓ &nbsp; Grid</div><div></div><div>05 / 08</div>
+  </div>
+</section>
+
+<!-- SECTION DIVIDER -->
+<div class="page-divider" aria-hidden="true">
+  <svg viewBox="0 0 1000 60" preserveAspectRatio="none">
+    <polyline class="pd-trail" points="50,38 170,20 300,36 440,16 580,34 720,22 840,40 940,26" />
+    <circle class="pd-star"   cx="50"  cy="38" r="1.8"/>
+    <circle class="pd-star"   cx="170" cy="20" r="1.5"/>
+    <circle class="pd-star pd-star--big" cx="300" cy="36" r="2.8"/>
+    <circle class="pd-star pd-star--accent" cx="440" cy="16" r="4"/>
+    <circle class="pd-star"   cx="580" cy="34" r="2"/>
+    <circle class="pd-star"   cx="720" cy="22" r="1.8"/>
+    <circle class="pd-star pd-star--big" cx="840" cy="40" r="2.6"/>
+    <circle class="pd-star"   cx="940" cy="26" r="1.5"/>
+  </svg>
+</div>
+
+<!-- 06 · GRID ---------------------------------------------- -->
+<section id="grid" class="page grid-page page--plain" data-label="06 Grid">
+  <div class="page-head">
+    <div>06 — Grid</div><div>·</div><div>9-col · Rhythm of threes</div>
+  </div>
+
+  <div class="page-body">
+    <div class="label label-accent" style="margin-bottom:18px">§ 06.1 — Structure</div>
+    <h2 style="max-width:20ch">A grid <em>you can hear</em>.</h2>
+
+    <div class="grid-demo" aria-hidden="true">
+      <div class="block span-6 accent"></div>
+      <div class="block span-3" style="grid-column: 7 / span 3"></div>
+      <div class="block span-3" style="grid-row: 2"></div>
+      <div class="block span-6" style="grid-row: 2"></div>
+      <div class="block span-9 accent" style="grid-row: 3; height: 36px; opacity:.5"></div>
+    </div>
+
+    <div class="grid-rules">
+      <div>
+        <div class="big-num">9</div>
+        <h5>Columns</h5>
+        <p>Always nine. Spans of 3, 6, 9 — the rhythm is divisible three ways. Never 4, 5, 7, or 8.</p>
+      </div>
+      <div>
+        <div class="big-num">9</div>
+        <h5>Base unit (px)</h5>
+        <p>All spacing is a multiple of 9: 9, 18, 27, 36, 54, 72, 108. The scale compounds in threes.</p>
+      </div>
+      <div>
+        <div class="big-num">ch</div>
+        <h5>Measure</h5>
+        <p>Body measure caps at 54ch. Lede caps at 36ch. Labels cap at 27ch. Read, don't scan.</p>
+      </div>
+      <div>
+        <div class="big-num">3<span style="font-style:normal">px</span></div>
+        <h5>Rules</h5>
+        <p>No hairlines. Section breaks are heavy — 3px solid or layered double rules. The line is part of the voice.</p>
+      </div>
+    </div>
+  </div>
+
+  <div class="page-foot" style="margin-top:48px">
+    <div>↓ &nbsp; Work</div><div></div><div>06 / 08</div>
+  </div>
+</section>
+
+<!-- SECTION DIVIDER -->
+<div class="page-divider" aria-hidden="true">
+  <svg viewBox="0 0 1000 60" preserveAspectRatio="none">
+    <polyline class="pd-trail" points="90,26 230,40 380,22 520,38 660,18 800,34 920,22" />
+    <circle class="pd-star pd-star--big" cx="90"  cy="26" r="2.8"/>
+    <circle class="pd-star"   cx="230" cy="40" r="1.8"/>
+    <circle class="pd-star"   cx="380" cy="22" r="1.5"/>
+    <circle class="pd-star"   cx="520" cy="38" r="2"/>
+    <circle class="pd-star pd-star--accent" cx="660" cy="18" r="4"/>
+    <circle class="pd-star pd-star--big" cx="800" cy="34" r="2.6"/>
+    <circle class="pd-star"   cx="920" cy="22" r="1.5"/>
+  </svg>
+</div>
+
+<!-- 07 · PROJECTS ------------------------------------------ -->
+<section id="projects" class="page projects page--plain" data-label="07 Work">
+  <div class="page-head">
+    <div>07 — Selected Work</div><div>·</div><div>2022 — present</div>
+  </div>
+
+  <div class="page-body">
+    <div class="label label-accent" style="margin-bottom:18px">§ 07.1 — Index · Click any row to read the long version</div>
+    <h2 style="max-width:24ch">Five projects, <em>selected</em>.</h2>
+
+    <div class="projects-list" role="list">
+      <a class="project" href="#" role="listitem">
+        <div class="p-no">N° 01</div>
+        <div class="p-title">Offence-package <em>Pipeline</em></div>
+        <div class="p-desc">Redesigned the legacy ASP.NET Core pipeline on Azure Functions, Key Vault, Queues, and Blob Storage — AES-256 encrypted routing across all camera types, 35%+ faster processing.</div>
+        <div class="p-tags">.NET · Azure Functions · AES-256</div>
+        <div class="p-year">Redspeed</div><span class="p-cta">Read</span></a>
+      <a class="project" href="#" role="listitem">
+        <div class="p-no">N° 02</div>
+        <div class="p-title"><em>JAM</em> — Passwordless Auth</div>
+        <div class="p-desc">Centralised camera-access platform. ASP.NET Core Minimal APIs with the REPR pattern and React + Microsoft Identity. Deployed across the UK, NZ, Australia, Namibia, and further regions.</div>
+        <div class="p-tags">.NET · React · Microsoft Identity</div>
+        <div class="p-year">Redspeed</div><span class="p-cta">Read</span></a>
+      <a class="project" href="#" role="listitem">
+        <div class="p-no">N° 03</div>
+        <div class="p-title">Force-format <em>Microservices</em></div>
+        <div class="p-desc">Architected containerised services that transform offence packages into force-specific formats. Tens of thousands of packages per day, 10+ UK police forces, zero manual intervention.</div>
+        <div class="p-tags">Docker · RabbitMQ · C#</div>
+        <div class="p-year">Redspeed</div><span class="p-cta">Read</span></a>
+      <a class="project" href="#" role="listitem">
+        <div class="p-no">N° 04</div>
+        <div class="p-title"><em>Jobbie</em> — CV &amp; Application Platform</div>
+        <div class="p-desc">Modular monolith on .NET 10, 9+ vertical-slice modules, MongoDB, FusionCache + Redis. Multi-provider AI (OpenAI, Anthropic, DeepSeek, Bedrock) with SSE streaming; Playwright scraping; MV3 extension.</div>
+        <div class="p-tags">.NET 10 · React 19 · MongoDB · Terraform</div>
+        <div class="p-year">Open Source</div><span class="p-cta">Read</span></a>
+      <a class="project" href="#" role="listitem">
+        <div class="p-no">N° 05</div>
+        <div class="p-title"><em>MyDevSetup</em> — Ansible Playbook</div>
+        <div class="p-desc">Cross-platform dev-environment provisioning (Ubuntu, Fedora/RHEL, macOS). Zsh, Python, Node, Docker, AstroNvim. Dockerised test harness on Ubuntu 24.04; GHCR image via GitHub Actions.</div>
+        <div class="p-tags">Ansible · Docker · GitHub Actions</div>
+        <div class="p-year">Open Source</div><span class="p-cta">Read</span></a>
+    </div>
+  </div>
+
+  <div class="page-foot" style="margin-top:48px">
+    <div>↓ &nbsp; Contact</div><div></div><div>07 / 08</div>
+  </div>
+</section>
+
+<!-- SECTION DIVIDER -->
+<div class="page-divider" aria-hidden="true">
+  <svg viewBox="0 0 1000 60" preserveAspectRatio="none">
+    <polyline class="pd-trail" points="60,32 200,18 340,40 480,24 620,36 760,16 880,30 960,22" />
+    <circle class="pd-star"   cx="60"  cy="32" r="1.8"/>
+    <circle class="pd-star pd-star--big" cx="200" cy="18" r="2.8"/>
+    <circle class="pd-star"   cx="340" cy="40" r="1.5"/>
+    <circle class="pd-star pd-star--accent" cx="480" cy="24" r="4"/>
+    <circle class="pd-star"   cx="620" cy="36" r="2"/>
+    <circle class="pd-star pd-star--big" cx="760" cy="16" r="2.6"/>
+    <circle class="pd-star"   cx="880" cy="30" r="1.8"/>
+    <circle class="pd-star"   cx="960" cy="22" r="1.5"/>
+  </svg>
+</div>
+
+<!-- 08 · CONTACT ------------------------------------------- -->
+<section id="contact" class="page contact contact-page" data-label="08 Contact">
+  <div class="page-head">
+    <div>08 — Contact</div><div>·</div><div>End of Vol. 01</div>
+  </div>
+
+  <div class="page-body">
+    <div class="label label-accent" style="margin-bottom:18px">§ 08.1 — Signal</div>
+    <h2>Write, don't <em>post</em>.</h2>
+
+    <div class="contact-grid">
+      <div class="contact-list">
+        <a class="contact-item" href="mailto:osinachi88@outlook.com">
+          <div class="ci-label">Email</div>
+          <div class="ci-value">osinachi88@outlook.com</div>
+          <div class="ci-go">Compose</div>
+        </a>
+        <a class="contact-item" href="tel:+447727827640">
+          <div class="ci-label">Phone</div>
+          <div class="ci-value">+44 (0) 7727 827 640</div>
+          <div class="ci-go">Call</div>
+        </a>
+        <a class="contact-item" href="https://github.com/sianachi" target="_blank" rel="noopener">
+          <div class="ci-label">GitHub</div>
+          <div class="ci-value">github.com/sianachi</div>
+          <div class="ci-go">Visit</div>
+        </a>
+        <a class="contact-item" href="#">
+          <div class="ci-label">LinkedIn</div>
+          <div class="ci-value">in/osinachi-nwagboso</div>
+          <div class="ci-go">Visit</div>
+        </a>
+        <a class="contact-item" href="uploads/Osinachi_Nwagboso_CV-4.pdf" target="_blank">
+          <div class="ci-label">CV</div>
+          <div class="ci-value">Osinachi_Nwagboso_CV.pdf</div>
+          <div class="ci-go">Download</div>
+        </a>
+      </div>
+
+      <div>
+        <div class="label label-accent" style="margin-bottom:18px">§ 08.2 — Sign-off</div>
+        <p class="signoff">
+          Thank you for reading to the last page. If something here resonated,
+          the email is the door.
+          <span class="sig" style="font-family:var(--font-display);">— Osi.</span>
+        </p>
+
+        <div class="colophon">
+          <div>MSc Computer Science, Coventry — Distinction</div>
+          <div>BEng (Hons) Computer Science, Anglia Ruskin — First Class</div>
+          <div>Software Engineer II · Redspeed International</div>
+          <div>© Osinachi Nwagboso · All rights reserved</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="page-foot" style="margin-top:48px">
+    <div>⟲ &nbsp; Return to cover</div><div></div><div>08 / 08</div>
+  </div>
+</section>
+
+<!-- TWEAKS PANEL -------------------------------------------- -->
+<aside id="tweaks" aria-label="Tweaks">
+  <h6>Tweaks</h6>
+
+  <div class="tw-group">
+    <span class="tw-label">Palette</span>
+    <div class="tw-opts" data-group="palette">
+      <button class="tw-swatch" data-value="daylight" style="background:linear-gradient(135deg,#F6F2EB 50%,#7A5A10 50%)" title="Daylight"></button>
+      <button class="tw-swatch" data-value="midnight" style="background:linear-gradient(135deg,#0E0A28 50%,#E8C96A 50%)" title="Midnight · Gold"></button>
+    </div>
+  </div>
+</aside>
+
+<script src="app.js?v=7"></script>
+</body>
+</html>

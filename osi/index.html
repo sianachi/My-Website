@@ -1,0 +1,546 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8" />
+<meta name="viewport" content="width=device-width,initial-scale=1" />
+<title>Osinachi Nwagboso — Portfolio · 2026</title>
+<meta name="description" content="Backend engineer — C# / .NET, Azure &amp; AWS, edge systems. Based in Birmingham, UK.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Newsreader:ital,opsz,wght@0,6..72,300..600;1,6..72,300..600&family=Cormorant+Garamond:ital,wght@0,300..700;1,300..700&family=Instrument+Serif:ital@0;1&family=Fraunces:ital,opsz,wght@0,9..144,300..700;1,9..144,300..700&family=Fira+Code:wght@300;400;500&family=JetBrains+Mono:wght@300;400;500&display=swap" rel="stylesheet">
+
+<script>
+/* TWEAKS — palette, type pairing, motif density (persist via edit-mode) */
+const TWEAKS = /*EDITMODE-BEGIN*/{
+  "palette": "midnight"
+}/*EDITMODE-END*/;
+</script>
+
+<link rel="stylesheet" href="styles.css?v=13" />
+</head>
+<body data-palette="midnight" data-type="dmserif" data-motif="high">
+
+<!-- NAV ----------------------------------------------------- -->
+<nav class="nav" aria-label="Portfolio navigation">
+  <a class="nav-mark" href="index.html">Osinachi · 2026</a>
+  <div class="nav-list">
+    <a href="#cover" data-page="01">01 Home</a>
+    <a href="#about" data-page="02">02 About</a>
+    <a href="#work" data-page="03">03 Work</a>
+    <a href="#contact" data-page="04">04 Contact</a>
+  </div>
+  <div class="nav-right">
+    <button type="button" id="menu-trigger" class="menu-trigger" aria-label="Open navigation menu" aria-expanded="false" aria-controls="mobile-menu">
+      <svg class="mt-icon" viewBox="0 0 20 20" aria-hidden="true">
+        <line class="mt-line mt-line--a" x1="5" y1="5" x2="15" y2="15"/>
+        <line class="mt-line mt-line--b" x1="15" y1="5" x2="5" y2="15"/>
+        <circle class="mt-dot mt-dot--tl" cx="6.5"  cy="7.5"  r="1.4"/>
+        <circle class="mt-dot mt-dot--tr" cx="14"   cy="5.5"  r="1.8"/>
+        <circle class="mt-dot mt-dot--bl" cx="5.5"  cy="14"   r="1.3"/>
+        <circle class="mt-dot mt-dot--br" cx="14.5" cy="14.5" r="1.5"/>
+      </svg>
+    </button>
+    <div class="nav-num"><span id="nav-cur">01</span> / 04</div>
+    <button type="button" id="theme-toggle" class="theme-toggle" aria-label="Toggle light and dark theme" title="Toggle light / dark">
+      <span class="theme-orb"></span>
+      <span class="theme-rays" aria-hidden="true">
+        <i></i><i></i><i></i><i></i><i></i><i></i><i></i><i></i>
+      </span>
+    </button>
+  </div>
+</nav>
+
+<!-- MOBILE MENU (takeover) ---------------------------------- -->
+<div id="mobile-menu" class="mobile-menu" aria-hidden="true">
+  <nav class="mm-inner" aria-label="Mobile navigation">
+    <div class="mm-eyebrow label-accent">§ Navigation · Portfolio 2026</div>
+    <ul class="mm-list">
+      <li><a href="#cover"><span class="mm-no">01</span><span class="mm-name">Home</span></a></li>
+      <li><a href="#about"><span class="mm-no">02</span><span class="mm-name">About</span></a></li>
+      <li><a href="#work"><span class="mm-no">03</span><span class="mm-name">Work</span></a></li>
+      <li><a href="#contact"><span class="mm-no">04</span><span class="mm-name">Contact</span></a></li>
+    </ul>
+    <div class="mm-foot">
+      <a href="kit.html">→ Brand Kit, Vol. 01</a>
+    </div>
+  </nav>
+</div>
+
+<!-- 01 · COVER ---------------------------------------------- -->
+<section id="cover" class="page cover page--plain" data-label="01 Home">
+  <div class="stars" id="stars"></div>
+  <div class="orbits" aria-hidden="true">
+    <svg viewBox="0 0 1000 1000">
+      <defs>
+        <radialGradient id="sunGlow" cx="50%" cy="50%" r="50%">
+          <stop offset="0%"  stop-color="var(--accent)" stop-opacity="1"/>
+          <stop offset="40%" stop-color="var(--accent)" stop-opacity=".55"/>
+          <stop offset="100%" stop-color="var(--accent)" stop-opacity="0"/>
+        </radialGradient>
+      </defs>
+      <g class="orbit-rings">
+        <circle cx="500" cy="500" r="140"/>
+        <circle cx="500" cy="500" r="220"/>
+        <circle cx="500" cy="500" r="310"/>
+        <circle cx="500" cy="500" r="410"/>
+        <circle cx="500" cy="500" r="78" stroke-dasharray="2 4" opacity=".6"/>
+      </g>
+      <circle class="sun-halo" cx="500" cy="500" r="130" fill="url(#sunGlow)"/>
+      <circle class="sun" cx="500" cy="500" r="22"/>
+      <g class="p-spin p1"><circle class="planet" cx="640" cy="500" r="3"/></g>
+      <g class="p-spin p2"><circle class="planet" cx="720" cy="500" r="4.5"/></g>
+      <g class="p-spin p3"><circle class="planet accent-2" cx="810" cy="500" r="6"/></g>
+      <g class="p-spin p4"><circle class="planet" cx="910" cy="500" r="3.5"/></g>
+    </svg>
+  </div>
+
+  <div class="page-head">
+    <div>Portfolio — 2026</div>
+    <div>·</div>
+    <div>Birmingham, UK</div>
+  </div>
+
+  <div class="page-body cover-body">
+    <div class="cover-eyebrow label-accent" style="font-size: 13px">
+      <span class="chev">‹</span>
+      <span>Software Engineer</span>
+      <span class="dot"></span>
+      <span>C# / .NET</span>
+      <span class="dot"></span>
+      <span>Azure &amp; AWS</span>
+      <span class="dot"></span>
+      <span>Edge / Jetson</span>
+    </div>
+
+    <h1>
+      <span class="given"><em>Osi</em>nachi</span>
+      <span class="family">Nwagboso</span>
+    </h1>
+
+    <div class="cover-meta">
+      <p class="lede">
+        I build <em>performance-sensitive</em> backends — encrypted pipelines,
+        memory-constrained services, things that run quietly and don't fall over.
+      </p>
+      <div class="stack">
+        <div><span class="tab">C#</span><span>.NET 10</span></div>
+        <div><span class="tab">☁</span><span>Azure · AWS</span></div>
+        <div><span class="tab">⌘</span><span>Jetson Orin</span></div>
+        <div><span class="tab">§4</span><span>yrs @ Redspeed</span></div>
+      </div>
+    </div>
+  </div>
+
+  <div class="page-foot">
+    <div>↓ &nbsp; About</div>
+    <div></div>
+    <div>01 / 04</div>
+  </div>
+</section>
+
+<!-- SECTION DIVIDER -->
+<div class="page-divider" aria-hidden="true">
+  <svg viewBox="0 0 1000 60" preserveAspectRatio="none">
+    <polyline class="pd-trail" points="60,34 180,22 320,40 460,14 560,30 700,20 840,38 940,26" />
+    <circle class="pd-star"   cx="60"  cy="34" r="1.8"/>
+    <circle class="pd-star pd-star--big" cx="180" cy="22" r="3"/>
+    <circle class="pd-star"   cx="320" cy="40" r="1.5"/>
+    <circle class="pd-star pd-star--accent" cx="460" cy="14" r="4"/>
+    <circle class="pd-star"   cx="560" cy="30" r="2"/>
+    <circle class="pd-star pd-star--big" cx="700" cy="20" r="2.8"/>
+    <circle class="pd-star"   cx="840" cy="38" r="1.8"/>
+    <circle class="pd-star"   cx="940" cy="26" r="1.5"/>
+  </svg>
+</div>
+
+<!-- 02 · ABOUT ---------------------------------------------- -->
+<section id="about" class="page bio page--plain" data-label="02 About">
+  <div class="page-head">
+    <div>02 — About</div><div>·</div><div>The work &amp; the posture</div>
+  </div>
+
+  <div class="page-body two-col">
+    <div>
+      <div class="label label-accent" style="margin-bottom:20px">§ 02.1 — Premise</div>
+      <h2>Legible systems <em>beat</em> clever ones.</h2>
+    </div>
+    <div class="bio-body">
+      <p class="bio-lede" style="margin-bottom:28px">
+        Backend engineer with 4+ years of production C# and .NET —
+        <em>performance-sensitive</em>, encrypted, memory-constrained.
+      </p>
+      <p>
+        I ship ASP.NET Core microservices, Azure Functions, and containerised
+        workers that handle tens of thousands of jobs a day without manual
+        intervention. Earlier work on NVIDIA Jetson edge software taught me
+        to respect memory budgets and latency ceilings.
+      </p>
+      <p>
+        Comfortable extending into cloud infrastructure (Azure, AWS), DevOps,
+        and frontend when the problem requires it — TypeScript, React, Node,
+        FastAPI, Terraform, Ansible.
+      </p>
+      <p>
+        Based in Birmingham, UK. Open to roles where the problem is load-bearing.
+      </p>
+    </div>
+  </div>
+
+  <div class="pillars">
+    <div class="pillar">
+      <div class="no">No. 01</div>
+      <h4>Measure, then cut</h4>
+      <p>Eliminated a memory leak in a .NET image pipeline by replacing per-frame allocations with pooled <em>IMemoryOwner</em> buffers — verified with dotMemory, not vibes.</p>
+    </div>
+    <div class="pillar">
+      <div class="no">No. 02</div>
+      <h4>Contracts before code</h4>
+      <p>ASP.NET Core Minimal APIs using the REPR pattern. xUnit, Moq, TestContainers, FluentAssertions — team-wide standards, rigorous peer review.</p>
+    </div>
+    <div class="pillar">
+      <div class="no">No. 03</div>
+      <h4>Legible from a distance</h4>
+      <p>Mentoring juniors on design patterns, testing strategies, and the difference between a service that's fast and one that's merely quick.</p>
+    </div>
+  </div>
+
+  <div class="stack-grid">
+    <div>
+      <div class="label label-accent">§ 02.2 — Languages</div>
+      <p class="stack-line">C# · TypeScript · Python · Go <span class="faint">(learning)</span></p>
+    </div>
+    <div>
+      <div class="label label-accent">§ 02.3 — Platforms</div>
+      <p class="stack-line">Azure · AWS · Docker · Kubernetes <span class="faint">(basics)</span></p>
+    </div>
+    <div>
+      <div class="label label-accent">§ 02.4 — Practices</div>
+      <p class="stack-line">REPR · Vertical slice · TDD · Observability-first</p>
+    </div>
+    <div>
+      <div class="label label-accent">§ 02.5 — Adjacent</div>
+      <p class="stack-line">React · FastAPI · Terraform · Ansible · Playwright</p>
+    </div>
+  </div>
+
+  <div class="page-foot" style="margin-top:48px">
+    <div>↓ &nbsp; Selected work</div><div></div><div>02 / 04</div>
+  </div>
+</section>
+
+<!-- SECTION DIVIDER -->
+<div class="page-divider" aria-hidden="true">
+  <svg viewBox="0 0 1000 60" preserveAspectRatio="none">
+    <polyline class="pd-trail" points="80,28 220,40 360,16 500,34 640,20 780,38 920,24" />
+    <circle class="pd-star pd-star--big" cx="80" cy="28" r="2.6"/>
+    <circle class="pd-star"   cx="220" cy="40" r="1.5"/>
+    <circle class="pd-star pd-star--accent" cx="360" cy="16" r="4"/>
+    <circle class="pd-star"   cx="500" cy="34" r="2"/>
+    <circle class="pd-star pd-star--big" cx="640" cy="20" r="3"/>
+    <circle class="pd-star"   cx="780" cy="38" r="1.8"/>
+    <circle class="pd-star"   cx="920" cy="24" r="1.5"/>
+  </svg>
+</div>
+
+<!-- 03 · WORK ----------------------------------------------- -->
+<section id="work" class="page projects page--plain" data-label="03 Work">
+  <div class="page-head">
+    <div>03 — Selected Work</div><div>·</div><div>2022 — present</div>
+  </div>
+
+  <div class="page-body">
+    <div class="label label-accent" style="margin-bottom:18px">§ 03.1 — Five projects, told long</div>
+    <h2 style="max-width:24ch">Work that <em>carries</em> weight.</h2>
+
+    <div class="work-list">
+
+      <article class="work-card">
+        <header class="wc-head">
+          <div class="wc-no">N° 01</div>
+          <div class="wc-year">2022 — 2026 · Redspeed · Production</div>
+        </header>
+        <h3 class="wc-title">Offence-package <em>Pipeline</em></h3>
+        <p class="wc-lede">
+          Redesigned a legacy offence-package pipeline into a serverless, encrypted
+          routing system processing tens of thousands of submissions per day.
+        </p>
+        <button type="button" class="wc-toggle" aria-expanded="false">
+          <span class="wc-toggle-label"></span>
+          <span class="wc-toggle-glyph" aria-hidden="true">
+            <svg viewBox="0 0 20 20">
+              <line x1="4" y1="10" x2="16" y2="10"/>
+              <line x1="10" y1="4" x2="10" y2="16"/>
+            </svg>
+          </span>
+        </button>
+        <dl class="wc-meta">
+          <div><dt>Role</dt><dd>Lead backend engineer</dd></div>
+          <div><dt>Stack</dt><dd>.NET · Azure Functions · Key Vault · Queues · Blob Storage · AES-256</dd></div>
+          <div><dt>Outcome</dt><dd>35%+ faster end-to-end; zero key rotations missed in 18 months</dd></div>
+        </dl>
+        <div class="wc-notes">
+          <p>
+            The legacy pipeline was an in-process monolith that held submissions
+            on disk between stages — a throughput ceiling and a compliance risk.
+            Re-architected onto Azure Functions with Queues as the only
+            durable surface, Key Vault for rotation, and a small Blob Storage
+            write-through for the large binary bodies. Every hop signs and
+            encrypts with AES-256 using per-tenant keys.
+          </p>
+        </div>
+        <ul class="wc-tags">
+          <li>C#</li><li>.NET 8</li><li>Azure Functions</li><li>Key Vault</li><li>AES-256</li>
+        </ul>
+      </article>
+
+      <article class="work-card">
+        <header class="wc-head">
+          <div class="wc-no">N° 02</div>
+          <div class="wc-year">2023 — 2025 · Redspeed · Production</div>
+        </header>
+        <h3 class="wc-title"><em>JAM</em> — Passwordless Auth</h3>
+        <p class="wc-lede">
+          Centralised camera-access platform. Passwordless, role-scoped, multi-region —
+          the single auth surface for every camera in the estate.
+        </p>
+        <button type="button" class="wc-toggle" aria-expanded="false">
+          <span class="wc-toggle-label"></span>
+          <span class="wc-toggle-glyph" aria-hidden="true">
+            <svg viewBox="0 0 20 20">
+              <line x1="4" y1="10" x2="16" y2="10"/>
+              <line x1="10" y1="4" x2="10" y2="16"/>
+            </svg>
+          </span>
+        </button>
+        <dl class="wc-meta">
+          <div><dt>Role</dt><dd>Backend lead, frontend contributor</dd></div>
+          <div><dt>Stack</dt><dd>ASP.NET Core Minimal APIs (REPR) · Microsoft Identity · React · Azure AD B2C</dd></div>
+          <div><dt>Outcome</dt><dd>Deployed across UK, NZ, Australia, Namibia and further regions. Single pane for operators.</dd></div>
+        </dl>
+        <div class="wc-notes">
+          <p>
+            Built around the REPR pattern so every endpoint has a single request,
+            endpoint, and response type — trivial to test, trivial to reason
+            about. xUnit + TestContainers for the auth paths; end-to-end with
+            Playwright against a live B2C tenant.
+          </p>
+        </div>
+        <ul class="wc-tags">
+          <li>.NET</li><li>React</li><li>Microsoft Identity</li><li>REPR</li><li>Azure AD B2C</li>
+        </ul>
+      </article>
+
+      <article class="work-card">
+        <header class="wc-head">
+          <div class="wc-no">N° 03</div>
+          <div class="wc-year">2022 — 2026 · Redspeed · Production</div>
+        </header>
+        <h3 class="wc-title">Force-format <em>Microservices</em></h3>
+        <p class="wc-lede">
+          Containerised services that transform offence packages into each UK
+          police force's idiosyncratic format. Runs 24/7 without manual intervention.
+        </p>
+        <button type="button" class="wc-toggle" aria-expanded="false">
+          <span class="wc-toggle-label"></span>
+          <span class="wc-toggle-glyph" aria-hidden="true">
+            <svg viewBox="0 0 20 20">
+              <line x1="4" y1="10" x2="16" y2="10"/>
+              <line x1="10" y1="4" x2="10" y2="16"/>
+            </svg>
+          </span>
+        </button>
+        <dl class="wc-meta">
+          <div><dt>Role</dt><dd>Architect + implementer (team of 3)</dd></div>
+          <div><dt>Stack</dt><dd>Docker · RabbitMQ · C# · .NET · Kubernetes</dd></div>
+          <div><dt>Outcome</dt><dd>10+ UK forces live. Tens of thousands of packages / day. Zero manual rescues.</dd></div>
+        </dl>
+        <div class="wc-notes">
+          <p>
+            Each force gets a dedicated transformer service with per-force
+            contract tests. The fleet scales independently on K8s with RabbitMQ
+            as the work queue. A bad format deploy can only take down its own
+            force — blast radius was a primary design constraint.
+          </p>
+        </div>
+        <ul class="wc-tags">
+          <li>Docker</li><li>RabbitMQ</li><li>C#</li><li>Kubernetes</li><li>Contract tests</li>
+        </ul>
+      </article>
+
+      <article class="work-card">
+        <header class="wc-head">
+          <div class="wc-no">N° 04</div>
+          <div class="wc-year">2025 — present · Open Source</div>
+        </header>
+        <h3 class="wc-title"><em>Jobbie</em> — CV &amp; Application Platform</h3>
+        <p class="wc-lede">
+          A modular monolith for CV tailoring and application tracking.
+          Multi-provider AI over SSE, a scraping worker, and a browser extension
+          that pulls jobs into the queue.
+        </p>
+        <button type="button" class="wc-toggle" aria-expanded="false">
+          <span class="wc-toggle-label"></span>
+          <span class="wc-toggle-glyph" aria-hidden="true">
+            <svg viewBox="0 0 20 20">
+              <line x1="4" y1="10" x2="16" y2="10"/>
+              <line x1="10" y1="4" x2="10" y2="16"/>
+            </svg>
+          </span>
+        </button>
+        <dl class="wc-meta">
+          <div><dt>Role</dt><dd>Solo</dd></div>
+          <div><dt>Stack</dt><dd>.NET 10 · React 19 · MongoDB · FusionCache + Redis · Terraform</dd></div>
+          <div><dt>AI</dt><dd>OpenAI · Anthropic · DeepSeek · AWS Bedrock — pluggable, streamed via SSE</dd></div>
+          <div><dt>Scrape</dt><dd>Playwright worker · MV3 browser extension</dd></div>
+        </dl>
+        <div class="wc-notes">
+          <p>
+            9+ vertical-slice modules inside a single process — each owns its
+            storage, its endpoints, its tests. Provider abstraction sits in front
+            of every LLM so swapping provider is a config change. Infra is all
+            Terraform; deploys are boring.
+          </p>
+        </div>
+        <ul class="wc-tags">
+          <li>.NET 10</li><li>React 19</li><li>MongoDB</li><li>FusionCache</li><li>Terraform</li><li>MV3</li>
+        </ul>
+      </article>
+
+      <article class="work-card">
+        <header class="wc-head">
+          <div class="wc-no">N° 05</div>
+          <div class="wc-year">2024 — present · Open Source</div>
+        </header>
+        <h3 class="wc-title"><em>MyDevSetup</em> — Ansible Playbook</h3>
+        <p class="wc-lede">
+          Cross-platform dev-environment provisioning — same machine every time,
+          whether it's Ubuntu, Fedora/RHEL, or macOS.
+        </p>
+        <button type="button" class="wc-toggle" aria-expanded="false">
+          <span class="wc-toggle-label"></span>
+          <span class="wc-toggle-glyph" aria-hidden="true">
+            <svg viewBox="0 0 20 20">
+              <line x1="4" y1="10" x2="16" y2="10"/>
+              <line x1="10" y1="4" x2="10" y2="16"/>
+            </svg>
+          </span>
+        </button>
+        <dl class="wc-meta">
+          <div><dt>Role</dt><dd>Solo</dd></div>
+          <div><dt>Stack</dt><dd>Ansible · Docker · GitHub Actions · GHCR</dd></div>
+          <div><dt>Covers</dt><dd>Zsh · Python · Node · Docker · AstroNvim · the usual</dd></div>
+        </dl>
+        <div class="wc-notes">
+          <p>
+            CI runs the playbook inside a fresh Ubuntu 24.04 container on every
+            PR; the resulting image is published to GHCR so anyone can pull the
+            fully-provisioned environment without running the playbook themselves.
+          </p>
+        </div>
+        <ul class="wc-tags">
+          <li>Ansible</li><li>Docker</li><li>GitHub Actions</li><li>GHCR</li>
+        </ul>
+      </article>
+
+    </div>
+  </div>
+
+  <div class="page-foot" style="margin-top:48px">
+    <div>↓ &nbsp; Contact</div><div></div><div>03 / 04</div>
+  </div>
+</section>
+
+<!-- SECTION DIVIDER -->
+<div class="page-divider" aria-hidden="true">
+  <svg viewBox="0 0 1000 60" preserveAspectRatio="none">
+    <polyline class="pd-trail" points="40,30 200,18 340,36 460,22 600,40 740,18 860,34 960,22" />
+    <circle class="pd-star"   cx="40"  cy="30" r="1.8"/>
+    <circle class="pd-star pd-star--big" cx="200" cy="18" r="2.8"/>
+    <circle class="pd-star"   cx="340" cy="36" r="1.5"/>
+    <circle class="pd-star"   cx="460" cy="22" r="2"/>
+    <circle class="pd-star pd-star--accent" cx="600" cy="40" r="4"/>
+    <circle class="pd-star pd-star--big" cx="740" cy="18" r="2.6"/>
+    <circle class="pd-star"   cx="860" cy="34" r="1.8"/>
+    <circle class="pd-star"   cx="960" cy="22" r="1.5"/>
+  </svg>
+</div>
+
+<!-- 04 · CONTACT -------------------------------------------- -->
+<section id="contact" class="page contact contact-page" data-label="04 Contact">
+  <div class="page-head">
+    <div>04 — Contact</div><div>·</div><div>Write, don't post</div>
+  </div>
+
+  <div class="page-body">
+    <div class="label label-accent" style="margin-bottom:18px">§ 04.1 — Signal</div>
+    <h2>The email is <em>the door</em>.</h2>
+
+    <div class="contact-grid">
+      <div class="contact-list">
+        <a class="contact-item" href="mailto:osinachi88@outlook.com">
+          <div class="ci-label">Email</div>
+          <div class="ci-value">osinachi88@outlook.com</div>
+          <div class="ci-go">Compose</div>
+        </a>
+        <a class="contact-item" href="tel:+447727827640">
+          <div class="ci-label">Phone</div>
+          <div class="ci-value">+44 (0) 7727 827 640</div>
+          <div class="ci-go">Call</div>
+        </a>
+        <a class="contact-item" href="https://github.com/sianachi" target="_blank" rel="noopener">
+          <div class="ci-label">GitHub</div>
+          <div class="ci-value">github.com/sianachi</div>
+          <div class="ci-go">Visit</div>
+        </a>
+        <a class="contact-item" href="#">
+          <div class="ci-label">LinkedIn</div>
+          <div class="ci-value">in/osinachi-nwagboso</div>
+          <div class="ci-go">Visit</div>
+        </a>
+        <a class="contact-item" href="uploads/Osinachi_Nwagboso_CV-4.pdf" target="_blank">
+          <div class="ci-label">CV</div>
+          <div class="ci-value">Osinachi_Nwagboso_CV.pdf</div>
+          <div class="ci-go">Download</div>
+        </a>
+      </div>
+
+      <div>
+        <div class="label label-accent" style="margin-bottom:18px">§ 04.2 — Sign-off</div>
+        <p class="signoff">
+          Thanks for reading this far. If something here resonated,
+          the email is the door.
+          <span class="sig" style="font-family:var(--font-display);">— Osi.</span>
+        </p>
+
+        <div class="colophon">
+          <div>MSc Computer Science, Coventry — Distinction</div>
+          <div>BEng (Hons) Computer Science, Anglia Ruskin — First Class</div>
+          <div>Software Engineer II · Redspeed International</div>
+          <div>This site's visual system is documented at <a href="kit.html" style="color:var(--accent);text-decoration:underline;text-underline-offset:3px">→ Brand Kit, Vol. 01</a></div>
+          <div>© Osinachi Nwagboso · All rights reserved</div>
+        </div>
+      </div>
+    </div>
+  </div>
+
+  <div class="page-foot" style="margin-top:48px">
+    <div>⟲ &nbsp; Return to top</div><div></div><div>04 / 04</div>
+  </div>
+</section>
+
+<!-- TWEAKS PANEL -------------------------------------------- -->
+<aside id="tweaks" aria-label="Tweaks">
+  <h6>Tweaks</h6>
+
+  <div class="tw-group">
+    <span class="tw-label">Palette</span>
+    <div class="tw-opts" data-group="palette">
+      <button class="tw-swatch" data-value="daylight" style="background:linear-gradient(135deg,#F6F2EB 50%,#7A5A10 50%)" title="Daylight"></button>
+      <button class="tw-swatch" data-value="midnight" style="background:linear-gradient(135deg,#0E0A28 50%,#E8C96A 50%)" title="Midnight · Gold"></button>
+    </div>
+  </div>
+</aside>
+
+<script src="app.js?v=8"></script>
+</body>
+</html>
