@@ -1,6 +1,6 @@
 import { Html } from "@/components/Html";
 import { PageBand } from "@/components/PageBand";
-import { ABOUT } from "@/data/about";
+import { ABOUT } from "@/shared/data/about";
 
 export function About() {
   return (

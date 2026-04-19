@@ -1,4 +1,4 @@
-import contactContent from "@/content/contact.json";
+import contactContent from "../../content/contact.json";
 import { ContactContentSchema } from "./schemas";
 
 export const CONTACT = ContactContentSchema.parse(contactContent);

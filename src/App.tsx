@@ -3,7 +3,7 @@ import { Nav } from "@/components/Nav";
 import { PageDivider, DIVIDERS } from "@/components/PageDivider";
 import { PaletteIntro } from "@/components/PaletteIntro";
 import { TweaksPanel } from "@/components/TweaksPanel";
-import { NAV_ENTRIES } from "@/data/nav";
+import { NAV_ENTRIES } from "@/shared/data/nav";
 import { useActiveSection } from "@/hooks/useActiveSection";
 import { useMobileMenu } from "@/hooks/useMobileMenu";
 import { usePalette } from "@/hooks/usePalette";

@@ -1,4 +1,4 @@
-import workContent from "@/content/work.json";
+import workContent from "../../content/work.json";
 import { WorkContentSchema } from "./schemas";
 
 export const WORK = WorkContentSchema.parse(workContent);

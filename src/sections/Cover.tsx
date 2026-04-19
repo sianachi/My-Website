@@ -3,7 +3,7 @@ import { Html } from "@/components/Html";
 import { Orbits } from "@/components/Orbits";
 import { PageBand } from "@/components/PageBand";
 import { Stars } from "@/components/Stars";
-import { COVER } from "@/data/cover";
+import { COVER } from "@/shared/data/cover";
 
 export function Cover() {
   return (

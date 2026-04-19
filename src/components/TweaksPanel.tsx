@@ -1,4 +1,4 @@
-import type { Palette } from "@/data/schemas";
+import type { Palette } from "@/shared/data/schemas";
 
 type Swatch = {
   value: Palette;

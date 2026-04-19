@@ -1,5 +1,5 @@
 import { useEffect } from "react";
-import type { Palette } from "@/data/schemas";
+import type { Palette } from "@/shared/data/schemas";
 
 type PaletteIntroProps = {
   selected: Palette;

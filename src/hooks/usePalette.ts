@@ -1,5 +1,5 @@
 import { useCallback, useEffect, useState } from "react";
-import { PaletteSchema, type Palette } from "@/data/schemas";
+import { PaletteSchema, type Palette } from "@/shared/data/schemas";
 
 const STORAGE_KEY = "palette";
 const DEFAULT_PALETTE: Palette = "midnight";

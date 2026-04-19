@@ -1,7 +1,7 @@
 import { Html } from "@/components/Html";
 import { PageBand } from "@/components/PageBand";
 import { WorkCard } from "@/components/WorkCard";
-import { WORK } from "@/data/work";
+import { WORK } from "@/shared/data/work";
 
 export function Work() {
   return (

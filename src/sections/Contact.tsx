@@ -1,6 +1,6 @@
 import { Html } from "@/components/Html";
 import { PageBand } from "@/components/PageBand";
-import { CONTACT } from "@/data/contact";
+import { CONTACT } from "@/shared/data/contact";
 
 type ContactProps = {
   onOpenInteractive: () => void;

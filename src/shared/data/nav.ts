@@ -1,4 +1,4 @@
-import navContent from "@/content/nav.json";
+import navContent from "../../content/nav.json";
 import { NavContentSchema } from "./schemas";
 
 const parsed = NavContentSchema.parse(navContent);

@@ -1,4 +1,4 @@
-import { NAV_ENTRIES } from "@/data/nav";
+import { NAV_ENTRIES } from "@/shared/data/nav";
 
 type MobileMenuProps = {
   isOpen: boolean;

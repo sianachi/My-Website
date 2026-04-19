@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Html } from "@/components/Html";
-import type { WorkCardData } from "@/data/schemas";
+import type { WorkCardData } from "@/shared/data/schemas";
 
 type WorkCardProps = {
   card: WorkCardData;

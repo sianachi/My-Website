@@ -1,5 +1,5 @@
 import type { CSSProperties } from "react";
-import type { PageBand as PageBandTuple } from "@/data/schemas";
+import type { PageBand as PageBandTuple } from "@/shared/data/schemas";
 
 type PageBandProps = {
   kind: "head" | "foot";
