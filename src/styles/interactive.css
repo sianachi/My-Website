@@ -1,0 +1,216 @@
+/* =========================================================
+   INTERACTIVE PORTFOLIO — /interactive route
+   Frames the external site inside the portfolio's chrome.
+   Desktop-only by intent; mobile gets a fallback card.
+   ========================================================= */
+
+.ip-page {
+  height: 100dvh;
+  display: flex;
+  flex-direction: column;
+  background: var(--bg);
+  padding-top: 0;
+  overflow: hidden;
+}
+
+/* Override body padding-top that the global nav reserves — this page
+   renders its own top bar, not the global Nav. */
+body:has(.ip-page) {
+  padding-top: 0;
+}
+
+.ip-nav {
+  position: sticky;
+  top: 0;
+  z-index: 50;
+  display: grid;
+  grid-template-columns: 1fr auto 1fr;
+  align-items: center;
+  gap: 24px;
+  padding: 20px clamp(28px, 5vw, 80px);
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  letter-spacing: .22em;
+  text-transform: uppercase;
+  color: var(--ink-dim);
+  background: var(--bg);
+  border-bottom: 3px solid var(--rule);
+}
+.ip-nav .nav-mark { color: var(--ink); font-weight: 500; }
+
+.ip-nav-title {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  justify-self: center;
+  color: var(--accent);
+}
+.ip-nav-mark { color: var(--accent); }
+
+.ip-nav-right {
+  display: flex;
+  align-items: center;
+  gap: 16px;
+  justify-self: end;
+}
+
+.ip-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 14px;
+  border: 2px solid var(--rule);
+  background: var(--bg);
+  color: var(--ink);
+  transition:
+    background .25s ease,
+    border-color .25s ease,
+    color .25s ease,
+    transform .25s ease;
+}
+.ip-back:hover,
+.ip-back:focus-visible {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--bg);
+  outline: none;
+  transform: translateX(-2px);
+}
+
+.ip-body {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  min-height: 0;
+}
+
+/* Framed iframe — bordered like the work-card tiles, corner brackets. */
+.ip-frame-wrap {
+  position: relative;
+  flex: 1;
+  margin: clamp(20px, 3vw, 40px);
+  border: 3px solid var(--rule);
+  background: var(--bg-2);
+  overflow: hidden;
+  min-height: 0;
+}
+.ip-frame-wrap::before,
+.ip-frame-wrap::after {
+  content: "";
+  position: absolute;
+  width: 22px; height: 22px;
+  pointer-events: none;
+  z-index: 2;
+}
+.ip-frame-wrap::before {
+  top: -1px; left: -1px;
+  border-top: 2px solid var(--accent);
+  border-left: 2px solid var(--accent);
+}
+.ip-frame-wrap::after {
+  bottom: -1px; right: -1px;
+  border-bottom: 2px solid var(--accent);
+  border-right: 2px solid var(--accent);
+}
+
+.ip-frame {
+  display: block;
+  width: 100%;
+  height: 100%;
+  border: 0;
+  background: #000;
+}
+
+/* Mobile fallback — hidden on desktop. */
+.ip-mobile-fallback {
+  display: none;
+  padding: clamp(32px, 6vw, 64px);
+  max-width: 560px;
+  margin: 0 auto;
+  text-align: left;
+}
+.ip-fallback-title {
+  font-family: var(--font-display);
+  font-weight: var(--display-weight);
+  letter-spacing: var(--display-tracking);
+  line-height: 1.02;
+  font-size: clamp(40px, 9vw, 56px);
+  color: var(--ink);
+  margin: 0 0 .4em;
+  max-width: 14ch;
+}
+.ip-fallback-title em { color: var(--accent); font-style: italic; }
+.ip-fallback-lede {
+  font-family: var(--font-display);
+  font-style: italic;
+  font-size: clamp(18px, 4.5vw, 22px);
+  line-height: 1.4;
+  color: var(--ink-dim);
+  margin: 0 0 28px;
+  max-width: 32ch;
+}
+.ip-fallback-back {
+  display: inline-flex;
+  align-items: center;
+  gap: 8px;
+  padding: 10px 18px;
+  border: 2px solid var(--accent);
+  color: var(--accent);
+  font-family: var(--font-mono);
+  font-size: 11px;
+  letter-spacing: .22em;
+  text-transform: uppercase;
+  transition: background .25s ease, color .25s ease, transform .25s ease;
+}
+.ip-fallback-back:hover {
+  background: var(--accent);
+  color: var(--bg);
+  transform: translateX(-2px);
+}
+
+/* Link in the colophon that opens /interactive — desktop-only. */
+.colophon-interactive {
+  display: inline-flex;
+  align-items: center;
+  gap: 10px;
+  padding: 8px 14px;
+  margin-top: 8px;
+  border: 2px solid var(--rule);
+  color: var(--accent);
+  background: var(--bg);
+  font-family: var(--font-mono);
+  font-size: 10.5px;
+  letter-spacing: .22em;
+  text-transform: uppercase;
+  transition:
+    background .25s ease,
+    border-color .25s ease,
+    color .25s ease,
+    transform .25s ease;
+}
+.colophon-interactive:hover,
+.colophon-interactive:focus-visible {
+  background: var(--accent);
+  border-color: var(--accent);
+  color: var(--bg);
+  outline: none;
+  transform: translateX(2px);
+}
+
+/* ---------- Desktop-only gating at the portfolio's 900px breakpoint ---------- */
+@media (max-width: 900px) {
+  .ip-link-wrap { display: none; }            /* hide link in colophon */
+  .ip-frame-wrap { display: none; }           /* hide iframe */
+  .ip-mobile-fallback { display: block; }     /* show fallback card */
+
+  /* Release the pinned height so the fallback can scroll if needed. */
+  .ip-page { height: auto; min-height: 100dvh; overflow: visible; }
+  .ip-body { display: block; }
+
+  .ip-nav {
+    grid-template-columns: auto 1fr auto;
+    padding: 14px clamp(20px, 4vw, 28px);
+  }
+  .ip-nav-title { display: none; }
+  .ip-nav-right { gap: 10px; }
+}

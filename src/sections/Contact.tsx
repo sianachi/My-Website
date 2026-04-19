@@ -1,6 +1,10 @@
 import { CONTACT_LINKS, COLOPHON_LINES } from "@/data/contact";
 
-export function Contact() {
+type ContactProps = {
+  onOpenInteractive: () => void;
+};
+
+export function Contact({ onOpenInteractive }: ContactProps) {
   return (
     <section
       id="contact"
@@ -64,6 +68,18 @@ export function Contact() {
               {COLOPHON_LINES.map((line) => (
                 <div key={line}>{line}</div>
               ))}
+              <div className="ip-link-wrap">
+                <a
+                  href="/interactive"
+                  className="colophon-interactive"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    onOpenInteractive();
+                  }}
+                >
+                  → Interactive portfolio
+                </a>
+              </div>
             </div>
           </div>
         </div>
