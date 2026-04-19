@@ -1,9 +1,10 @@
 import { Html } from "@/components/Html";
 import { PageBand } from "@/components/PageBand";
 import { WorkCard } from "@/components/WorkCard";
-import { WORK } from "@/shared/data/work";
+import { useWorkContent } from "@/lib/siteContent";
 
 export function Work() {
+  const WORK = useWorkContent();
   return (
     <section
       id="work"

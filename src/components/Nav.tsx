@@ -1,6 +1,17 @@
-import { NAV_ENTRIES } from "@/shared/data/nav";
+import type { NavEntry } from "@/shared/data/schemas";
 import { MenuTrigger } from "./MenuTrigger";
 import { ThemeToggle } from "./ThemeToggle";
+
+/**
+ * Nav is structural — the list of sections doesn't change per deploy
+ * and doesn't belong on the content API. Edit here, not in the DB.
+ */
+export const NAV_ENTRIES: readonly NavEntry[] = [
+  { id: "cover", page: "01", label: "Home" },
+  { id: "about", page: "02", label: "About" },
+  { id: "work", page: "03", label: "Work" },
+  { id: "contact", page: "04", label: "Contact" },
+];
 
 type NavProps = {
   activeId: string;

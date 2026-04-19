@@ -1,12 +1,13 @@
 import { Html } from "@/components/Html";
 import { PageBand } from "@/components/PageBand";
-import { CONTACT } from "@/shared/data/contact";
+import { useContactContent } from "@/lib/siteContent";
 
 type ContactProps = {
   onOpenInteractive: () => void;
 };
 
 export function Contact({ onOpenInteractive }: ContactProps) {
+  const CONTACT = useContactContent();
   return (
     <section
       id="contact"

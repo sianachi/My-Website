@@ -3,9 +3,10 @@ import { Html } from "@/components/Html";
 import { Orbits } from "@/components/Orbits";
 import { PageBand } from "@/components/PageBand";
 import { Stars } from "@/components/Stars";
-import { COVER } from "@/shared/data/cover";
+import { useCoverContent } from "@/lib/siteContent";
 
 export function Cover() {
+  const COVER = useCoverContent();
   return (
     <section
       id="cover"

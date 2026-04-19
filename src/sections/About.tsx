@@ -1,8 +1,9 @@
 import { Html } from "@/components/Html";
 import { PageBand } from "@/components/PageBand";
-import { ABOUT } from "@/shared/data/about";
+import { useAboutContent } from "@/lib/siteContent";
 
 export function About() {
+  const ABOUT = useAboutContent();
   return (
     <section
       id="about"

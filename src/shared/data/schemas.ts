@@ -26,10 +26,6 @@ export const NavEntrySchema = z.object({
 });
 export type NavEntry = z.infer<typeof NavEntrySchema>;
 
-export const NavContentSchema = z.object({
-  entries: z.array(NavEntrySchema).min(1),
-});
-
 /* ---------- Cover ---------- */
 
 export const CoverStackEntrySchema = z.object({

@@ -1,14 +1,15 @@
 import { MobileMenu } from "@/components/MobileMenu";
-import { Nav } from "@/components/Nav";
+import { Nav, NAV_ENTRIES } from "@/components/Nav";
 import { PageDivider, DIVIDERS } from "@/components/PageDivider";
 import { PaletteIntro } from "@/components/PaletteIntro";
 import { TweaksPanel } from "@/components/TweaksPanel";
-import { NAV_ENTRIES } from "@/shared/data/nav";
 import { useActiveSection } from "@/hooks/useActiveSection";
 import { useMobileMenu } from "@/hooks/useMobileMenu";
 import { usePalette } from "@/hooks/usePalette";
 import { useRoute } from "@/hooks/useRoute";
+import { useSiteContentFetch } from "@/hooks/useSiteContent";
 import { useSmoothAnchor } from "@/hooks/useSmoothAnchor";
+import { SiteContentProvider } from "@/lib/siteContent";
 import { InteractivePortfolio } from "@/pages/InteractivePortfolio";
 import { About } from "@/sections/About";
 import { Contact } from "@/sections/Contact";
@@ -26,6 +27,7 @@ export function App() {
     hasStoredPreference,
   } = usePalette();
   const route = useRoute();
+  const { status, retry } = useSiteContentFetch();
 
   if (route.path === "/interactive") {
     return (
@@ -36,16 +38,26 @@ export function App() {
     );
   }
 
+  if (status.state === "loading") {
+    return <Splash />;
+  }
+
+  if (status.state === "error") {
+    return <ErrorScreen message={status.error.message} onRetry={retry} />;
+  }
+
   return (
-    <Home
-      palette={palette}
-      hasStoredPreference={hasStoredPreference}
-      onThemeToggle={toggleTheme}
-      onSelectPalette={setPalette}
-      onPreviewPalette={previewPalette}
-      onCommitPalette={commitPalette}
-      onOpenInteractive={() => route.navigate("/interactive")}
-    />
+    <SiteContentProvider value={status.content}>
+      <Home
+        palette={palette}
+        hasStoredPreference={hasStoredPreference}
+        onThemeToggle={toggleTheme}
+        onSelectPalette={setPalette}
+        onPreviewPalette={previewPalette}
+        onCommitPalette={commitPalette}
+        onOpenInteractive={() => route.navigate("/interactive")}
+      />
+    </SiteContentProvider>
   );
 }
 
@@ -106,5 +118,31 @@ function Home({
         onSelectPalette={onSelectPalette}
       />
     </>
+  );
+}
+
+function Splash() {
+  return (
+    <div className="site-splash" aria-busy="true" aria-live="polite">
+      <span className="site-splash-dot" />
+    </div>
+  );
+}
+
+function ErrorScreen({
+  message,
+  onRetry,
+}: {
+  message: string;
+  onRetry: () => void;
+}) {
+  return (
+    <div className="site-error" role="alert">
+      <div className="label label-accent">§ Couldn&apos;t load content</div>
+      <p className="site-error-msg">{message}</p>
+      <button type="button" className="site-error-retry" onClick={onRetry}>
+        Retry →
+      </button>
+    </div>
   );
 }
