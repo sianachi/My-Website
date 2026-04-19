@@ -35,7 +35,7 @@
     {
       "label": "CV",
       "value": "Osinachi_Nwagboso_CV.pdf",
-      "href": "/uploads/Osinachi_Nwagboso_CV-4.pdf",
+      "href": "/api/cv",
       "cta": "Download",
       "external": true
     }
