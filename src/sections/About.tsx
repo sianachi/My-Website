@@ -1,6 +1,7 @@
 import { Html } from "@/components/Html";
 import { PageBand } from "@/components/PageBand";
 import { useAboutContent } from "@/lib/siteContent";
+import { scrollToSection } from "@/lib/scroll";
 
 export function About() {
   const ABOUT = useAboutContent();
@@ -54,7 +55,12 @@ export function About() {
         ))}
       </div>
 
-      <PageBand kind="foot" cells={ABOUT.pageFoot} style={{ marginTop: 48 }} />
+      <PageBand
+        kind="foot"
+        cells={ABOUT.pageFoot}
+        style={{ marginTop: 48 }}
+        onAction={() => scrollToSection("work")}
+      />
     </section>
   );
 }

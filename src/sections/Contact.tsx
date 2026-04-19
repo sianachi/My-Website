@@ -1,6 +1,7 @@
 import { Html } from "@/components/Html";
 import { PageBand } from "@/components/PageBand";
 import { useContactContent } from "@/lib/siteContent";
+import { scrollToSection } from "@/lib/scroll";
 
 type ContactProps = {
   onOpenInteractive: () => void;
@@ -85,6 +86,7 @@ export function Contact({ onOpenInteractive }: ContactProps) {
         kind="foot"
         cells={CONTACT.pageFoot}
         style={{ marginTop: 48 }}
+        onAction={() => scrollToSection("cover")}
       />
     </section>
   );

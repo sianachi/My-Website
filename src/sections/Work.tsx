@@ -2,6 +2,7 @@ import { Html } from "@/components/Html";
 import { PageBand } from "@/components/PageBand";
 import { WorkCard } from "@/components/WorkCard";
 import { useWorkContent } from "@/lib/siteContent";
+import { scrollToSection } from "@/lib/scroll";
 
 export function Work() {
   const WORK = useWorkContent();
@@ -33,7 +34,12 @@ export function Work() {
         </div>
       </div>
 
-      <PageBand kind="foot" cells={WORK.pageFoot} style={{ marginTop: 48 }} />
+      <PageBand
+        kind="foot"
+        cells={WORK.pageFoot}
+        style={{ marginTop: 48 }}
+        onAction={() => scrollToSection("contact")}
+      />
     </section>
   );
 }

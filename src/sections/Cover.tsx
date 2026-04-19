@@ -4,6 +4,7 @@ import { Orbits } from "@/components/Orbits";
 import { PageBand } from "@/components/PageBand";
 import { Stars } from "@/components/Stars";
 import { useCoverContent } from "@/lib/siteContent";
+import { scrollToSection } from "@/lib/scroll";
 
 export function Cover() {
   const COVER = useCoverContent();
@@ -50,7 +51,11 @@ export function Cover() {
         </div>
       </div>
 
-      <PageBand kind="foot" cells={COVER.pageFoot} />
+      <PageBand
+        kind="foot"
+        cells={COVER.pageFoot}
+        onAction={() => scrollToSection("about")}
+      />
     </section>
   );
 }
