@@ -1,5 +1,5 @@
 import type { VercelRequest, VercelResponse } from "@vercel/node";
-import { COVER } from "../src/shared/data/cover";
+import { COVER } from "../src/shared/data/cover.js";
 
 export default async function handler(
   req: VercelRequest,

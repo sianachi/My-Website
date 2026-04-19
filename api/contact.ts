@@ -1,5 +1,5 @@
 import type { VercelRequest, VercelResponse } from "@vercel/node";
-import { CONTACT } from "../src/shared/data/contact";
+import { CONTACT } from "../src/shared/data/contact.js";
 
 export default async function handler(
   req: VercelRequest,
