@@ -1,4 +1,6 @@
-import { CONTACT_LINKS, COLOPHON_LINES } from "@/data/contact";
+import { Html } from "@/components/Html";
+import { PageBand } from "@/components/PageBand";
+import { CONTACT } from "@/data/contact";
 
 type ContactProps = {
   onOpenInteractive: () => void;
@@ -11,26 +13,20 @@ export function Contact({ onOpenInteractive }: ContactProps) {
       className="page contact contact-page"
       data-label="04 Contact"
     >
-      <div className="page-head">
-        <div>04 — Contact</div>
-        <div>·</div>
-        <div>Write, don&apos;t post</div>
-      </div>
+      <PageBand kind="head" cells={CONTACT.pageHead} />
 
       <div className="page-body">
         <div
           className="label label-accent"
           style={{ marginBottom: 18 }}
         >
-          § 04.1 — Signal
+          {CONTACT.signalLabel}
         </div>
-        <h2>
-          The email is <em>the door</em>.
-        </h2>
+        <Html as="h2" html={CONTACT.heading} />
 
         <div className="contact-grid">
           <div className="contact-list">
-            {CONTACT_LINKS.map((link) => (
+            {CONTACT.links.map((link) => (
               <a
                 key={link.label}
                 className="contact-item"
@@ -51,21 +47,20 @@ export function Contact({ onOpenInteractive }: ContactProps) {
               className="label label-accent"
               style={{ marginBottom: 18 }}
             >
-              § 04.2 — Sign-off
+              {CONTACT.signoffLabel}
             </div>
             <p className="signoff">
-              Thanks for reading this far. If something here resonated, the
-              email is the door.
+              {CONTACT.signoff}
               <span
                 className="sig"
                 style={{ fontFamily: "var(--font-display)" }}
               >
-                — Osi.
+                {CONTACT.sig}
               </span>
             </p>
 
             <div className="colophon">
-              {COLOPHON_LINES.map((line) => (
+              {CONTACT.colophon.map((line) => (
                 <div key={line}>{line}</div>
               ))}
               <div className="ip-link-wrap">
@@ -77,7 +72,7 @@ export function Contact({ onOpenInteractive }: ContactProps) {
                     onOpenInteractive();
                   }}
                 >
-                  → Interactive portfolio
+                  {CONTACT.interactiveLinkLabel}
                 </a>
               </div>
             </div>
@@ -85,11 +80,11 @@ export function Contact({ onOpenInteractive }: ContactProps) {
         </div>
       </div>
 
-      <div className="page-foot" style={{ marginTop: 48 }}>
-        <div>⟲ &nbsp; Return to top</div>
-        <div />
-        <div>04 / 04</div>
-      </div>
+      <PageBand
+        kind="foot"
+        cells={CONTACT.pageFoot}
+        style={{ marginTop: 48 }}
+      />
     </section>
   );
 }

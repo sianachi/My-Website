@@ -1,4 +1,5 @@
 import { useState } from "react";
+import { Html } from "@/components/Html";
 import type { WorkCardData } from "@/data/schemas";
 
 type WorkCardProps = {
@@ -14,10 +15,7 @@ export function WorkCard({ card }: WorkCardProps) {
         <div className="wc-no">{card.no}</div>
         <div className="wc-year">{card.year}</div>
       </header>
-      <h3
-        className="wc-title"
-        dangerouslySetInnerHTML={{ __html: card.title }}
-      />
+      <Html as="h3" className="wc-title" html={card.title} />
       <p className="wc-lede">{card.lede}</p>
       <button
         type="button"

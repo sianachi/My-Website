@@ -1,5 +1,7 @@
+import { Html } from "@/components/Html";
+import { PageBand } from "@/components/PageBand";
 import { WorkCard } from "@/components/WorkCard";
-import { WORK_CARDS } from "@/data/work";
+import { WORK } from "@/data/work";
 
 export function Work() {
   return (
@@ -8,35 +10,29 @@ export function Work() {
       className="page projects page--plain"
       data-label="03 Work"
     >
-      <div className="page-head">
-        <div>03 — Selected Work</div>
-        <div>·</div>
-        <div>2022 — present</div>
-      </div>
+      <PageBand kind="head" cells={WORK.pageHead} />
 
       <div className="page-body">
         <div
           className="label label-accent"
           style={{ marginBottom: 18 }}
         >
-          § 03.1 — Five projects, told long
+          {WORK.introLabel}
         </div>
-        <h2 style={{ maxWidth: "24ch" }}>
-          Work that <em>carries</em> weight.
-        </h2>
+        <Html
+          as="h2"
+          style={{ maxWidth: "24ch" }}
+          html={WORK.introHeading}
+        />
 
         <div className="work-list">
-          {WORK_CARDS.map((card) => (
+          {WORK.cards.map((card) => (
             <WorkCard key={card.no} card={card} />
           ))}
         </div>
       </div>
 
-      <div className="page-foot" style={{ marginTop: 48 }}>
-        <div>↓ &nbsp; Contact</div>
-        <div />
-        <div>03 / 04</div>
-      </div>
+      <PageBand kind="foot" cells={WORK.pageFoot} style={{ marginTop: 48 }} />
     </section>
   );
 }

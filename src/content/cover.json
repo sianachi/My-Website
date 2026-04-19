@@ -1,0 +1,20 @@
+{
+  "pageHead": ["Portfolio — 2026", "·", "Birmingham, UK"],
+  "pageFoot": ["↓\u00a0 About", "", "01 / 04"],
+  "eyebrow": [
+    "Software Engineer",
+    "C# / .NET",
+    "Azure & AWS",
+    "Edge / Jetson"
+  ],
+  "nameGivenEmphasis": "Osi",
+  "nameGivenRest": "nachi",
+  "nameFamily": "Nwagboso",
+  "lede": "I build <em>performance-sensitive</em> backends — encrypted pipelines, memory-constrained services, things that run quietly and don't fall over.",
+  "stack": [
+    { "tab": "C#", "value": ".NET 10" },
+    { "tab": "☁", "value": "Azure · AWS" },
+    { "tab": "⌘", "value": "Jetson Orin" },
+    { "tab": "§4", "value": "yrs @ Redspeed" }
+  ]
+}
