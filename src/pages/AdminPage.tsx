@@ -3,15 +3,20 @@ import { AdminConsole } from "@/pages/admin/AdminConsole";
 import { RegisterCard } from "@/pages/admin/RegisterCard";
 import { SignInCard } from "@/pages/admin/SignInCard";
 
-export function AdminPage() {
+type Props = {
+  path: string;
+  navigate: (to: string) => void;
+};
+
+export function AdminPage({ path, navigate }: Props) {
   return (
     <AdminAuthProvider>
-      <AdminGate />
+      <AdminGate path={path} navigate={navigate} />
     </AdminAuthProvider>
   );
 }
 
-function AdminGate() {
+function AdminGate({ path, navigate }: Props) {
   const { status, refresh } = useAdminAuth();
 
   if (status.state === "loading") {
@@ -42,5 +47,11 @@ function AdminGate() {
     return <SignInCard />;
   }
 
-  return <AdminConsole credentialCount={status.credentialCount} />;
+  return (
+    <AdminConsole
+      credentialCount={status.credentialCount}
+      path={path}
+      navigate={navigate}
+    />
+  );
 }

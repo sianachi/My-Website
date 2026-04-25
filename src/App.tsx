@@ -1,3 +1,4 @@
+import { Analytics } from "@vercel/analytics/react";
 import { MobileMenu } from "@/components/MobileMenu";
 import { Nav, NAV_ENTRIES } from "@/components/Nav";
 import { PageDivider, DIVIDERS } from "@/components/PageDivider";
@@ -30,40 +31,52 @@ export function App() {
   const route = useRoute();
   const { status, retry } = useSiteContentFetch();
 
-  if (route.path === "/core") {
-    return <AdminPage />;
-  }
-
-  if (route.path === "/interactive") {
-    return (
-      <InteractivePortfolio
-        onBack={() => route.navigate("/")}
-        onThemeToggle={toggleTheme}
-      />
-    );
-  }
-
-  if (status.state === "loading") {
-    return <Splash />;
-  }
-
-  if (status.state === "error") {
-    return <ErrorScreen message={status.error.message} onRetry={retry} />;
-  }
+  const inIframe =
+    typeof window !== "undefined" && window.self !== window.top;
 
   return (
-    <SiteContentProvider value={status.content}>
-      <Home
-        palette={palette}
-        hasStoredPreference={hasStoredPreference}
-        onThemeToggle={toggleTheme}
-        onSelectPalette={setPalette}
-        onPreviewPalette={previewPalette}
-        onCommitPalette={commitPalette}
-        onOpenInteractive={() => route.navigate("/interactive")}
-      />
-    </SiteContentProvider>
+    <>
+      {renderRoute()}
+      {!inIframe && <Analytics />}
+    </>
   );
+
+  function renderRoute() {
+    if (route.path === "/core" || route.path.startsWith("/core/")) {
+      return <AdminPage path={route.path} navigate={route.navigate} />;
+    }
+
+    if (route.path === "/interactive") {
+      return (
+        <InteractivePortfolio
+          onBack={() => route.navigate("/")}
+          onThemeToggle={toggleTheme}
+        />
+      );
+    }
+
+    if (status.state === "loading") {
+      return <Splash />;
+    }
+
+    if (status.state === "error") {
+      return <ErrorScreen message={status.error.message} onRetry={retry} />;
+    }
+
+    return (
+      <SiteContentProvider value={status.content}>
+        <Home
+          palette={palette}
+          hasStoredPreference={hasStoredPreference}
+          onThemeToggle={toggleTheme}
+          onSelectPalette={setPalette}
+          onPreviewPalette={previewPalette}
+          onCommitPalette={commitPalette}
+          onOpenInteractive={() => route.navigate("/interactive")}
+        />
+      </SiteContentProvider>
+    );
+  }
 }
 
 type HomeProps = {

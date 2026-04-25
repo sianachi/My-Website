@@ -26,6 +26,15 @@ export const NavEntrySchema = z.object({
 });
 export type NavEntry = z.infer<typeof NavEntrySchema>;
 
+export const CONTENT_DOC_IDS = ["cover", "about", "work", "contact"] as const;
+export type ContentDocId = (typeof CONTENT_DOC_IDS)[number];
+export function isContentDocId(value: unknown): value is ContentDocId {
+  return (
+    typeof value === "string" &&
+    (CONTENT_DOC_IDS as ReadonlyArray<string>).includes(value)
+  );
+}
+
 /* ---------- Cover ---------- */
 
 export const CoverStackEntrySchema = z.object({

@@ -3,9 +3,9 @@ import { head } from "@vercel/blob";
 
 /**
  * Redirect to the current CV stored in Vercel Blob.
- * Upload a new CV with `bun run cv:upload path/to/file.pdf` — it
- * replaces the blob at cv/current.pdf, and this endpoint always
- * points at the latest version.
+ * Replace the file via the CV uploader at /core (admin only) — it
+ * writes to cv/current.pdf, and this endpoint always points at the
+ * latest version.
  */
 const CV_PATH = "cv/current.pdf";
 
