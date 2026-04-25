@@ -1,4 +1,6 @@
 import { AccountSection } from "./AccountSection";
+import { BlogEditor } from "./BlogEditor";
+import { BlogManager } from "./BlogManager";
 import { ContentEditor } from "./ContentEditor";
 import { CVUploader } from "./CVUploader";
 import { Launchpad } from "./Launchpad";
@@ -26,6 +28,55 @@ export function AdminConsole({ credentialCount, path, navigate }: Props) {
         navigate={navigate}
       >
         <ContentEditor />
+      </ModulePage>
+    );
+  }
+
+  if (sub === "blog") {
+    return (
+      <ModulePage
+        title="Field notes"
+        subtitle="Write, publish, and archive blog posts."
+        navigate={navigate}
+      >
+        <BlogManager
+          onNew={() => navigate("/core/blog/new")}
+          onOpen={(slug) => navigate(`/core/blog/${slug}`)}
+        />
+      </ModulePage>
+    );
+  }
+
+  if (sub === "blog/new") {
+    return (
+      <ModulePage
+        title="Field notes · new"
+        subtitle="Drafting a new post."
+        navigate={navigate}
+      >
+        <BlogEditor
+          initialSlug={null}
+          onClose={() => navigate("/core/blog")}
+          onCreated={(slug) => navigate(`/core/blog/${slug}`)}
+        />
+      </ModulePage>
+    );
+  }
+
+  if (sub.startsWith("blog/")) {
+    const slug = sub.slice("blog/".length);
+    return (
+      <ModulePage
+        title="Field notes · edit"
+        subtitle={slug}
+        navigate={navigate}
+      >
+        <BlogEditor
+          key={slug}
+          initialSlug={slug}
+          onClose={() => navigate("/core/blog")}
+          onCreated={(s) => navigate(`/core/blog/${s}`)}
+        />
       </ModulePage>
     );
   }

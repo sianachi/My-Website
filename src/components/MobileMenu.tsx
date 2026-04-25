@@ -33,6 +33,12 @@ export function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
               </a>
             </li>
           ))}
+          <li>
+            <a href="/blog">
+              <span className="mm-no">05</span>
+              <span className="mm-name">Blog</span>
+            </a>
+          </li>
         </ul>
       </nav>
     </div>

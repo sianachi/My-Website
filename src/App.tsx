@@ -12,6 +12,8 @@ import { useSiteContentFetch } from "@/hooks/useSiteContent";
 import { useSmoothAnchor } from "@/hooks/useSmoothAnchor";
 import { SiteContentProvider } from "@/lib/siteContent";
 import { AdminPage } from "@/pages/AdminPage";
+import { BlogIndex } from "@/pages/blog/BlogIndex";
+import { BlogPost } from "@/pages/blog/BlogPost";
 import { InteractivePortfolio } from "@/pages/InteractivePortfolio";
 import { About } from "@/sections/About";
 import { Contact } from "@/sections/Contact";
@@ -53,6 +55,15 @@ export function App() {
           onThemeToggle={toggleTheme}
         />
       );
+    }
+
+    if (route.path === "/blog" || route.path === "/blog/") {
+      return <BlogIndex navigate={route.navigate} />;
+    }
+
+    if (route.path.startsWith("/blog/")) {
+      const slug = route.path.slice("/blog/".length).replace(/\/$/, "");
+      return <BlogPost slug={slug} navigate={route.navigate} />;
     }
 
     if (status.state === "loading") {

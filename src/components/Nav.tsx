@@ -45,6 +45,9 @@ export function Nav({
             {entry.page} {entry.label}
           </a>
         ))}
+        <a href="/blog" data-page="05">
+          05 Blog
+        </a>
       </div>
       <div className="nav-right">
         <MenuTrigger isOpen={menuOpen} onToggle={onMenuToggle} />

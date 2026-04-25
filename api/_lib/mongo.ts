@@ -4,6 +4,7 @@ import type {
   ChallengeDoc,
   SessionDoc,
 } from "../../src/shared/data/schemas.js";
+import type { BlogPost } from "../../src/shared/data/blog.js";
 
 let clientPromise: Promise<MongoClient> | null = null;
 let indexesEnsured = false;
@@ -59,4 +60,13 @@ export async function getSessionCollection(): Promise<Collection<SessionDoc>> {
   const db = await getDb();
   await ensureAuthIndexes(db);
   return db.collection<SessionDoc>("auth_sessions");
+}
+
+export type BlogPostDoc = Omit<BlogPost, "slug"> & { _id: string };
+
+export async function getBlogPostsCollection(): Promise<
+  Collection<BlogPostDoc>
+> {
+  const db = await getDb();
+  return db.collection<BlogPostDoc>("blog_posts");
 }

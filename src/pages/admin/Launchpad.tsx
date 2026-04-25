@@ -24,6 +24,12 @@ const TILES: Tile[] = [
     to: "/core/content",
   },
   {
+    glyph: "✎",
+    title: "Blog",
+    tagline: "Field notes & longform.",
+    to: "/core/blog",
+  },
+  {
     glyph: "◇",
     title: "Preview",
     tagline: "Look out the porthole.",

@@ -1,0 +1,81 @@
+import { z } from "zod";
+
+export const BLOG_STATUSES = ["draft", "published", "archived"] as const;
+export type BlogStatus = (typeof BLOG_STATUSES)[number];
+
+export const BlogSlugSchema = z
+  .string()
+  .min(1)
+  .max(96)
+  .regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, {
+    message:
+      "slug must be lowercase alphanumerics separated by single hyphens",
+  });
+
+export const BlogPostSchema = z.object({
+  slug: BlogSlugSchema,
+  title: z.string().min(1).max(200),
+  excerpt: z.string().max(280).optional().or(z.literal("")),
+  content: z.string(),
+  status: z.enum(BLOG_STATUSES),
+  createdAt: z.string().datetime(),
+  updatedAt: z.string().datetime(),
+  publishedAt: z.string().datetime().optional(),
+});
+export type BlogPost = z.infer<typeof BlogPostSchema>;
+
+export const BlogPostListItemSchema = BlogPostSchema.pick({
+  slug: true,
+  title: true,
+  excerpt: true,
+  publishedAt: true,
+  updatedAt: true,
+});
+export type BlogPostListItem = z.infer<typeof BlogPostListItemSchema>;
+
+export const BlogPostListSchema = z.object({
+  posts: z.array(BlogPostListItemSchema),
+});
+export type BlogPostList = z.infer<typeof BlogPostListSchema>;
+
+export const AdminBlogListItemSchema = BlogPostSchema.pick({
+  slug: true,
+  title: true,
+  excerpt: true,
+  status: true,
+  createdAt: true,
+  updatedAt: true,
+  publishedAt: true,
+});
+export type AdminBlogListItem = z.infer<typeof AdminBlogListItemSchema>;
+
+export const AdminBlogListSchema = z.object({
+  posts: z.array(AdminBlogListItemSchema),
+});
+export type AdminBlogList = z.infer<typeof AdminBlogListSchema>;
+
+export const BlogCreateInputSchema = z.object({
+  slug: BlogSlugSchema,
+  title: z.string().min(1).max(200),
+  excerpt: z.string().max(280).optional(),
+  content: z.string(),
+});
+export type BlogCreateInput = z.infer<typeof BlogCreateInputSchema>;
+
+export const BlogUpdateInputSchema = z.object({
+  title: z.string().min(1).max(200).optional(),
+  excerpt: z.string().max(280).optional().or(z.literal("")),
+  content: z.string().optional(),
+  status: z.enum(BLOG_STATUSES).optional(),
+});
+export type BlogUpdateInput = z.infer<typeof BlogUpdateInputSchema>;
+
+export function slugify(input: string): string {
+  return input
+    .toLowerCase()
+    .normalize("NFKD")
+    .replace(/[\u0300-\u036f]/g, "")
+    .replace(/[^a-z0-9]+/g, "-")
+    .replace(/^-+|-+$/g, "")
+    .slice(0, 96);
+}
