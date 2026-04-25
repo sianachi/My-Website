@@ -1,5 +1,6 @@
 import type { VercelRequest, VercelResponse } from "@vercel/node";
-import { COVER } from "../src/shared/data/cover.js";
+import { getContentCollection } from "./_lib/mongo.js";
+import { CoverContentSchema } from "../src/shared/data/schemas.js";
 
 export default async function handler(
   req: VercelRequest,
@@ -10,9 +11,20 @@ export default async function handler(
     return res.status(405).json({ message: "Method Not Allowed" });
   }
 
+  const collection = await getContentCollection();
+  const doc = await collection.findOne(
+    { _id: "cover" },
+    { projection: { _id: 0 } },
+  );
+
+  if (!doc) {
+    return res.status(503).json({ message: "Content not seeded" });
+  }
+
+  const content = CoverContentSchema.parse(doc);
   res.setHeader(
     "Cache-Control",
     "public, s-maxage=3600, stale-while-revalidate=86400",
   );
-  return res.status(200).json(COVER);
+  return res.status(200).json(content);
 }
