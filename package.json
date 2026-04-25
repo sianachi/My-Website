@@ -11,6 +11,8 @@
     "content:seed": "bun run scripts/seed-content.ts"
   },
   "dependencies": {
+    "@simplewebauthn/browser": "^13.3.0",
+    "@simplewebauthn/server": "^13.3.0",
     "@vercel/blob": "^2.3.3",
     "@vercel/node": "^5.7.11",
     "mongodb": "^7.2.0",

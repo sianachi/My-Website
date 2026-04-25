@@ -10,6 +10,7 @@ import { useRoute } from "@/hooks/useRoute";
 import { useSiteContentFetch } from "@/hooks/useSiteContent";
 import { useSmoothAnchor } from "@/hooks/useSmoothAnchor";
 import { SiteContentProvider } from "@/lib/siteContent";
+import { AdminPage } from "@/pages/AdminPage";
 import { InteractivePortfolio } from "@/pages/InteractivePortfolio";
 import { About } from "@/sections/About";
 import { Contact } from "@/sections/Contact";
@@ -28,6 +29,10 @@ export function App() {
   } = usePalette();
   const route = useRoute();
   const { status, retry } = useSiteContentFetch();
+
+  if (route.path === "/core") {
+    return <AdminPage />;
+  }
 
   if (route.path === "/interactive") {
     return (

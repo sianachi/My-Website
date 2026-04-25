@@ -125,3 +125,62 @@ export const ContactContentSchema = z.object({
   interactiveLinkLabel: z.string(),
 });
 export type ContactContent = z.infer<typeof ContactContentSchema>;
+
+/* ---------- Admin / WebAuthn ---------- */
+
+export const PasskeyTransportSchema = z.enum([
+  "ble",
+  "cable",
+  "hybrid",
+  "internal",
+  "nfc",
+  "smart-card",
+  "usb",
+]);
+export type PasskeyTransport = z.infer<typeof PasskeyTransportSchema>;
+
+export const AdminCredentialSchema = z.object({
+  id: z.string(),
+  publicKey: z.string(),
+  counter: z.number().int().nonnegative(),
+  transports: z.array(PasskeyTransportSchema).optional(),
+  deviceType: z.enum(["singleDevice", "multiDevice"]).optional(),
+  backedUp: z.boolean().optional(),
+  createdAt: z.date(),
+  lastUsedAt: z.date().optional(),
+  label: z.string().optional(),
+});
+export type AdminCredential = z.infer<typeof AdminCredentialSchema>;
+
+export const AdminDocSchema = z.object({
+  _id: z.literal("admin"),
+  userHandle: z.string(),
+  credentials: z.array(AdminCredentialSchema).min(1),
+  createdAt: z.date(),
+});
+export type AdminDoc = z.infer<typeof AdminDocSchema>;
+
+export const ChallengeKindSchema = z.enum([
+  "register",
+  "login",
+  "add-credential",
+]);
+export type ChallengeKind = z.infer<typeof ChallengeKindSchema>;
+
+export const ChallengeDocSchema = z.object({
+  _id: z.string(),
+  kind: ChallengeKindSchema,
+  challenge: z.string(),
+  userHandle: z.string().optional(),
+  expiresAt: z.date(),
+});
+export type ChallengeDoc = z.infer<typeof ChallengeDocSchema>;
+
+export const SessionDocSchema = z.object({
+  _id: z.string(),
+  subject: z.literal("admin"),
+  createdAt: z.date(),
+  expiresAt: z.date(),
+  authStrength: z.enum(["passkey"]),
+});
+export type SessionDoc = z.infer<typeof SessionDocSchema>;
