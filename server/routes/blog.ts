@@ -1,8 +1,10 @@
 import { Router } from "express";
 import { getBlogPostsCollection, type BlogPostDoc } from "../lib/mongo.js";
+import { getObjectAsString } from "../lib/s3.js";
 import {
   BlogPostListItemSchema,
   BlogPostSchema,
+  blogContentKey,
 } from "../../src/shared/data/blog.js";
 
 const CACHE_HEADER = "public, s-maxage=3600, stale-while-revalidate=86400";
@@ -22,14 +24,21 @@ blogRouter.get("/", async (req, res) => {
       res.status(404).json({ message: "Not Found" });
       return;
     }
-    const post = BlogPostSchema.parse(toClient(doc));
+    const content = await getObjectAsString(
+      doc.s3ContentKey ?? blogContentKey(doc._id),
+    );
+    if (content === null) {
+      res.status(503).json({ message: "Post body missing" });
+      return;
+    }
+    const post = BlogPostSchema.parse({ ...toClient(doc), content });
     res.setHeader("Cache-Control", CACHE_HEADER);
     res.status(200).json(post);
     return;
   }
 
   const docs = await collection
-    .find({ status: "published" }, { projection: { content: 0 } })
+    .find({ status: "published" })
     .sort({ publishedAt: -1 })
     .toArray();
   const posts = docs.map((doc) => BlogPostListItemSchema.parse(toClient(doc)));
@@ -43,6 +52,6 @@ function readQuery(value: unknown): string | null {
 }
 
 function toClient(doc: Partial<BlogPostDoc> & { _id: string }) {
-  const { _id, ...rest } = doc;
+  const { _id, s3ContentKey: _key, ...rest } = doc;
   return { slug: _id, ...rest };
 }

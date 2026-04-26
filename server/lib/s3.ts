@@ -1,5 +1,9 @@
 import {
+  DeleteObjectCommand,
+  GetObjectCommand,
   HeadObjectCommand,
+  ListObjectsV2Command,
+  type ListObjectsV2CommandOutput,
   PutObjectCommand,
   S3Client,
 } from "@aws-sdk/client-s3";
@@ -80,6 +84,84 @@ export async function presignPutUrl(key: string, contentType: string, expiresSec
     ContentType: contentType,
   });
   return getSignedUrl(client, command, { expiresIn: expiresSeconds });
+}
+
+export async function putObject(
+  key: string,
+  body: string | Uint8Array,
+  contentType: string,
+): Promise<void> {
+  const client = getClient();
+  const bytes =
+    typeof body === "string" ? new TextEncoder().encode(body) : body;
+  await client.send(
+    new PutObjectCommand({
+      Bucket: getBucket(),
+      Key: key,
+      Body: bytes,
+      ContentType: contentType,
+      ContentLength: bytes.byteLength,
+    }),
+  );
+}
+
+export async function getObjectAsString(key: string): Promise<string | null> {
+  const client = getClient();
+  try {
+    const result = await client.send(
+      new GetObjectCommand({ Bucket: getBucket(), Key: key }),
+    );
+    if (!result.Body) return null;
+    return await result.Body.transformToString("utf-8");
+  } catch (err) {
+    const status =
+      typeof err === "object" && err !== null && "$metadata" in err
+        ? (err as { $metadata?: { httpStatusCode?: number } }).$metadata
+            ?.httpStatusCode
+        : undefined;
+    if (status === 404) return null;
+    throw err;
+  }
+}
+
+export async function deleteObject(key: string): Promise<void> {
+  const client = getClient();
+  await client.send(
+    new DeleteObjectCommand({ Bucket: getBucket(), Key: key }),
+  );
+}
+
+export type ListedObject = {
+  key: string;
+  size: number;
+  lastModified: string | null;
+};
+
+export async function listObjects(prefix: string): Promise<ListedObject[]> {
+  const client = getClient();
+  const out: ListedObject[] = [];
+  let continuationToken: string | undefined = undefined;
+  while (true) {
+    const result: ListObjectsV2CommandOutput = await client.send(
+      new ListObjectsV2Command({
+        Bucket: getBucket(),
+        Prefix: prefix,
+        ContinuationToken: continuationToken,
+      }),
+    );
+    for (const obj of result.Contents ?? []) {
+      if (!obj.Key) continue;
+      out.push({
+        key: obj.Key,
+        size: obj.Size ?? 0,
+        lastModified: obj.LastModified ? obj.LastModified.toISOString() : null,
+      });
+    }
+    if (!result.IsTruncated) break;
+    continuationToken = result.NextContinuationToken;
+    if (!continuationToken) break;
+  }
+  return out;
 }
 
 export async function objectExists(key: string): Promise<boolean> {

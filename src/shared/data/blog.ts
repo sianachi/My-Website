@@ -12,6 +12,10 @@ export const BlogSlugSchema = z
       "slug must be lowercase alphanumerics separated by single hyphens",
   });
 
+/**
+ * Full post returned by GET endpoints. `content` is **markdown source**;
+ * the client renders it via marked + DOMPurify.
+ */
 export const BlogPostSchema = z.object({
   slug: BlogSlugSchema,
   title: z.string().min(1).max(200),
@@ -78,4 +82,29 @@ export function slugify(input: string): string {
     .replace(/[^a-z0-9]+/g, "-")
     .replace(/^-+|-+$/g, "")
     .slice(0, 96);
+}
+
+/** S3 prefix for everything belonging to a single post: body + assets. */
+export function blogPrefix(slug: string): string {
+  return `blog/${slug}/`;
+}
+
+/** Where a post's markdown body lives in S3, keyed by slug. */
+export function blogContentKey(slug: string): string {
+  return `${blogPrefix(slug)}post.md`;
+}
+
+/** Reserved filename inside a post's folder — never user-managed. */
+export const BLOG_BODY_FILENAME = "post.md";
+
+/**
+ * Validate an uploaded asset filename. Accepts any single segment with
+ * letters, digits, dot, dash, or underscore. Rejects path traversal,
+ * slashes, and the reserved body filename.
+ */
+export function isSafeBlogFilename(name: string): boolean {
+  if (!name || name.length > 200) return false;
+  if (name === BLOG_BODY_FILENAME) return false;
+  if (name.includes("/") || name.includes("..")) return false;
+  return /^[a-zA-Z0-9._-]+$/.test(name);
 }

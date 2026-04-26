@@ -62,7 +62,14 @@ export async function getSessionCollection(): Promise<Collection<SessionDoc>> {
   return db.collection<SessionDoc>("auth_sessions");
 }
 
-export type BlogPostDoc = Omit<BlogPost, "slug"> & { _id: string };
+/**
+ * Mongo doc holds metadata only. The post body is markdown stored in S3 at
+ * `blogContentKey(slug)` — see src/shared/data/blog.ts.
+ */
+export type BlogPostDoc = Omit<BlogPost, "slug" | "content"> & {
+  _id: string;
+  s3ContentKey: string;
+};
 
 export async function getBlogPostsCollection(): Promise<
   Collection<BlogPostDoc>

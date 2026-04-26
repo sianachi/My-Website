@@ -58,7 +58,7 @@
 }
 
 .blog-page {
-  width: min(720px, 100%);
+  width: min(1080px, 100%);
   margin: 0 auto;
   padding: clamp(36px, 6vw, 72px) clamp(24px, 5vw, 48px) clamp(48px, 8vw, 96px);
 }
@@ -129,7 +129,7 @@
   line-height: 1.65;
   color: var(--ink-dim);
   margin: 0;
-  max-width: 56ch;
+  max-width: 72ch;
 }
 
 .blog-list__meta {
@@ -178,7 +178,7 @@
   line-height: 1.45;
   color: var(--ink-dim);
   margin: 0;
-  max-width: 48ch;
+  max-width: 60ch;
 }
 
 /* ---------- Prose (rendered markdown) ---------- */
@@ -187,8 +187,9 @@
   font-family: var(--type-mono, monospace);
   font-size: 14px;
   line-height: 1.75;
+  width: 100%;
   color: var(--ink);
-  max-width: 64ch;
+  max-width: 80ch;
 }
 
 .blog-prose > * + * {
@@ -199,6 +200,7 @@
   margin: 0;
 }
 
+.blog-prose h1,
 .blog-prose h2,
 .blog-prose h3,
 .blog-prose h4 {
@@ -206,6 +208,10 @@
   line-height: 1.2;
   color: var(--ink);
   margin: 36px 0 12px;
+}
+
+.blog-prose h1 {
+  font-size: clamp(30px, 4vw, 42px);
 }
 
 .blog-prose h2 {
@@ -280,13 +286,31 @@
 .blog-prose ol {
   padding-left: 24px;
   margin: 0;
-  display: flex;
-  flex-direction: column;
-  gap: 6px;
+}
+
+.blog-prose ul {
+  list-style: disc outside;
+}
+
+.blog-prose ol {
+  list-style: decimal outside;
+}
+
+.blog-prose li {
+  margin: 6px 0;
+}
+
+.blog-prose li::marker {
+  color: var(--accent);
 }
 
 .blog-prose li > p {
   margin: 0;
+}
+
+.blog-prose li > ul,
+.blog-prose li > ol {
+  margin-top: 6px;
 }
 
 .blog-prose hr {
@@ -301,6 +325,30 @@
   display: block;
   margin: 24px 0;
   border: 1px solid var(--ink-faint);
+}
+
+.blog-prose img[data-align="left"] {
+  float: left;
+  margin: 6px 24px 18px 0;
+  max-width: 60%;
+}
+
+.blog-prose img[data-align="right"] {
+  float: right;
+  margin: 6px 0 18px 24px;
+  max-width: 60%;
+}
+
+.blog-prose img[data-align="center"] {
+  display: block;
+  margin: 24px auto;
+}
+
+/* Float clears so floats don't bleed past their containing paragraph. */
+.blog-prose p::after {
+  content: "";
+  display: block;
+  clear: both;
 }
 
 .blog-prose table {
@@ -450,4 +498,349 @@
   min-height: 360px;
   max-height: 70vh;
   overflow: auto;
+}
+
+/* ---------- Tiptap rich-text editor ---------- */
+
+.core-rte {
+  border: 1px solid var(--ink-faint);
+  background: var(--bg);
+  display: flex;
+  flex-direction: column;
+  width: 100%;
+  min-height: 60vh;
+  box-sizing: border-box;
+}
+
+.core-rte--disabled {
+  opacity: 0.6;
+  pointer-events: none;
+}
+
+.core-rte:focus-within {
+  border-color: var(--accent);
+}
+
+.core-rte-toolbar {
+  position: sticky;
+  top: 0;
+  z-index: 5;
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: 4px;
+  padding: 6px 9px;
+  border-bottom: 1px solid var(--ink-faint);
+  background: var(--bg-2);
+}
+
+.core-rte-toolbar__sep {
+  width: 1px;
+  height: 18px;
+  background: var(--ink-faint);
+  margin: 0 4px;
+}
+
+.core-rte-toolbar__select {
+  font-family: var(--type-mono, ui-monospace, monospace);
+  font-size: 11px;
+  padding: 4px 6px;
+  border: 1px solid var(--ink-faint);
+  background: var(--bg);
+  color: var(--ink);
+  cursor: pointer;
+}
+
+.core-rte-toolbar__btn {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 28px;
+  height: 28px;
+  padding: 0 8px;
+  border: 1px solid transparent;
+  background: transparent;
+  color: var(--ink-dim);
+  font-size: 13px;
+  line-height: 1;
+  cursor: pointer;
+  transition: background 0.15s ease, color 0.15s ease, border-color 0.15s ease;
+}
+
+.core-rte-toolbar__btn:hover:not(:disabled) {
+  color: var(--ink);
+  border-color: var(--ink-faint);
+}
+
+.core-rte-toolbar__btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.core-rte-toolbar__btn--active {
+  color: var(--accent);
+  border-color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 10%, transparent);
+}
+
+/* Editor surface inherits .blog-prose typography from blog.css public styles
+   but expands to fill its parent rather than the 80ch reading column. */
+.core-rte-content {
+  flex: 1;
+  width: 100%;
+  max-width: none;
+  padding: clamp(18px, 3vw, 36px);
+  outline: none;
+  overflow: auto;
+  min-height: 50vh;
+  max-height: 75vh;
+  box-sizing: border-box;
+}
+
+/* Tiptap empty placeholder support — show a helpful prompt when the doc is
+   empty. ProseMirror toggles `is-editor-empty` via StarterKit's gapcursor. */
+.core-rte-content p.is-editor-empty:first-child::before {
+  content: attr(data-placeholder);
+  float: left;
+  color: var(--ink-faint);
+  pointer-events: none;
+  height: 0;
+}
+
+.core-rte-content img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* ---------- Resizable image node view (editor only) ---------- */
+
+.rt-img-wrap {
+  position: relative;
+  display: inline-block;
+  max-width: 100%;
+  line-height: 0;
+}
+
+.rt-img-wrap[data-align="left"] {
+  float: left;
+  margin: 6px 24px 18px 0;
+}
+
+.rt-img-wrap[data-align="right"] {
+  float: right;
+  margin: 6px 0 18px 24px;
+}
+
+.rt-img-wrap[data-align="center"] {
+  display: block;
+  margin: 24px auto;
+}
+
+.rt-img-wrap img {
+  display: block;
+  max-width: 100%;
+  height: auto;
+  border: 1px solid transparent;
+}
+
+.rt-img-wrap--selected img {
+  border-color: var(--accent);
+  box-shadow: 0 0 0 1px var(--accent);
+}
+
+.rt-img-handle {
+  position: absolute;
+  right: -4px;
+  bottom: -4px;
+  width: 12px;
+  height: 12px;
+  background: var(--accent);
+  border: 2px solid var(--bg);
+  border-radius: 1px;
+  cursor: nwse-resize;
+  opacity: 0;
+  transition: opacity 0.12s ease;
+}
+
+.rt-img-wrap:hover .rt-img-handle,
+.rt-img-wrap--selected .rt-img-handle {
+  opacity: 1;
+}
+
+.core-rte-toolbar__hint {
+  display: inline-flex;
+  align-items: center;
+  font-family: var(--type-mono, monospace);
+  font-size: 10px;
+  letter-spacing: 0.18em;
+  color: var(--accent);
+  padding: 0 6px;
+}
+
+.core-rte-content:focus {
+  outline: none;
+}
+
+/* ---------- Blog file explorer ---------- */
+
+.core-files {
+  border: 1px solid var(--ink-faint);
+  background: var(--bg-2);
+  padding: 18px;
+  display: flex;
+  flex-direction: column;
+  gap: 14px;
+  transition: border-color 0.15s ease, background-color 0.15s ease;
+}
+
+.core-files--drag {
+  border-color: var(--accent);
+  background: color-mix(in srgb, var(--accent) 8%, var(--bg-2));
+}
+
+.core-files--disabled {
+  opacity: 0.65;
+}
+
+.core-files__head {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: end;
+  gap: 12px;
+}
+
+.core-files__actions {
+  display: flex;
+  gap: 6px;
+}
+
+.core-btn--xs {
+  padding: 3px 9px;
+  font-size: 11px;
+}
+
+.core-files__list {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 6px;
+  max-height: 50vh;
+  overflow: auto;
+}
+
+.core-files__row {
+  display: grid;
+  grid-template-columns: minmax(0, 1fr) auto auto;
+  align-items: center;
+  gap: 12px;
+  padding: 6px 9px;
+  border: 1px solid transparent;
+  background: var(--bg);
+}
+
+.core-files__row:hover {
+  border-color: var(--ink-faint);
+}
+
+.core-files__name {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  min-width: 0;
+  background: none;
+  border: 0;
+  padding: 0;
+  cursor: pointer;
+  text-align: left;
+  font: inherit;
+  color: inherit;
+}
+
+.core-files__filename {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+  min-width: 0;
+  color: var(--ink);
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 12px;
+}
+
+.core-files__name:hover .core-files__filename {
+  color: var(--accent);
+}
+
+.core-files__thumb {
+  width: 30px;
+  height: 30px;
+  object-fit: cover;
+  border: 1px solid var(--ink-faint);
+  background: var(--bg-2);
+  flex-shrink: 0;
+}
+
+.core-files__icon {
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  width: 30px;
+  height: 30px;
+  border: 1px solid var(--ink-faint);
+  background: var(--bg-2);
+  font-size: 14px;
+  color: var(--ink-dim);
+  flex-shrink: 0;
+}
+
+.core-files__meta {
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 11px;
+  color: var(--ink-dim);
+  white-space: nowrap;
+}
+
+.core-files__row-actions {
+  display: flex;
+  gap: 6px;
+}
+
+.core-files__uploads {
+  list-style: none;
+  margin: 0;
+  padding: 0;
+  display: grid;
+  gap: 4px;
+}
+
+.core-files__upload {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 6px 9px;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 11px;
+  background: var(--bg);
+  border: 1px solid var(--ink-faint);
+}
+
+.core-files__upload--done {
+  border-color: var(--accent);
+  color: var(--accent);
+}
+
+.core-files__upload--error {
+  border-color: #c44a36;
+  color: #c44a36;
+}
+
+.core-files__upload-name {
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+
+.core-files__upload-progress,
+.core-files__upload-error {
+  flex-shrink: 0;
 }

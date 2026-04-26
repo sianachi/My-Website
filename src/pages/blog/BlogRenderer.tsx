@@ -1,14 +1,16 @@
+import { useMemo } from "react";
+import { renderMarkdown } from "@/lib/markdown";
+
 type Props = {
-  // HTML produced by the TinyMCE admin editor. Trusted because authoring
-  // is gated by the passkey-protected admin console.
-  html: string;
+  /** Markdown source authored in the admin editor. */
+  markdown: string;
 };
 
-export function BlogRenderer({ html }: Props) {
+export function BlogRenderer({ markdown }: Props) {
+  const html = useMemo(() => renderMarkdown(markdown), [markdown]);
   return (
     <div
       className="blog-prose"
-      // eslint-disable-next-line react/no-danger
       dangerouslySetInnerHTML={{ __html: html }}
     />
   );

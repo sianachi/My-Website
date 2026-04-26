@@ -75,10 +75,31 @@ export const blogApi = {
     ),
 };
 
+export type BlogFile = {
+  filename: string;
+  key: string;
+  size: number;
+  lastModified: string | null;
+  url: string;
+};
+
 export const adminBlogApi = {
   list: async (): Promise<AdminBlogList> => {
     const data = await adminFetch("/api/admin/blog", { method: "GET" });
     return AdminBlogListSchema.parse(data);
+  },
+  listFiles: async (slug: string): Promise<{ slug: string; files: BlogFile[] }> => {
+    const data = await adminFetch(
+      `/api/admin/blog/files?slug=${encodeURIComponent(slug)}`,
+      { method: "GET" },
+    );
+    return data as { slug: string; files: BlogFile[] };
+  },
+  deleteFile: async (slug: string, filename: string): Promise<void> => {
+    await adminFetch("/api/admin/blog/files/delete", {
+      method: "POST",
+      body: JSON.stringify({ slug, filename }),
+    });
   },
   get: async (slug: string): Promise<BlogPost> => {
     const data = await adminFetch(

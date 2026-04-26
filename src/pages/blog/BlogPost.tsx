@@ -85,7 +85,7 @@ export function BlogPost({ slug, navigate }: Props) {
                 <p className="blog-article__lede">{status.post.excerpt}</p>
               )}
             </header>
-            <BlogRenderer html={status.post.content} />
+            <BlogRenderer markdown={status.post.content} />
           </article>
         )}
       </main>
