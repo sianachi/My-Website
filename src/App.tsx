@@ -1,3 +1,4 @@
+import { Analytics } from "@vercel/analytics/react";
 import { MobileMenu } from "@/components/MobileMenu";
 import { Nav, NAV_ENTRIES } from "@/components/Nav";
 import { PageDivider, DIVIDERS } from "@/components/PageDivider";
@@ -10,6 +11,11 @@ import { useRoute } from "@/hooks/useRoute";
 import { useSiteContentFetch } from "@/hooks/useSiteContent";
 import { useSmoothAnchor } from "@/hooks/useSmoothAnchor";
 import { SiteContentProvider } from "@/lib/siteContent";
+import { AdminAwareProvider } from "@/lib/adminAware";
+import { EditStatusBar } from "@/components/EditStatusBar";
+import { AdminPage } from "@/pages/AdminPage";
+import { BlogIndex } from "@/pages/blog/BlogIndex";
+import { BlogPost } from "@/pages/blog/BlogPost";
 import { InteractivePortfolio } from "@/pages/InteractivePortfolio";
 import { About } from "@/sections/About";
 import { Contact } from "@/sections/Contact";
@@ -29,36 +35,64 @@ export function App() {
   const route = useRoute();
   const { status, retry } = useSiteContentFetch();
 
-  if (route.path === "/interactive") {
-    return (
-      <InteractivePortfolio
-        onBack={() => route.navigate("/")}
-        onThemeToggle={toggleTheme}
-      />
-    );
-  }
-
-  if (status.state === "loading") {
-    return <Splash />;
-  }
-
-  if (status.state === "error") {
-    return <ErrorScreen message={status.error.message} onRetry={retry} />;
-  }
+  const inIframe =
+    typeof window !== "undefined" && window.self !== window.top;
 
   return (
-    <SiteContentProvider value={status.content}>
-      <Home
-        palette={palette}
-        hasStoredPreference={hasStoredPreference}
-        onThemeToggle={toggleTheme}
-        onSelectPalette={setPalette}
-        onPreviewPalette={previewPalette}
-        onCommitPalette={commitPalette}
-        onOpenInteractive={() => route.navigate("/interactive")}
-      />
-    </SiteContentProvider>
+    <>
+      {renderRoute()}
+      {!inIframe && <Analytics />}
+    </>
   );
+
+  function renderRoute() {
+    if (route.path === "/core" || route.path.startsWith("/core/")) {
+      return <AdminPage path={route.path} navigate={route.navigate} />;
+    }
+
+    if (route.path === "/interactive") {
+      return (
+        <InteractivePortfolio
+          onBack={() => route.navigate("/")}
+          onThemeToggle={toggleTheme}
+        />
+      );
+    }
+
+    if (route.path === "/blog" || route.path === "/blog/") {
+      return <BlogIndex navigate={route.navigate} />;
+    }
+
+    if (route.path.startsWith("/blog/")) {
+      const slug = route.path.slice("/blog/".length).replace(/\/$/, "");
+      return <BlogPost slug={slug} navigate={route.navigate} />;
+    }
+
+    if (status.state === "loading") {
+      return <Splash />;
+    }
+
+    if (status.state === "error") {
+      return <ErrorScreen message={status.error.message} onRetry={retry} />;
+    }
+
+    return (
+      <AdminAwareProvider>
+        <SiteContentProvider initial={status.content}>
+          <Home
+            palette={palette}
+            hasStoredPreference={hasStoredPreference}
+            onThemeToggle={toggleTheme}
+            onSelectPalette={setPalette}
+            onPreviewPalette={previewPalette}
+            onCommitPalette={commitPalette}
+            onOpenInteractive={() => route.navigate("/interactive")}
+          />
+          <EditStatusBar />
+        </SiteContentProvider>
+      </AdminAwareProvider>
+    );
+  }
 }
 
 type HomeProps = {

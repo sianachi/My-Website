@@ -1,5 +1,9 @@
 @import "tailwindcss";
+@import "./theme.css";
 @import "./portfolio.css";
 @import "./intro.css";
 @import "./interactive.css";
 @import "./boot.css";
+@import "./admin.css";
+@import "./blog.css";
+@import "./editable.css";

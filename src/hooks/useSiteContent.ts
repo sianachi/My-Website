@@ -13,7 +13,7 @@ export function useSiteContentFetch() {
   useEffect(() => {
     const controller = new AbortController();
     setStatus({ state: "loading" });
-    fetchSiteContent(controller.signal).then(
+    fetchSiteContent({ signal: controller.signal }).then(
       (content) => setStatus({ state: "ready", content }),
       (err: unknown) => {
         if (controller.signal.aborted) return;

@@ -9,12 +9,18 @@ import {
   type WorkContent,
 } from "@/shared/data/schemas";
 
+type FetchOpts = { signal?: AbortSignal; bust?: boolean };
+
 async function getJson<T>(
   path: string,
   parse: (value: unknown) => T,
-  signal?: AbortSignal,
+  opts?: FetchOpts,
 ): Promise<T> {
-  const res = await fetch(path, { signal });
+  const url = opts?.bust ? `${path}?t=${Date.now()}` : path;
+  const res = await fetch(url, {
+    signal: opts?.signal,
+    cache: opts?.bust ? "no-store" : "default",
+  });
   if (!res.ok) {
     throw new Error(`${path} responded ${res.status}`);
   }
@@ -22,14 +28,14 @@ async function getJson<T>(
 }
 
 export const api = {
-  cover: (signal?: AbortSignal): Promise<CoverContent> =>
-    getJson("/api/cover", (v) => CoverContentSchema.parse(v), signal),
-  about: (signal?: AbortSignal): Promise<AboutContent> =>
-    getJson("/api/about", (v) => AboutContentSchema.parse(v), signal),
-  work: (signal?: AbortSignal): Promise<WorkContent> =>
-    getJson("/api/work", (v) => WorkContentSchema.parse(v), signal),
-  contact: (signal?: AbortSignal): Promise<ContactContent> =>
-    getJson("/api/contact", (v) => ContactContentSchema.parse(v), signal),
+  cover: (opts?: FetchOpts): Promise<CoverContent> =>
+    getJson("/api/cover", (v) => CoverContentSchema.parse(v), opts),
+  about: (opts?: FetchOpts): Promise<AboutContent> =>
+    getJson("/api/about", (v) => AboutContentSchema.parse(v), opts),
+  work: (opts?: FetchOpts): Promise<WorkContent> =>
+    getJson("/api/work", (v) => WorkContentSchema.parse(v), opts),
+  contact: (opts?: FetchOpts): Promise<ContactContent> =>
+    getJson("/api/contact", (v) => ContactContentSchema.parse(v), opts),
 };
 
 export type SiteContent = {
@@ -40,13 +46,13 @@ export type SiteContent = {
 };
 
 export async function fetchSiteContent(
-  signal?: AbortSignal,
+  opts?: FetchOpts,
 ): Promise<SiteContent> {
   const [cover, about, work, contact] = await Promise.all([
-    api.cover(signal),
-    api.about(signal),
-    api.work(signal),
-    api.contact(signal),
+    api.cover(opts),
+    api.about(opts),
+    api.work(opts),
+    api.contact(opts),
   ]);
   return { cover, about, work, contact };
 }

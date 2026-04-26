@@ -21,7 +21,7 @@ export function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
       onClick={handleClick}
     >
       <nav className="mm-inner" aria-label="Mobile navigation">
-        <div className="mm-eyebrow label-accent">
+        <div className="label label-accent mb-[clamp(18px,3vw,28px)]">
           § Navigation · Portfolio 2026
         </div>
         <ul className="mm-list">
@@ -33,6 +33,12 @@ export function MobileMenu({ isOpen, onClose }: MobileMenuProps) {
               </a>
             </li>
           ))}
+          <li>
+            <a href="/blog">
+              <span className="mm-no">05</span>
+              <span className="mm-name">Blog</span>
+            </a>
+          </li>
         </ul>
       </nav>
     </div>

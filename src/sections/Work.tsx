@@ -1,4 +1,4 @@
-import { Html } from "@/components/Html";
+import { EditableHtml, EditableText } from "@/components/Editable";
 import { PageBand } from "@/components/PageBand";
 import { WorkCard } from "@/components/WorkCard";
 import { useWorkContent } from "@/lib/siteContent";
@@ -9,27 +9,34 @@ export function Work() {
   return (
     <section
       id="work"
-      className="page projects page--plain"
+      className="page"
       data-label="03 Work"
     >
-      <PageBand kind="head" cells={WORK.pageHead} />
+      <PageBand
+        kind="head"
+        cells={WORK.pageHead}
+        editable={{ docId: "work", bandKey: "pageHead" }}
+      />
 
       <div className="page-body">
-        <div
-          className="label label-accent"
-          style={{ marginBottom: 18 }}
-        >
-          {WORK.introLabel}
-        </div>
-        <Html
+        <EditableText
+          as="div"
+          className="label label-accent mb-4.5"
+          docId="work"
+          path={["introLabel"]}
+          value={WORK.introLabel}
+        />
+        <EditableHtml
           as="h2"
-          style={{ maxWidth: "24ch" }}
+          className="h-display max-w-[24ch]"
+          docId="work"
+          path={["introHeading"]}
           html={WORK.introHeading}
         />
 
-        <div className="work-list">
-          {WORK.cards.map((card) => (
-            <WorkCard key={card.no} card={card} />
+        <div className="mt-[clamp(32px,4vw,56px)] grid gap-[clamp(36px,4vw,54px)]">
+          {WORK.cards.map((card, i) => (
+            <WorkCard key={i} card={card} index={i} />
           ))}
         </div>
       </div>
@@ -37,6 +44,7 @@ export function Work() {
       <PageBand
         kind="foot"
         cells={WORK.pageFoot}
+        editable={{ docId: "work", bandKey: "pageFoot" }}
         style={{ marginTop: 48 }}
         onAction={() => scrollToSection("contact")}
       />
