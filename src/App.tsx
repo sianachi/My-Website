@@ -11,6 +11,8 @@ import { useRoute } from "@/hooks/useRoute";
 import { useSiteContentFetch } from "@/hooks/useSiteContent";
 import { useSmoothAnchor } from "@/hooks/useSmoothAnchor";
 import { SiteContentProvider } from "@/lib/siteContent";
+import { AdminAwareProvider } from "@/lib/adminAware";
+import { EditStatusBar } from "@/components/EditStatusBar";
 import { AdminPage } from "@/pages/AdminPage";
 import { BlogIndex } from "@/pages/blog/BlogIndex";
 import { BlogPost } from "@/pages/blog/BlogPost";
@@ -75,17 +77,20 @@ export function App() {
     }
 
     return (
-      <SiteContentProvider value={status.content}>
-        <Home
-          palette={palette}
-          hasStoredPreference={hasStoredPreference}
-          onThemeToggle={toggleTheme}
-          onSelectPalette={setPalette}
-          onPreviewPalette={previewPalette}
-          onCommitPalette={commitPalette}
-          onOpenInteractive={() => route.navigate("/interactive")}
-        />
-      </SiteContentProvider>
+      <AdminAwareProvider>
+        <SiteContentProvider initial={status.content}>
+          <Home
+            palette={palette}
+            hasStoredPreference={hasStoredPreference}
+            onThemeToggle={toggleTheme}
+            onSelectPalette={setPalette}
+            onPreviewPalette={previewPalette}
+            onCommitPalette={commitPalette}
+            onOpenInteractive={() => route.navigate("/interactive")}
+          />
+          <EditStatusBar />
+        </SiteContentProvider>
+      </AdminAwareProvider>
     );
   }
 }

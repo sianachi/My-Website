@@ -1,0 +1,85 @@
+/* Public-page in-place editing (admin only).
+   .ed-target shows the click affordance; .ed-active is the live TinyMCE shell. */
+
+.ed-target {
+  position: relative;
+  cursor: text;
+  outline: 1px dashed transparent;
+  outline-offset: 3px;
+  transition: outline-color 120ms ease, background-color 120ms ease;
+  border-radius: 2px;
+}
+
+.ed-target:hover,
+.ed-target:focus-visible {
+  outline-color: var(--accent, #c44a36);
+}
+
+.ed-target--text:empty::before {
+  content: "—";
+  opacity: 0.4;
+}
+
+.ed-empty {
+  opacity: 0.4;
+}
+
+.ed-active {
+  outline: 1px solid var(--accent, #c44a36);
+  outline-offset: 3px;
+  border-radius: 2px;
+  min-width: 1ch;
+}
+
+.ed-active:focus,
+.ed-active:focus-visible {
+  outline-color: var(--accent, #c44a36);
+}
+
+/* Hide TinyMCE notification bar / promotion banners on inline editors */
+.tox-tinymce-aux .tox-promotion,
+.tox-tinymce-aux .tox-notifications-container {
+  display: none !important;
+}
+
+/* Floating save-status pill */
+.ed-status {
+  position: fixed;
+  bottom: 18px;
+  right: 18px;
+  z-index: 60;
+  font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+  font-size: 12px;
+  line-height: 1.5;
+  padding: 9px 12px;
+  border-radius: 3px;
+  border: 1px solid var(--rule, rgba(0, 0, 0, 0.15));
+  background: var(--bg, #fff);
+  color: var(--ink, #1a1a1a);
+  box-shadow: 0 6px 24px rgba(0, 0, 0, 0.18);
+  max-width: 360px;
+}
+
+.ed-status--saving {
+  border-color: var(--accent, #c44a36);
+}
+
+.ed-status--saved {
+  border-color: var(--accent, #c44a36);
+  color: var(--accent, #c44a36);
+}
+
+.ed-status--error {
+  border-color: #c44a36;
+  color: #c44a36;
+}
+
+.ed-status ul {
+  margin: 6px 0 0;
+  padding-left: 18px;
+}
+
+.ed-status code {
+  font-size: 11px;
+  opacity: 0.85;
+}

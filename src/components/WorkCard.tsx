@@ -1,22 +1,41 @@
 import { useState } from "react";
-import { Html } from "@/components/Html";
+import { EditableHtml, EditableText } from "@/components/Editable";
 import type { WorkCardData } from "@/shared/data/schemas";
 
 type WorkCardProps = {
   card: WorkCardData;
+  index: number;
 };
 
-export function WorkCard({ card }: WorkCardProps) {
+export function WorkCard({ card, index }: WorkCardProps) {
   const [expanded, setExpanded] = useState(false);
 
   return (
     <article className={`work-card${expanded ? " is-expanded" : ""}`}>
       <header className="wc-head">
         <div className="wc-no">{card.no}</div>
-        <div className="wc-year">{card.year}</div>
+        <EditableText
+          as="div"
+          className="wc-year"
+          docId="work"
+          path={["cards", index, "year"]}
+          value={card.year}
+        />
       </header>
-      <Html as="h3" className="wc-title" html={card.title} />
-      <p className="wc-lede">{card.lede}</p>
+      <EditableHtml
+        as="h3"
+        className="wc-title"
+        docId="work"
+        path={["cards", index, "title"]}
+        html={card.title}
+      />
+      <EditableText
+        as="p"
+        className="wc-lede"
+        docId="work"
+        path={["cards", index, "lede"]}
+        value={card.lede}
+      />
       <button
         title="Toggle expnanded view"
         name="toggle"
@@ -34,21 +53,43 @@ export function WorkCard({ card }: WorkCardProps) {
         </span>
       </button>
       <dl className="wc-meta">
-        {card.meta.map((row) => (
-          <div key={row.label}>
-            <dt>{row.label}</dt>
-            <dd>{row.value}</dd>
+        {card.meta.map((row, mi) => (
+          <div key={mi}>
+            <EditableText
+              as="dt"
+              docId="work"
+              path={["cards", index, "meta", mi, "label"]}
+              value={row.label}
+            />
+            <EditableText
+              as="dd"
+              docId="work"
+              path={["cards", index, "meta", mi, "value"]}
+              value={row.value}
+            />
           </div>
         ))}
       </dl>
       <div className="wc-notes">
-        {card.notes.map((n, i) => (
-          <p key={i}>{n}</p>
+        {card.notes.map((n, ni) => (
+          <EditableText
+            as="p"
+            key={ni}
+            docId="work"
+            path={["cards", index, "notes", ni]}
+            value={n}
+          />
         ))}
       </div>
       <ul className="wc-tags">
-        {card.tags.map((tag) => (
-          <li key={tag}>{tag}</li>
+        {card.tags.map((tag, ti) => (
+          <EditableText
+            as="li"
+            key={ti}
+            docId="work"
+            path={["cards", index, "tags", ti]}
+            value={tag}
+          />
         ))}
       </ul>
     </article>
