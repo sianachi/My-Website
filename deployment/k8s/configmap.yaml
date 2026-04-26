@@ -9,9 +9,12 @@ data:
   RP_NAME: "Osinachi"
   RP_ORIGIN: "https://osinachi.nwagboso.com"
 
-  # Server-side MinIO endpoint (in-cluster Service DNS). The browser never
-  # uses this — it uses S3_PUBLIC_URL above for presigned PUTs and reads.
-  S3_ENDPOINT: "http://minio.portfolio.svc.cluster.local:9000"
+  # Same endpoint for server and browser. Server-to-MinIO traffic now goes
+  # through Traefik (TLS adds negligible overhead at this scale) but, more
+  # importantly, presigned PUT URLs the server hands the browser are signed
+  # against this host — so they must point at a hostname the browser can
+  # reach. Using the in-cluster DNS name here would break browser uploads.
+  S3_ENDPOINT: "https://s3.osinachi.nwagboso.com"
   S3_BUCKET: "portfolio"
   S3_REGION: "us-east-1"
 
