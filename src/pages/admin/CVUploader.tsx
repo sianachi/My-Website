@@ -1,5 +1,5 @@
 import { useRef, useState } from "react";
-import { upload } from "@vercel/blob/client";
+import { presignAndUpload } from "@/lib/uploads";
 
 const CV_PATH = "cv/current.pdf";
 const MAX_BYTES = 10 * 1024 * 1024;
@@ -14,9 +14,9 @@ export function CVUploader() {
   const inputRef = useRef<HTMLInputElement | null>(null);
   const [file, setFile] = useState<File | null>(null);
   const [status, setStatus] = useState<Status>({ kind: "idle" });
+  const [dragging, setDragging] = useState(false);
 
-  const onPick = (event: React.ChangeEvent<HTMLInputElement>) => {
-    const picked = event.target.files?.[0] ?? null;
+  const accept = (picked: File | null | undefined) => {
     setStatus({ kind: "idle" });
     if (!picked) {
       setFile(null);
@@ -38,19 +38,50 @@ export function CVUploader() {
     setFile(picked);
   };
 
+  const onPick = (event: React.ChangeEvent<HTMLInputElement>) => {
+    accept(event.target.files?.[0] ?? null);
+  };
+
+  const onDrop = (event: React.DragEvent<HTMLDivElement>) => {
+    event.preventDefault();
+    setDragging(false);
+    if (uploading) return;
+    accept(event.dataTransfer.files?.[0] ?? null);
+  };
+
+  const onDragOver = (event: React.DragEvent<HTMLDivElement>) => {
+    event.preventDefault();
+    if (uploading) return;
+    setDragging(true);
+  };
+
+  const onDragLeave = () => setDragging(false);
+
+  const launch = () => {
+    if (uploading) return;
+    inputRef.current?.click();
+  };
+
+  const onZoneKeyDown = (event: React.KeyboardEvent<HTMLDivElement>) => {
+    if (event.key === "Enter" || event.key === " ") {
+      event.preventDefault();
+      launch();
+    }
+  };
+
   const send = async () => {
     if (!file) return;
     setStatus({ kind: "uploading", percent: 0 });
     try {
-      const result = await upload(CV_PATH, file, {
-        access: "public",
-        handleUploadUrl: "/api/admin/cv/upload-token",
+      const result = await presignAndUpload({
+        tokenUrl: "/api/admin/cv/upload-token",
+        file,
         contentType: "application/pdf",
-        onUploadProgress: ({ percentage }) => {
-          setStatus({ kind: "uploading", percent: percentage });
+        onProgress: (percent) => {
+          setStatus({ kind: "uploading", percent });
         },
       });
-      setStatus({ kind: "done", url: result.url, at: Date.now() });
+      setStatus({ kind: "done", url: result.publicUrl, at: Date.now() });
       setFile(null);
       if (inputRef.current) inputRef.current.value = "";
     } catch (err) {
@@ -60,6 +91,15 @@ export function CVUploader() {
   };
 
   const uploading = status.kind === "uploading";
+
+  const zoneClass = [
+    "core-dropzone",
+    dragging ? "core-dropzone--active" : "",
+    file ? "core-dropzone--filled" : "",
+    uploading ? "core-dropzone--disabled" : "",
+  ]
+    .filter(Boolean)
+    .join(" ");
 
   return (
     <section className="core-card" aria-labelledby="core-cv-heading">
@@ -72,19 +112,57 @@ export function CVUploader() {
         the latest version (CDN refresh ~60s).
       </p>
 
-      <label className="core-field">
+      <div className="core-field">
         <span className="core-field__label">PDF file</span>
+        <div
+          className={zoneClass}
+          role="button"
+          tabIndex={0}
+          aria-disabled={uploading}
+          onClick={launch}
+          onKeyDown={onZoneKeyDown}
+          onDragOver={onDragOver}
+          onDragLeave={onDragLeave}
+          onDrop={onDrop}
+        >
+          {file ? (
+            <>
+              <span className="core-dropzone__name">{file.name}</span>
+              <span className="core-dropzone__hint">
+                {(file.size / 1024 / 1024).toFixed(2)} MB · click or drop to replace
+              </span>
+            </>
+          ) : (
+            <>
+              <span className="core-dropzone__name">
+                {dragging ? "Drop the PDF" : "Drop a PDF here"}
+              </span>
+              <span className="core-dropzone__hint">
+                or click to browse · max {MAX_BYTES / 1024 / 1024}MB
+              </span>
+            </>
+          )}
+        </div>
         <input
           ref={inputRef}
           type="file"
           accept="application/pdf"
           onChange={onPick}
           disabled={uploading}
-          className="core-file"
+          className="core-file core-file--hidden"
+          tabIndex={-1}
         />
-      </label>
+      </div>
 
       <div className="core-actions">
+        <a
+          className="core-btn core-btn--ghost"
+          href="/api/cv"
+          target="_blank"
+          rel="noreferrer"
+        >
+          View current
+        </a>
         <button
           type="button"
           className="core-btn"

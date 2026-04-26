@@ -1,6 +1,6 @@
-import { Router, type Request } from "express";
-import { handleUpload, type HandleUploadBody } from "@vercel/blob/client";
+import { Router } from "express";
 import { getBlogPostsCollection, type BlogPostDoc } from "../../lib/mongo.js";
+import { presignPutUrl, publicUrl } from "../../lib/s3.js";
 import { requireAdmin } from "../../lib/session.js";
 import {
   AdminBlogListItemSchema,
@@ -15,48 +15,69 @@ export const adminBlogRouter = Router();
 
 const UPLOAD_PATH_PREFIX = "blog/images/";
 const UPLOAD_MAX_BYTES = 8 * 1024 * 1024;
-const UPLOAD_ALLOWED_TYPES = [
+const UPLOAD_ALLOWED_TYPES = new Set([
   "image/png",
   "image/jpeg",
   "image/webp",
   "image/gif",
   "image/svg+xml",
-];
+]);
+
+// Reject path-traversal and absolute paths. The browser-supplied pathname
+// must stay under blog/images/ — anything else is rejected.
+const SAFE_PATH = /^[a-zA-Z0-9._\-/]+$/;
 
 adminBlogRouter.post("/upload-token", async (req, res) => {
-  const body = (req.body ?? {}) as HandleUploadBody;
+  const session = await requireAdmin(req, res);
+  if (!session) return;
 
-  // Two body shapes hit this endpoint: a token request from the browser, and
-  // an upload-completion webhook from Vercel Blob. Only gate the first on
-  // requireAdmin — the webhook is authenticated by Blob's own signature.
-  if (body.type !== "blob.upload-completed") {
-    const session = await requireAdmin(req, res);
-    if (!session) return;
+  const body = (req.body ?? {}) as {
+    pathname?: unknown;
+    contentType?: unknown;
+    contentLength?: unknown;
+  };
+
+  if (
+    typeof body.pathname !== "string" ||
+    !body.pathname.startsWith(UPLOAD_PATH_PREFIX) ||
+    body.pathname.includes("..") ||
+    !SAFE_PATH.test(body.pathname)
+  ) {
+    res
+      .status(400)
+      .json({ error: `pathname must start with ${UPLOAD_PATH_PREFIX}` });
+    return;
+  }
+  if (
+    typeof body.contentType !== "string" ||
+    !UPLOAD_ALLOWED_TYPES.has(body.contentType)
+  ) {
+    res.status(400).json({ error: "unsupported_content_type" });
+    return;
+  }
+  if (
+    typeof body.contentLength !== "number" ||
+    !Number.isFinite(body.contentLength) ||
+    body.contentLength <= 0 ||
+    body.contentLength > UPLOAD_MAX_BYTES
+  ) {
+    res
+      .status(400)
+      .json({ error: `contentLength must be 1..${UPLOAD_MAX_BYTES} bytes` });
+    return;
   }
 
   try {
-    const result = await handleUpload({
-      body,
-      request: toRequest(req),
-      onBeforeGenerateToken: async (pathname) => {
-        if (!pathname.startsWith(UPLOAD_PATH_PREFIX)) {
-          throw new Error(`pathname must start with ${UPLOAD_PATH_PREFIX}`);
-        }
-        return {
-          allowedContentTypes: UPLOAD_ALLOWED_TYPES,
-          maximumSizeInBytes: UPLOAD_MAX_BYTES,
-          addRandomSuffix: false,
-          allowOverwrite: true,
-        };
-      },
-      onUploadCompleted: async () => {
-        // No-op: blog posts reference uploaded URLs directly via markdown.
-      },
+    const uploadUrl = await presignPutUrl(body.pathname, body.contentType, 60);
+    res.setHeader("Cache-Control", "no-store");
+    res.status(200).json({
+      uploadUrl,
+      publicUrl: publicUrl(body.pathname),
+      key: body.pathname,
     });
-    res.status(200).json(result);
   } catch (err) {
     const message = err instanceof Error ? err.message : String(err);
-    res.status(400).json({ error: message });
+    res.status(500).json({ error: message });
   }
 });
 
@@ -231,18 +252,4 @@ function readQuery(value: unknown): string | null {
 function toClient(doc: Partial<BlogPostDoc> & { _id: string }) {
   const { _id, ...rest } = doc;
   return { slug: _id, ...rest };
-}
-
-function toRequest(req: Request): globalThis.Request {
-  const headers = new Headers();
-  for (const [key, value] of Object.entries(req.headers)) {
-    if (typeof value === "string") headers.set(key, value);
-    else if (Array.isArray(value)) headers.set(key, value.join(", "));
-  }
-  const host = req.headers.host ?? "localhost";
-  const url = `http://${host}${req.originalUrl ?? "/"}`;
-  return new globalThis.Request(url, {
-    method: req.method ?? "POST",
-    headers,
-  });
 }

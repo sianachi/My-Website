@@ -1,5 +1,5 @@
 import { useEffect, useMemo, useRef, useState } from "react";
-import { upload } from "@vercel/blob/client";
+import { presignAndUpload } from "@/lib/uploads";
 import { Editor as TinyMCE } from "@tinymce/tinymce-react";
 import type { Editor as TinyMCEEditor } from "tinymce";
 
@@ -184,17 +184,14 @@ export function BlogEditor({ initialSlug, onClose, onCreated }: Props) {
           blobInfo.filename() || "image",
           file.type,
         );
-        const result = await upload(
-          `blog/images/${slugRef.current}/${safeName}`,
+        const result = await presignAndUpload({
+          tokenUrl: "/api/admin/blog/upload-token",
+          pathname: `blog/images/${slugRef.current}/${safeName}`,
           file,
-          {
-            access: "public",
-            handleUploadUrl: "/api/admin/blog/upload-token",
-            contentType: file.type || undefined,
-            onUploadProgress: ({ percentage }) => progress(percentage),
-          },
-        );
-        return result.url;
+          contentType: file.type || undefined,
+          onProgress: progress,
+        });
+        return result.publicUrl;
       },
     }),
     [],

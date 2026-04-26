@@ -18,6 +18,8 @@ export function WorkCard({ card }: WorkCardProps) {
       <Html as="h3" className="wc-title" html={card.title} />
       <p className="wc-lede">{card.lede}</p>
       <button
+        title="Toggle expnanded view"
+        name="toggle"
         type="button"
         className="wc-toggle"
         aria-expanded={expanded}
