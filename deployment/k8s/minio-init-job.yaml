@@ -1,0 +1,39 @@
+# Mirrors the minio-init service in docker-compose.yml: creates the bucket
+# and sets it to public-read. Idempotent. Jobs are immutable on re-apply, so
+# to re-run: kubectl delete job minio-init -n portfolio && kubectl apply -f .
+apiVersion: batch/v1
+kind: Job
+metadata:
+  name: minio-init
+  namespace: portfolio
+spec:
+  template:
+    spec:
+      restartPolicy: OnFailure
+      containers:
+        - name: mc
+          image: minio/mc:latest
+          env:
+            - name: MINIO_ROOT_USER
+              valueFrom:
+                secretKeyRef:
+                  name: minio-root
+                  key: username
+            - name: MINIO_ROOT_PASSWORD
+              valueFrom:
+                secretKeyRef:
+                  name: minio-root
+                  key: password
+            - name: MINIO_BUCKET
+              value: "portfolio"
+          command:
+            - /bin/sh
+            - -c
+            - |
+              until mc alias set local http://minio:9000 "$MINIO_ROOT_USER" "$MINIO_ROOT_PASSWORD" >/dev/null 2>&1; do
+                echo "waiting for minio..."
+                sleep 2
+              done
+              mc mb --ignore-existing "local/$MINIO_BUCKET"
+              mc anonymous set download "local/$MINIO_BUCKET"
+              echo "minio setup complete: bucket=$MINIO_BUCKET"
