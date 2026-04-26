@@ -70,27 +70,27 @@
 
 :root,
 [data-type="instrument"] {
-  --font-display: "Newsreader", "Georgia", serif;
-  --font-display-italic: "Newsreader", serif;
-  --font-mono:    "Fira Code", ui-monospace, monospace;
+  --type-display: "Newsreader", "Georgia", serif;
+  --type-display-italic: "Newsreader", serif;
+  --type-mono:    "Fira Code", ui-monospace, monospace;
   --display-weight: 400;
   --display-tracking: -0.015em;
   --display-leading: 1.0;
 }
 
 [data-type="bodoni"] {
-  --font-display: "Cormorant Garamond", "Georgia", serif;
-  --font-display-italic: "Cormorant Garamond", serif;
-  --font-mono:    "JetBrains Mono", ui-monospace, monospace;
+  --type-display: "Cormorant Garamond", "Georgia", serif;
+  --type-display-italic: "Cormorant Garamond", serif;
+  --type-mono:    "JetBrains Mono", ui-monospace, monospace;
   --display-weight: 400;
   --display-tracking: -0.01em;
   --display-leading: 0.98;
 }
 
 [data-type="dmserif"] {
-  --font-display: "Fraunces", "Georgia", serif;
-  --font-display-italic: "Fraunces", serif;
-  --font-mono:    "IBM Plex Mono", monospace;
+  --type-display: "Fraunces", "Georgia", serif;
+  --type-display-italic: "Fraunces", serif;
+  --type-mono:    "IBM Plex Mono", monospace;
   --display-weight: 400;
   --display-tracking: -0.025em;
   --display-leading: 0.9;
@@ -107,7 +107,7 @@ html {
 body {
   background: var(--bg);
   color: var(--ink);
-  font-family: var(--font-mono);
+  font-family: var(--type-mono);
   font-size: 14px;
   line-height: 1.55;
   -webkit-font-smoothing: antialiased;
@@ -120,47 +120,9 @@ img { max-width: 100%; display: block; }
 a { color: inherit; text-decoration: none; }
 button { font: inherit; color: inherit; background: none; border: 0; cursor: pointer; }
 
-/* ---------- TYPE PRIMITIVES ---------- */
-
-.label {
-  font-family: var(--font-mono);
-  font-size: 10.5px;
-  letter-spacing: .24em;
-  text-transform: uppercase;
-  color: var(--ink-dim);
-  font-weight: 400;
-}
-.label-faint { color: var(--ink-faint); }
-.label-accent { color: var(--accent); }
-
-.display {
-  font-family: var(--font-display);
-  font-weight: var(--display-weight);
-  letter-spacing: var(--display-tracking);
-  line-height: var(--display-leading);
-}
-.display-it { font-style: italic; }
-
-.lede {
-  font-family: var(--font-display);
-  font-style: italic;
-  font-size: 19px;
-  line-height: 1.45;
-  color: var(--ink);
-  letter-spacing: -0.005em;
-}
-
-/* ---------- LAYOUT ---------- */
-
-.page {
-  position: relative;
-  min-height: calc(100vh - var(--nav-h));
-  padding: clamp(32px, 5vw, 72px) clamp(28px, 5vw, 80px);
-  display: flex;
-  flex-direction: column;
-  border-bottom: 3px solid var(--rule);
-}
-.page.page--plain { border-bottom: none; }
+/* Type + layout primitives (.label, .lede, .display, .page,
+   .page-body, .page-head, .page-foot, .two-col, .three-col)
+   live as @utility rules in theme.css. */
 
 /* ---------- PAGE DIVIDERS (constellation) ---------- */
 .page-divider {
@@ -187,39 +149,6 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
   fill: var(--accent);
   filter: drop-shadow(0 0 6px var(--glow));
 }
-.page-head, .page-foot {
-  display: grid;
-  grid-template-columns: 1fr 1fr 1fr;
-  gap: 24px;
-  font-family: var(--font-mono);
-  font-size: 10.5px;
-  letter-spacing: .22em;
-  text-transform: uppercase;
-  color: var(--ink-faint);
-}
-.page-head > :nth-child(2), .page-foot > :nth-child(2) { text-align: center; }
-.page-head > :nth-child(3), .page-foot > :nth-child(3) { text-align: right; }
-
-.page-body {
-  flex: 1;
-  display: flex;
-  flex-direction: column;
-  justify-content: center;
-  padding: clamp(32px, 6vw, 80px) 0;
-}
-
-.two-col {
-  display: grid;
-  grid-template-columns: minmax(0, 1.2fr) minmax(0, 1fr);
-  gap: clamp(32px, 6vw, 88px);
-  align-items: start;
-}
-
-.three-col {
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0,1fr));
-  gap: clamp(24px, 3vw, 48px);
-}
 
 /* ---------- NAV ---------- */
 
@@ -231,7 +160,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
   justify-content: space-between;
   align-items: center;
   padding: 20px clamp(28px, 5vw, 80px);
-  font-family: var(--font-mono);
+  font-family: var(--type-mono);
   font-size: 10.5px;
   letter-spacing: .22em;
   text-transform: uppercase;
@@ -350,67 +279,6 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
     linear-gradient(180deg, var(--bg) 0%, var(--bg-2) 100%);
   overflow: hidden;
 }
-.cover-body {
-  max-width: 860px;
-  padding-top: clamp(60px, 10vh, 120px);
-}
-.cover-eyebrow {
-  display: flex;
-  align-items: center;
-  gap: 14px;
-  color: var(--accent);
-  margin-bottom: clamp(28px, 4vw, 48px);
-}
-.cover-eyebrow .dot {
-  width: 4px; height: 4px; background: var(--accent); border-radius: 50%;
-  opacity: .7;
-}
-.cover-eyebrow .chev { opacity: .5; margin-right: 4px; }
-
-.cover h1 {
-  margin: 0;
-  font-family: var(--font-display);
-  font-weight: var(--display-weight);
-  line-height: var(--display-leading);
-  letter-spacing: var(--display-tracking);
-  font-size: clamp(64px, 12vw, 172px);
-}
-.cover h1 .given { color: var(--accent); display: block; }
-.cover h1 .given em { font-style: italic; color: inherit; }
-.cover h1 .family {
-  color: var(--accent);
-  display: block;
-  margin-left: clamp(10px, 2vw, 40px);
-  margin-top: -.05em;
-}
-
-.cover-meta {
-  margin-top: clamp(36px, 5vw, 56px);
-  display: grid;
-  grid-template-columns: minmax(0, 1.1fr) minmax(0,.8fr);
-  gap: clamp(24px, 4vw, 64px);
-  align-items: baseline;
-  max-width: 720px;
-}
-.cover-meta .lede {
-  max-width: 42ch;
-}
-.cover-meta .lede em { font-style: italic; color: var(--accent); font-weight: 500; }
-
-.stack {
-  font-family: var(--font-mono);
-  font-size: 10.5px;
-  letter-spacing: .22em;
-  text-transform: uppercase;
-  color: var(--accent-2);
-  border-left: 3px solid var(--rule);
-  padding-left: 18px;
-  line-height: 1.9;
-  display: grid;
-  gap: 4px;
-}
-.stack > div { display: grid; grid-template-columns: 3em 1fr; align-items: baseline; gap: 12px; }
-.stack .tab { color: var(--ink-faint); }
 
 /* ---------- ORBITAL MOTIF ---------- */
 
@@ -488,71 +356,9 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
   .orbits .p-spin, .orbits .sun, .orbits .sun-halo { animation: none; }
 }
 
-/* ---------- PAGE: BIO / MANIFESTO ---------- */
-
-.bio h2, .type-page h2, .color-page h2, .projects h2, .contact h2, .logo-page h2, .grid-page h2 {
-  font-family: var(--font-display);
-  font-weight: var(--display-weight);
-  letter-spacing: var(--display-tracking);
-  line-height: 1.02;
-  font-size: clamp(48px, 7vw, 96px);
-  margin: 0 0 .6em;
-  color: var(--ink);
-  max-width: 14ch;
-  text-wrap: pretty;
-}
-.bio h2 em { color: var(--accent); font-style: italic; }
-
-.bio-lede {
-  font-family: var(--font-display);
-  font-style: italic;
-  font-size: clamp(22px, 2.4vw, 30px);
-  line-height: 1.35;
-  color: var(--ink);
-  max-width: 24ch;
-}
-.bio-body {
-  font-family: var(--font-mono);
-  font-size: 13px;
-  line-height: 1.75;
-  color: var(--ink-dim);
-  max-width: 48ch;
-}
-.bio-body p + p { margin-top: 1.1em; }
-.bio-body em { color: var(--ink); font-style: italic; font-family: var(--font-display); font-size: 1.05em; }
-
-.pillars {
-  margin-top: clamp(48px, 6vw, 80px);
-  display: grid;
-  grid-template-columns: repeat(3, minmax(0,1fr));
-  gap: clamp(27px, 3vw, 54px);
-  border-top: 3px solid var(--rule);
-  padding-top: clamp(36px, 4vw, 54px);
-}
-.pillar .no {
-  font-family: var(--font-mono);
-  color: var(--accent);
-  font-size: 10.5px;
-  letter-spacing: .22em;
-  margin-bottom: 10px;
-}
-.pillar h4 {
-  font-family: var(--font-display);
-  font-style: italic;
-  font-weight: 400;
-  font-size: clamp(22px, 2vw, 28px);
-  margin: 0 0 10px;
-  color: var(--ink);
-  line-height: 1.15;
-}
-.pillar p {
-  font-family: var(--font-mono);
-  font-size: 12px;
-  line-height: 1.7;
-  color: var(--ink-dim);
-  margin: 0;
-  max-width: 30ch;
-}
+/* About / bio — converted to inline utilities. The shared
+   .bio/.contact/.projects h2 heading lives as `h-display` in
+   theme.css; section-specific text/layout is inlined in TSX. */
 
 /* ---------- PAGE: LOGO / WORDMARK ---------- */
 
@@ -632,7 +438,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 .wordmark-frame .corner { display: none; }
 
 .wm-primary {
-  font-family: var(--font-display);
+  font-family: var(--type-display);
   font-weight: var(--display-weight);
   line-height: .95;
   letter-spacing: -0.02em;
@@ -667,7 +473,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 .wm-cell.invert .label { color: rgba(14,10,40,.55); }
 
 .wm-small {
-  font-family: var(--font-display);
+  font-family: var(--type-display);
   line-height: .95;
   font-size: clamp(32px, 3.2vw, 48px);
   margin-bottom: 12px;
@@ -677,7 +483,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 .wm-small .f { color: var(--accent); display: block; margin-top: -.08em; }
 
 .monogram {
-  font-family: var(--font-display);
+  font-family: var(--type-display);
   font-size: clamp(80px, 10vw, 144px);
   font-weight: var(--display-weight);
   color: var(--ink);
@@ -715,7 +521,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 .type-spec + .type-spec { /* same */ }
 .type-sidebar .label { margin-bottom: 10px; }
 .type-sidebar h5 {
-  font-family: var(--font-display);
+  font-family: var(--type-display);
   font-style: italic;
   font-weight: 400;
   color: var(--ink);
@@ -724,7 +530,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
   line-height: 1.1;
 }
 .type-sidebar p {
-  font-family: var(--font-mono);
+  font-family: var(--type-mono);
   font-size: 11.5px;
   line-height: 1.7;
   color: var(--ink-dim);
@@ -736,7 +542,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
   display: grid;
   grid-template-columns: auto 1fr;
   gap: 4px 16px;
-  font-family: var(--font-mono);
+  font-family: var(--type-mono);
   font-size: 10.5px;
   letter-spacing: .18em;
   text-transform: uppercase;
@@ -745,7 +551,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 .type-sidebar dd { margin: 0; color: var(--ink-dim); }
 
 .type-sample-display {
-  font-family: var(--font-display);
+  font-family: var(--type-display);
   font-weight: var(--display-weight);
   line-height: .9;
   letter-spacing: var(--display-tracking);
@@ -756,7 +562,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 .type-sample-display .alt { color: var(--accent); display: block; margin-top: -.05em;}
 
 .type-sample-body {
-  font-family: var(--font-display);
+  font-family: var(--type-display);
   font-style: italic;
   font-size: clamp(22px, 2vw, 28px);
   line-height: 1.35;
@@ -765,7 +571,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 }
 
 .type-sample-mono {
-  font-family: var(--font-mono);
+  font-family: var(--type-mono);
   font-size: 13px;
   line-height: 1.8;
   color: var(--ink-dim);
@@ -782,7 +588,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 }
 
 .glyphs {
-  font-family: var(--font-display);
+  font-family: var(--type-display);
   font-size: clamp(32px, 3vw, 48px);
   color: var(--ink-dim);
   display: flex;
@@ -807,7 +613,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 }
 .palette-head .label-accent { margin-bottom: 12px; }
 .palette-title {
-  font-family: var(--font-display);
+  font-family: var(--type-display);
   font-weight: var(--display-weight);
   font-size: clamp(24px, 2.4vw, 32px);
   line-height: 1.1;
@@ -815,7 +621,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 }
 .palette-title em { color: var(--accent); font-style: italic; }
 .palette-desc {
-  font-family: var(--font-mono);
+  font-family: var(--type-mono);
   font-size: 11px;
   letter-spacing: .1em;
   color: var(--ink-dim);
@@ -845,13 +651,13 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 .swatch:hover { transform: translateY(-3px); }
 .swatch .label { color: inherit; opacity: .7; }
 .swatch .name {
-  font-family: var(--font-display);
+  font-family: var(--type-display);
   font-style: italic;
   font-size: 22px;
   line-height: 1.05;
 }
 .swatch .hex {
-  font-family: var(--font-mono);
+  font-family: var(--type-mono);
   font-size: 10.5px;
   letter-spacing: .15em;
   opacity: .85;
@@ -866,7 +672,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
   border-top: 3px solid var(--rule);
 }
 .color-notes h5 {
-  font-family: var(--font-display);
+  font-family: var(--type-display);
   font-style: italic;
   font-weight: 400;
   color: var(--ink);
@@ -874,7 +680,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
   margin: 8px 0 10px;
 }
 .color-notes p {
-  font-family: var(--font-mono);
+  font-family: var(--type-mono);
   font-size: 12px;
   line-height: 1.7;
   color: var(--ink-dim);
@@ -905,13 +711,13 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 .project:hover { background: var(--bg-2); border-color: var(--accent); }
 .project:hover .p-title em { color: var(--accent); }
 .project .p-no {
-  font-family: var(--font-mono);
+  font-family: var(--type-mono);
   font-size: 10.5px;
   letter-spacing: .22em;
   color: var(--ink-faint);
 }
 .project .p-title {
-  font-family: var(--font-display);
+  font-family: var(--type-display);
   font-size: clamp(28px, 3vw, 40px);
   line-height: 1.05;
   color: var(--ink);
@@ -919,28 +725,28 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 }
 .project .p-title em { font-style: italic; color: var(--ink); transition: color .25s ease; }
 .project .p-desc {
-  font-family: var(--font-mono);
+  font-family: var(--type-mono);
   font-size: 12px;
   line-height: 1.6;
   color: var(--ink-dim);
   max-width: 34ch;
 }
 .project .p-tags {
-  font-family: var(--font-mono);
+  font-family: var(--type-mono);
   font-size: 10.5px;
   letter-spacing: .2em;
   text-transform: uppercase;
   color: var(--accent-2);
 }
 .project .p-year {
-  font-family: var(--font-mono);
+  font-family: var(--type-mono);
   font-size: 10.5px;
   letter-spacing: .22em;
   color: var(--ink-faint);
   text-align: right;
 }
 .project .p-cta {
-  font-family: var(--font-mono);
+  font-family: var(--type-mono);
   font-size: 10.5px;
   letter-spacing: .22em;
   color: var(--ink);
@@ -1014,7 +820,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
   border-top: 3px solid var(--rule);
 }
 .grid-rules h5 {
-  font-family: var(--font-display);
+  font-family: var(--type-display);
   font-style: italic;
   font-weight: 400;
   font-size: 20px;
@@ -1022,14 +828,14 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
   margin: 6px 0 6px;
 }
 .grid-rules p {
-  font-family: var(--font-mono);
+  font-family: var(--type-mono);
   font-size: 11.5px;
   line-height: 1.7;
   color: var(--ink-dim);
   margin: 0;
 }
 .grid-rules .big-num {
-  font-family: var(--font-display);
+  font-family: var(--type-display);
   font-style: italic;
   color: var(--accent);
   font-size: 44px;
@@ -1044,19 +850,6 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
     var(--bg);
 }
 
-.contact h2 {
-  max-width: 16ch;
-}
-.contact h2 em { color: var(--accent); font-style: italic; }
-
-.contact-grid {
-  margin-top: clamp(40px, 5vw, 64px);
-  display: grid;
-  grid-template-columns: 1.2fr 1fr;
-  gap: clamp(36px, 5vw, 72px);
-  padding-top: 36px;
-  border-top: 3px solid var(--rule);
-}
 .contact-list {
   display: grid;
   gap: 3px;
@@ -1077,14 +870,14 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 .contact-item:hover .ci-value { color: var(--accent); text-decoration: underline; text-decoration-thickness: 1.5px; text-underline-offset: 4px; }
 .contact-item .ci-value { text-decoration: underline; text-decoration-color: transparent; text-decoration-thickness: 1.5px; text-underline-offset: 4px; transition: color .25s ease, text-decoration-color .25s ease; }
 .ci-label {
-  font-family: var(--font-mono);
+  font-family: var(--type-mono);
   font-size: 10.5px;
   letter-spacing: .22em;
   text-transform: uppercase;
   color: var(--ink-faint);
 }
 .ci-value {
-  font-family: var(--font-display);
+  font-family: var(--type-display);
   font-style: italic;
   font-size: clamp(24px, 2.4vw, 32px);
   color: var(--ink);
@@ -1092,7 +885,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
   line-height: 1.1;
 }
 .ci-go {
-  font-family: var(--font-mono);
+  font-family: var(--type-mono);
   font-size: 10.5px;
   letter-spacing: .22em;
   color: var(--ink);
@@ -1121,33 +914,6 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 }
 .contact-item:hover .ci-go::after { transform: translateX(3px); }
 
-.signoff {
-  font-family: var(--font-display);
-  font-style: italic;
-  font-size: clamp(22px, 2vw, 26px);
-  line-height: 1.4;
-  color: var(--ink);
-  max-width: 24ch;
-}
-.signoff .sig {
-  display: block;
-  margin-top: 28px;
-  font-size: clamp(36px, 4vw, 56px);
-  color: var(--accent);
-  line-height: .9;
-}
-.colophon {
-  margin-top: 40px;
-  font-family: var(--font-mono);
-  font-size: 10.5px;
-  letter-spacing: .2em;
-  text-transform: uppercase;
-  color: var(--ink-faint);
-  line-height: 1.9;
-  padding-top: 27px;
-  border-top: 3px solid var(--rule);
-}
-
 /* ---------- TWEAKS PANEL ---------- */
 
 #tweaks {
@@ -1159,7 +925,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
   background: var(--bg-2);
   border: 1px solid var(--rule);
   padding: 18px 20px 20px;
-  font-family: var(--font-mono);
+  font-family: var(--type-mono);
   font-size: 11px;
   letter-spacing: .12em;
   text-transform: uppercase;
@@ -1169,7 +935,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 }
 #tweaks.open { display: block; }
 #tweaks h6 {
-  font-family: var(--font-display);
+  font-family: var(--type-display);
   font-style: italic;
   font-weight: 400;
   text-transform: none;
@@ -1209,34 +975,11 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 }
 #tweaks .tw-swatch.active { box-shadow: 0 0 0 1px var(--accent), 0 0 0 2px var(--bg-2); }
 
-/* ---------- STACK GRID (About page) ---------- */
-
-.stack-grid {
-  margin-top: clamp(48px, 6vw, 72px);
-  display: grid;
-  grid-template-columns: repeat(2, minmax(0, 1fr));
-  gap: clamp(27px, 3vw, 45px);
-  padding-top: clamp(27px, 3vw, 36px);
-  border-top: 3px solid var(--rule);
-}
-.stack-grid .label { margin-bottom: 10px; }
-.stack-line {
-  font-family: var(--font-display);
-  font-size: clamp(18px, 1.5vw, 22px);
-  color: var(--ink);
-  line-height: 1.4;
-  margin: 0;
-  max-width: 38ch;
-}
-.stack-line .faint { color: var(--ink-faint); font-style: italic; font-size: .85em; }
+/* About stack-grid — converted to inline utilities. The .faint
+   span is content-authored inside <Html>; styled in theme.css. */
 
 /* ---------- WORK CARDS (Portfolio) ---------- */
 
-.work-list {
-  margin-top: clamp(32px, 4vw, 56px);
-  display: grid;
-  gap: clamp(36px, 4vw, 54px);
-}
 .work-card {
   position: relative;
   padding: clamp(27px, 3vw, 45px);
@@ -1273,7 +1016,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
   justify-content: space-between;
   align-items: baseline;
   gap: 24px;
-  font-family: var(--font-mono);
+  font-family: var(--type-mono);
   font-size: 10.5px;
   letter-spacing: .22em;
   text-transform: uppercase;
@@ -1285,7 +1028,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 
 .work-card .wc-title {
   grid-column: 1 / -1;
-  font-family: var(--font-display);
+  font-family: var(--type-display);
   font-weight: var(--display-weight);
   letter-spacing: var(--display-tracking);
   line-height: 1.02;
@@ -1298,7 +1041,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 
 .work-card .wc-lede {
   grid-column: 1;
-  font-family: var(--font-display);
+  font-family: var(--type-display);
   font-style: italic;
   font-size: clamp(18px, 1.6vw, 22px);
   line-height: 1.4;
@@ -1325,7 +1068,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
   border-bottom: 1px dashed var(--rule);
 }
 .work-card .wc-meta dt {
-  font-family: var(--font-mono);
+  font-family: var(--type-mono);
   font-size: 10.5px;
   letter-spacing: .22em;
   text-transform: uppercase;
@@ -1333,7 +1076,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
   margin: 0;
 }
 .work-card .wc-meta dd {
-  font-family: var(--font-mono);
+  font-family: var(--type-mono);
   font-size: 12px;
   line-height: 1.6;
   color: var(--ink-dim);
@@ -1346,7 +1089,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
   padding-top: 18px;
 }
 .work-card .wc-notes p {
-  font-family: var(--font-mono);
+  font-family: var(--type-mono);
   font-size: 12.5px;
   line-height: 1.75;
   color: var(--ink-dim);
@@ -1357,7 +1100,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 .work-card .wc-notes em {
   color: var(--ink);
   font-style: italic;
-  font-family: var(--font-display);
+  font-family: var(--type-display);
   font-size: 1.05em;
 }
 
@@ -1372,7 +1115,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
   gap: 8px;
 }
 .work-card .wc-tags li {
-  font-family: var(--font-mono);
+  font-family: var(--type-mono);
   font-size: 10px;
   letter-spacing: .2em;
   text-transform: uppercase;
@@ -1395,7 +1138,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
   border-bottom: 1px solid var(--rule);
   background: transparent;
   color: var(--accent);
-  font-family: var(--font-mono);
+  font-family: var(--type-mono);
   font-size: 11px;
   letter-spacing: .22em;
   text-transform: uppercase;
@@ -1508,13 +1251,6 @@ body.menu-open { overflow: hidden; }
   max-width: 720px;
   margin: 0 auto;
 }
-.mm-eyebrow {
-  margin-bottom: clamp(18px, 3vw, 28px);
-  letter-spacing: .22em;
-  text-transform: uppercase;
-  font-family: var(--font-mono);
-  font-size: 10.5px;
-}
 .mm-list {
   list-style: none;
   padding: 0;
@@ -1531,7 +1267,7 @@ body.menu-open { overflow: hidden; }
   align-items: baseline;
   gap: clamp(18px, 4vw, 32px);
   padding: clamp(14px, 2.4vw, 22px) 6px;
-  font-family: var(--font-display);
+  font-family: var(--type-display);
   font-weight: var(--display-weight);
   font-size: clamp(40px, 10vw, 72px);
   line-height: .95;
@@ -1546,7 +1282,7 @@ body.menu-open { overflow: hidden; }
 }
 
 .mm-no {
-  font-family: var(--font-mono);
+  font-family: var(--type-mono);
   font-size: clamp(11px, 1.5vw, 14px);
   letter-spacing: .22em;
   color: var(--accent);
@@ -1563,7 +1299,7 @@ body.menu-open { overflow: hidden; }
   margin-top: clamp(32px, 6vw, 56px);
   padding-top: clamp(20px, 3vw, 32px);
   border-top: 3px solid var(--rule);
-  font-family: var(--font-mono);
+  font-family: var(--type-mono);
   font-size: 11px;
   letter-spacing: .2em;
   text-transform: uppercase;
@@ -1624,34 +1360,17 @@ body.menu-open .mm-list li:nth-child(8) { transition-delay: .38s; }
   [data-motif="high"] .orbits { opacity: .7; }
   [data-motif="low"]  .orbits { opacity: .35; }
 
-  .cover h1 { font-size: clamp(52px, 13vw, 88px); }
-  .cover h1 .family { margin-left: 0; }
-
-  .cover-eyebrow {
-    flex-wrap: wrap;
-    gap: 8px 14px;
-  }
-
-  .cover-body { padding-top: clamp(20px, 4vh, 48px); }
-
-  /* --- Page head / foot: stack on narrow viewports so labels don't truncate --- */
-  .page-head, .page-foot {
-    grid-template-columns: 1fr;
-    gap: 6px;
-  }
-  .page-head > :nth-child(2),
-  .page-foot > :nth-child(2) { display: none; }           /* hide middle · separator */
-  .page-head > :nth-child(3),
-  .page-foot > :nth-child(3) { text-align: left; }
-  .two-col, .three-col { grid-template-columns: 1fr; }
-  .cover-meta { grid-template-columns: 1fr; }
-  .pillars, .color-notes { grid-template-columns: 1fr; }
-  .contact-grid { grid-template-columns: 1fr; }
+  /* Cover h1, cover-eyebrow, cover-body, cover-meta mobile rules:
+     migrated to inline max-[900px]: utilities in Cover.tsx.
+     page-head/foot, two-col, three-col mobile rules: live in
+     @utility blocks in theme.css.
+     pillars, contact-grid, stack-grid mobile single-column:
+     migrated to inline utilities in About/Contact. */
+  .color-notes { grid-template-columns: 1fr; }
   .wm-grid { grid-template-columns: 1fr; }
   .type-spec { grid-template-columns: 1fr; }
   .grid-rules { grid-template-columns: repeat(2,1fr); }
   .nav-list { display: none; }
-  .stack-grid { grid-template-columns: 1fr; }
 
   /* Swatches — keep two columns but compress so they stay scannable */
   .swatches { grid-template-columns: repeat(2, 1fr); }
@@ -1707,8 +1426,6 @@ body.menu-open .mm-list li:nth-child(8) { transition-delay: .38s; }
   }
   .contact-item .ci-go { grid-area: cta; padding: 6px 12px; font-size: 10px; }
 
-  /* Colophon link in contact — unshrink readability */
-  .colophon { font-size: 10px; letter-spacing: .18em; }
   .work-card { grid-template-columns: 1fr; padding: clamp(22px, 5vw, 32px); }
   .work-card .wc-meta { grid-column: 1; grid-row: auto; }
   .work-card .wc-lede { grid-column: 1; }

@@ -10,12 +10,12 @@ const portfolioTheme = EditorView.theme({
   "&": {
     backgroundColor: "var(--bg-2)",
     color: "var(--ink)",
-    fontFamily: "var(--font-mono, monospace)",
+    fontFamily: "var(--type-mono, monospace)",
     fontSize: "12.5px",
     height: "100%",
   },
   ".cm-scroller": {
-    fontFamily: "var(--font-mono, monospace)",
+    fontFamily: "var(--type-mono, monospace)",
     lineHeight: "1.55",
     overflow: "auto",
   },
@@ -37,7 +37,7 @@ const portfolioTheme = EditorView.theme({
     border: "none",
     borderRight: "1px solid var(--ink-faint)",
     paddingRight: "4px",
-    fontFamily: "var(--font-mono, monospace)",
+    fontFamily: "var(--type-mono, monospace)",
   },
   ".cm-gutterElement": {
     color: "var(--ink-faint)",
@@ -76,7 +76,7 @@ const portfolioTheme = EditorView.theme({
     backgroundColor: "var(--bg-2)",
     border: "1px solid var(--ink-faint)",
     color: "var(--ink)",
-    fontFamily: "var(--font-mono, monospace)",
+    fontFamily: "var(--type-mono, monospace)",
     fontSize: "12px",
   },
   ".cm-panels": {
@@ -85,7 +85,7 @@ const portfolioTheme = EditorView.theme({
     borderTop: "1px solid var(--ink-faint)",
   },
   ".cm-panel input, .cm-panel button": {
-    fontFamily: "var(--font-mono, monospace)",
+    fontFamily: "var(--type-mono, monospace)",
     fontSize: "12px",
     color: "var(--ink)",
     backgroundColor: "transparent",

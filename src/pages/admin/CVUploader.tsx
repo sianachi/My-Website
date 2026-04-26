@@ -144,6 +144,7 @@ export function CVUploader() {
           )}
         </div>
         <input
+          title="CV PDF file input"
           ref={inputRef}
           type="file"
           accept="application/pdf"

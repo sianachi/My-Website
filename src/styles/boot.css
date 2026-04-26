@@ -45,14 +45,14 @@
   text-align: center;
 }
 .site-error-msg {
-  font-family: var(--font-mono);
+  font-family: var(--type-mono);
   font-size: 13px;
   color: var(--ink-dim);
   max-width: 48ch;
   margin: 0;
 }
 .site-error-retry {
-  font-family: var(--font-mono);
+  font-family: var(--type-mono);
   font-size: 11px;
   letter-spacing: .22em;
   text-transform: uppercase;

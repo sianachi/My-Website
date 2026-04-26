@@ -3,30 +3,25 @@ import { PageBand } from "@/components/PageBand";
 import { useContactContent } from "@/lib/siteContent";
 import { scrollToSection } from "@/lib/scroll";
 
-type ContactProps = {
-  onOpenInteractive: () => void;
-};
-
-export function Contact({ onOpenInteractive }: ContactProps) {
+export function Contact({ onOpenInteractive }: { onOpenInteractive: () => void }) {
   const CONTACT = useContactContent();
   return (
     <section
       id="contact"
-      className="page contact contact-page"
+      className="page contact-page border-b-[3px] border-rule"
       data-label="04 Contact"
     >
       <PageBand kind="head" cells={CONTACT.pageHead} />
 
       <div className="page-body">
-        <div
-          className="label label-accent"
-          style={{ marginBottom: 18 }}
-        >
-          {CONTACT.signalLabel}
-        </div>
-        <Html as="h2" html={CONTACT.heading} />
+        <div className="label label-accent mb-[18px]">{CONTACT.signalLabel}</div>
+        <Html
+          as="h2"
+          className="h-display max-w-[16ch]"
+          html={CONTACT.heading}
+        />
 
-        <div className="contact-grid">
+        <div className="mt-[clamp(40px,5vw,64px)] grid grid-cols-[1.2fr_1fr] max-[900px]:grid-cols-1 gap-[clamp(36px,5vw,72px)] pt-9 border-t-[3px] border-rule">
           <div className="contact-list">
             {CONTACT.links.map((link) => (
               <a
@@ -45,23 +40,15 @@ export function Contact({ onOpenInteractive }: ContactProps) {
           </div>
 
           <div>
-            <div
-              className="label label-accent"
-              style={{ marginBottom: 18 }}
-            >
-              {CONTACT.signoffLabel}
-            </div>
-            <p className="signoff">
+            <div className="label label-accent mb-[18px]">{CONTACT.signoffLabel}</div>
+            <p className="font-display italic text-[clamp(22px,2vw,26px)] leading-[1.4] text-ink max-w-[24ch]">
               {CONTACT.signoff}
-              <span
-                className="sig"
-                style={{ fontFamily: "var(--font-display)" }}
-              >
+              <span className="block mt-7 font-display text-[clamp(36px,4vw,56px)] text-accent leading-[0.9]">
                 {CONTACT.sig}
               </span>
             </p>
 
-            <div className="colophon">
+            <div className="mt-10 font-mono text-[10.5px] max-[900px]:text-[10px] tracking-[0.2em] max-[900px]:tracking-[0.18em] uppercase text-ink-faint leading-[1.9] pt-[27px] border-t-[3px] border-rule">
               {CONTACT.colophon.map((line) => (
                 <div key={line}>{line}</div>
               ))}

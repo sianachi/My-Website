@@ -9,25 +9,20 @@ export function Work() {
   return (
     <section
       id="work"
-      className="page projects page--plain"
+      className="page"
       data-label="03 Work"
     >
       <PageBand kind="head" cells={WORK.pageHead} />
 
       <div className="page-body">
-        <div
-          className="label label-accent"
-          style={{ marginBottom: 18 }}
-        >
-          {WORK.introLabel}
-        </div>
+        <div className="label label-accent mb-[18px]">{WORK.introLabel}</div>
         <Html
           as="h2"
-          style={{ maxWidth: "24ch" }}
+          className="h-display max-w-[24ch]"
           html={WORK.introHeading}
         />
 
-        <div className="work-list">
+        <div className="mt-[clamp(32px,4vw,56px)] grid gap-[clamp(36px,4vw,54px)]">
           {WORK.cards.map((card) => (
             <WorkCard key={card.no} card={card} />
           ))}

@@ -2,168 +2,11 @@
    ADMIN — passkey gate at /core. Palette-aware via tokens.
    ========================================================= */
 
-.core-shell {
-  position: fixed;
-  inset: 0;
-  display: flex;
-  align-items: center;
-  justify-content: center;
-  padding: clamp(24px, 4vw, 48px);
-  background: var(--bg);
-  color: var(--ink);
-}
-
-.core-shell--stack {
-  position: static;
-  inset: auto;
-  align-items: flex-start;
-  justify-content: center;
-  min-height: 100vh;
-}
-
-.core-stack {
-  display: flex;
-  flex-direction: column;
-  gap: 24px;
-  width: min(880px, 100%);
-}
-
-.core-card {
-  display: flex;
-  flex-direction: column;
-  gap: 18px;
-  width: min(440px, 100%);
-  padding: clamp(24px, 4vw, 36px);
-  border: 1px solid var(--ink-faint);
-  background: var(--bg);
-}
-
-.core-shell--stack .core-card {
-  width: 100%;
-}
-
-.core-card--wide {
-  width: 100%;
-}
-
-.core-heading {
-  font-family: var(--font-display, serif);
-  font-size: clamp(28px, 4vw, 40px);
-  line-height: 1.1;
-  margin: 0;
-  color: var(--ink);
-}
-
-.core-body {
-  font-family: var(--font-mono, monospace);
-  font-size: 13px;
-  line-height: 1.55;
-  color: var(--ink-dim);
-  margin: 0;
-}
-
-.core-meta {
-  font-family: var(--font-mono, monospace);
-  font-size: 11px;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  color: var(--ink-faint);
-  margin: 0;
-}
-
-.core-actions {
-  display: flex;
-  gap: 12px;
-  flex-wrap: wrap;
-}
-
-.core-btn {
-  font-family: var(--font-mono, monospace);
-  font-size: 11px;
-  letter-spacing: 0.22em;
-  text-transform: uppercase;
-  color: var(--bg);
-  background: var(--accent);
-  border: 2px solid var(--accent);
-  padding: 10px 18px;
-  cursor: pointer;
-  transition: background 0.25s ease, color 0.25s ease, transform 0.25s ease;
-}
-
-.core-btn:hover:not(:disabled),
-.core-btn:focus-visible:not(:disabled) {
-  background: transparent;
-  color: var(--accent);
-  outline: none;
-  transform: translateX(2px);
-}
-
-.core-btn:disabled {
-  cursor: progress;
-  opacity: 0.6;
-}
-
-.core-btn--ghost {
-  color: var(--ink-dim);
-  background: transparent;
-  border-color: var(--ink-faint);
-}
-
-.core-btn--ghost:hover:not(:disabled),
-.core-btn--ghost:focus-visible:not(:disabled) {
-  color: var(--ink);
-  border-color: var(--ink);
-  background: transparent;
-}
-
-.core-error {
-  font-family: var(--font-mono, monospace);
-  font-size: 12px;
-  color: var(--accent);
-  margin: 0;
-}
-
-.core-heading--sm {
-  font-size: clamp(22px, 3vw, 30px);
-}
-
-.core-tabs {
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0;
-  border-bottom: 1px solid var(--ink-faint);
-}
-
-.core-tab {
-  font-family: var(--font-mono, monospace);
-  font-size: 11px;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  color: var(--ink-dim);
-  background: transparent;
-  border: none;
-  border-bottom: 2px solid transparent;
-  padding: 10px 14px;
-  margin-bottom: -1px;
-  cursor: pointer;
-  transition: color 0.2s ease, border-color 0.2s ease;
-}
-
-.core-tab:hover:not(:disabled),
-.core-tab:focus-visible:not(:disabled) {
-  color: var(--ink);
-  outline: none;
-}
-
-.core-tab--active {
-  color: var(--ink);
-  border-bottom-color: var(--accent);
-}
-
-.core-tab:disabled {
-  cursor: not-allowed;
-  opacity: 0.5;
-}
+/* Shared admin primitives (core-shell, core-stack, core-card,
+   core-heading, core-body, core-meta, core-error, core-status,
+   core-actions, core-btn, core-tabs, core-tab, core-field, and
+   core-form-input/textarea/select/checkbox) live as @utility
+   rules in theme.css. */
 
 .core-editor {
   border: 1px solid var(--ink-faint);
@@ -186,22 +29,8 @@
   max-height: 70vh;
 }
 
-.core-field {
-  display: flex;
-  flex-direction: column;
-  gap: 8px;
-}
-
-.core-field__label {
-  font-family: var(--font-mono, monospace);
-  font-size: 11px;
-  letter-spacing: 0.18em;
-  text-transform: uppercase;
-  color: var(--ink-dim);
-}
-
 .core-file {
-  font-family: var(--font-mono, monospace);
+  font-family: var(--type-mono, monospace);
   font-size: 12px;
   color: var(--ink-dim);
 }
@@ -229,7 +58,7 @@
   border: 1px dashed var(--ink-dim);
   border-radius: 6px;
   background: transparent;
-  font-family: var(--font-mono, monospace);
+  font-family: var(--type-mono, monospace);
   font-size: 12px;
   color: var(--ink-dim);
   cursor: pointer;
@@ -271,18 +100,6 @@
   text-transform: uppercase;
 }
 
-.core-status {
-  font-family: var(--font-mono, monospace);
-  font-size: 12px;
-  color: var(--ink-dim);
-  margin: 0;
-}
-
-.core-status a {
-  color: var(--accent);
-  text-decoration: underline;
-}
-
 .core-error-block {
   display: flex;
   flex-direction: column;
@@ -290,7 +107,7 @@
 }
 
 .core-issue-list {
-  font-family: var(--font-mono, monospace);
+  font-family: var(--type-mono, monospace);
   font-size: 12px;
   color: var(--ink-dim);
   margin: 0;
@@ -357,7 +174,7 @@
 }
 
 .core-segment__btn {
-  font-family: var(--font-mono, monospace);
+  font-family: var(--type-mono, monospace);
   font-size: 11px;
   letter-spacing: 0.18em;
   text-transform: uppercase;
@@ -409,7 +226,7 @@
 }
 
 .core-form-legend {
-  font-family: var(--font-mono, monospace);
+  font-family: var(--type-mono, monospace);
   font-size: 11px;
   letter-spacing: 0.18em;
   text-transform: uppercase;
@@ -437,7 +254,7 @@
 }
 
 .core-form-field__label {
-  font-family: var(--font-mono, monospace);
+  font-family: var(--type-mono, monospace);
   font-size: 11px;
   letter-spacing: 0.18em;
   text-transform: uppercase;
@@ -452,42 +269,8 @@
   letter-spacing: 0.05em;
 }
 
-.core-form-input,
-.core-form-textarea,
-.core-form-select {
-  font-family: var(--font-mono, monospace);
-  font-size: 13px;
-  line-height: 1.55;
-  color: var(--ink);
-  background: var(--bg);
-  border: 1px solid var(--ink-faint);
-  padding: 9px 12px;
-  width: 100%;
-  box-sizing: border-box;
-  transition: border-color 0.15s ease;
-}
-
-.core-form-input:focus,
-.core-form-textarea:focus,
-.core-form-select:focus {
-  outline: none;
-  border-color: var(--accent);
-}
-
-.core-form-textarea {
-  resize: vertical;
-  min-height: 72px;
-}
-
-.core-form-checkbox {
-  width: 15px;
-  height: 15px;
-  accent-color: var(--accent);
-  cursor: pointer;
-}
-
 .core-form-literal {
-  font-family: var(--font-mono, monospace);
+  font-family: var(--type-mono, monospace);
   font-size: 12px;
   color: var(--ink-dim);
   background: var(--bg);
@@ -525,7 +308,7 @@
 }
 
 .core-form-array__index {
-  font-family: var(--font-mono, monospace);
+  font-family: var(--type-mono, monospace);
   font-size: 11px;
   letter-spacing: 0.18em;
   color: var(--ink-faint);
@@ -548,7 +331,7 @@
 }
 
 .core-form-optional__hint {
-  font-family: var(--font-mono, monospace);
+  font-family: var(--type-mono, monospace);
   font-size: 11px;
   color: var(--ink-faint);
   letter-spacing: 0.18em;
@@ -559,12 +342,6 @@
   margin-top: 9px;
   padding-left: 24px;
   border-left: 1px solid var(--ink-faint);
-}
-
-.core-btn--xs {
-  font-size: 10px;
-  letter-spacing: 0.18em;
-  padding: 6px 12px;
 }
 
 .core-form-error {
@@ -608,14 +385,14 @@
 }
 
 .core-modal__title {
-  font-family: var(--font-display, serif);
+  font-family: var(--type-display, serif);
   font-size: 21px;
   margin: 0;
   color: var(--ink);
 }
 
 .core-modal__path {
-  font-family: var(--font-mono, monospace);
+  font-family: var(--type-mono, monospace);
   font-size: 12px;
   color: var(--ink-faint);
   margin: 0;
@@ -639,7 +416,7 @@
 /* ---------- Selection tooltip (Edit as form button) ---------- */
 
 .core-tooltip-edit {
-  font-family: var(--font-mono, monospace);
+  font-family: var(--type-mono, monospace);
   font-size: 11px;
   letter-spacing: 0.18em;
   text-transform: uppercase;
@@ -696,7 +473,7 @@
 .launchpad__head {
   position: relative;
   z-index: 1;
-  width: min(720px, 100%);
+  width: min(1440px, 100%);
   text-align: left;
   display: flex;
   flex-direction: column;
@@ -717,7 +494,7 @@
 }
 
 .launchpad__title {
-  font-family: var(--font-display, serif);
+  font-family: var(--type-display, serif);
   font-size: clamp(36px, 6vw, 72px);
   line-height: 1.05;
   margin: 0;
@@ -731,7 +508,7 @@
 }
 
 .launchpad__sub {
-  font-family: var(--font-mono, monospace);
+  font-family: var(--type-mono, monospace);
   font-size: 13px;
   color: var(--ink-dim);
   margin: 0;
@@ -814,18 +591,18 @@
   font-size: 36px;
   line-height: 1;
   color: var(--accent);
-  font-family: var(--font-display, serif);
+  font-family: var(--type-display, serif);
 }
 
 .launchpad-tile__title {
-  font-family: var(--font-display, serif);
+  font-family: var(--type-display, serif);
   font-size: 24px;
   line-height: 1;
   color: var(--ink);
 }
 
 .launchpad-tile__tagline {
-  font-family: var(--font-mono, monospace);
+  font-family: var(--type-mono, monospace);
   font-size: 12px;
   color: var(--ink-dim);
   margin-top: auto;
@@ -843,7 +620,7 @@
 }
 
 .mission-bar__back {
-  font-family: var(--font-mono, monospace);
+  font-family: var(--type-mono, monospace);
   font-size: 11px;
   letter-spacing: 0.18em;
   text-transform: uppercase;
@@ -874,7 +651,7 @@
 }
 
 .mission-bar__subtitle {
-  font-family: var(--font-mono, monospace);
+  font-family: var(--type-mono, monospace);
   font-size: 12px;
   color: var(--ink-faint);
   margin: 0;
@@ -911,16 +688,18 @@
 }
 
 /* ---------- Diagonal corner brackets (TL + BR) ----------
-   Mirrors the public site's wordmark-frame / work-card treatment
-   (portfolio.css:559–632, :1251–1267). Accent-coloured so they
-   re-tint with the active palette. */
+   Mirrors the public site's wordmark-frame / work-card treatment.
+   Accent-coloured so they re-tint with the active palette. */
 
-.core-card,
 .launchpad-tile,
 .core-form-fieldset,
 .core-modal {
   position: relative;
 }
+
+/* core-card is positioned via @utility core-card itself — but the
+   ::before/::after rules below still need it, so add explicitly. */
+.core-card { position: relative; }
 
 .core-card::before,
 .core-card::after,
