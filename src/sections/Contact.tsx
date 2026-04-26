@@ -14,7 +14,7 @@ export function Contact({ onOpenInteractive }: { onOpenInteractive: () => void }
       <PageBand kind="head" cells={CONTACT.pageHead} />
 
       <div className="page-body">
-        <div className="label label-accent mb-[18px]">{CONTACT.signalLabel}</div>
+        <div className="label label-accent mb-4.5">{CONTACT.signalLabel}</div>
         <Html
           as="h2"
           className="h-display max-w-[16ch]"
@@ -40,7 +40,7 @@ export function Contact({ onOpenInteractive }: { onOpenInteractive: () => void }
           </div>
 
           <div>
-            <div className="label label-accent mb-[18px]">{CONTACT.signoffLabel}</div>
+            <div className="label label-accent mb-4.5">{CONTACT.signoffLabel}</div>
             <p className="font-display italic text-[clamp(22px,2vw,26px)] leading-[1.4] text-ink max-w-[24ch]">
               {CONTACT.signoff}
               <span className="block mt-7 font-display text-[clamp(36px,4vw,56px)] text-accent leading-[0.9]">
@@ -48,7 +48,7 @@ export function Contact({ onOpenInteractive }: { onOpenInteractive: () => void }
               </span>
             </p>
 
-            <div className="mt-10 font-mono text-[10.5px] max-[900px]:text-[10px] tracking-[0.2em] max-[900px]:tracking-[0.18em] uppercase text-ink-faint leading-[1.9] pt-[27px] border-t-[3px] border-rule">
+            <div className="mt-10 font-mono text-[10.5px] max-[900px]:text-[10px] tracking-[0.2em] max-[900px]:tracking-[0.18em] uppercase text-ink-faint leading-[1.9] pt-6.75 border-t-[3px] border-rule">
               {CONTACT.colophon.map((line) => (
                 <div key={line}>{line}</div>
               ))}

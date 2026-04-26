@@ -37,10 +37,10 @@ export function About() {
       <div className="mt-[clamp(48px,6vw,80px)] grid grid-cols-3 max-[900px]:grid-cols-1 gap-[clamp(27px,3vw,54px)] border-t-[3px] border-rule pt-[clamp(36px,4vw,54px)]">
         {ABOUT.pillars.map((p) => (
           <div key={p.no}>
-            <div className="font-mono text-accent text-[10.5px] tracking-[0.22em] mb-[10px]">
+            <div className="font-mono text-accent text-[10.5px] tracking-[0.22em] mb-2.5">
               {p.no}
             </div>
-            <h4 className="font-display italic font-normal text-[clamp(22px,2vw,28px)] m-0 mb-[10px] text-ink leading-[1.15]">
+            <h4 className="font-display italic font-normal text-[clamp(22px,2vw,28px)] m-0 mb-2.5 text-ink leading-[1.15]">
               {p.heading}
             </h4>
             <Html
@@ -55,7 +55,7 @@ export function About() {
       <div className="mt-[clamp(48px,6vw,72px)] grid grid-cols-2 max-[900px]:grid-cols-1 gap-[clamp(27px,3vw,45px)] pt-[clamp(27px,3vw,36px)] border-t-[3px] border-rule">
         {ABOUT.stack.map((s) => (
           <div key={s.label}>
-            <div className="label label-accent mb-[10px]">{s.label}</div>
+            <div className="label label-accent mb-2.5">{s.label}</div>
             <Html
               as="p"
               className="font-display text-[clamp(18px,1.5vw,22px)] text-ink leading-[1.4] m-0 max-w-[38ch]"

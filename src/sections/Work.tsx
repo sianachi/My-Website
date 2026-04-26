@@ -15,7 +15,7 @@ export function Work() {
       <PageBand kind="head" cells={WORK.pageHead} />
 
       <div className="page-body">
-        <div className="label label-accent mb-[18px]">{WORK.introLabel}</div>
+        <div className="label label-accent mb-4.5">{WORK.introLabel}</div>
         <Html
           as="h2"
           className="h-display max-w-[24ch]"

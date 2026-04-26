@@ -19,8 +19,8 @@ export function Cover() {
 
       <PageBand kind="head" cells={COVER.pageHead} />
 
-      <div className="page-body max-w-[860px] pt-[clamp(60px,10vh,120px)] max-[900px]:pt-[clamp(20px,4vh,48px)]">
-        <div className="flex items-center gap-[14px] max-[900px]:flex-wrap max-[900px]:gap-y-2 text-accent text-[13px] mb-[clamp(28px,4vw,48px)]">
+      <div className="page-body max-w-215 pt-[clamp(60px,10vh,120px)] max-[900px]:pt-[clamp(20px,4vh,48px)]">
+        <div className="flex items-center gap-3.5 max-[900px]:flex-wrap max-[900px]:gap-y-2 text-accent text-[13px] mb-[clamp(28px,4vw,48px)]">
           <span className="opacity-50 mr-1">‹</span>
           {COVER.eyebrow.map((chip, i) => (
             <Fragment key={chip}>
@@ -42,13 +42,13 @@ export function Cover() {
           </span>
         </h1>
 
-        <div className="mt-[clamp(36px,5vw,56px)] grid grid-cols-[minmax(0,1.1fr)_minmax(0,0.8fr)] max-[900px]:grid-cols-1 gap-[clamp(24px,4vw,64px)] items-baseline max-w-[720px]">
+        <div className="mt-[clamp(36px,5vw,56px)] grid grid-cols-[minmax(0,1.1fr)_minmax(0,0.8fr)] max-[900px]:grid-cols-1 gap-[clamp(24px,4vw,64px)] items-baseline max-w-180">
           <Html
             as="p"
             className="lede max-w-[42ch] [&_em]:italic [&_em]:text-accent [&_em]:font-medium"
             html={COVER.lede}
           />
-          <div className="grid gap-1 font-mono text-[10.5px] tracking-[0.22em] uppercase text-accent-2 leading-[1.9] border-l-[3px] border-rule pl-[18px]">
+          <div className="grid gap-1 font-mono text-[10.5px] tracking-[0.22em] uppercase text-accent-2 leading-[1.9] border-l-[3px] border-rule pl-4.5">
             {COVER.stack.map((row) => (
               <div
                 key={row.value}
