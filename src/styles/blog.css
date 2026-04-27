@@ -189,7 +189,6 @@
   line-height: 1.75;
   width: 100%;
   color: var(--ink);
-  max-width: 80ch;
 }
 
 .blog-prose > * + * {
