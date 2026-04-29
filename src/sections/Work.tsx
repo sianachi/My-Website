@@ -18,7 +18,7 @@ export function Work() {
       />
 
       <div className="page-body">
-        <div className="grid gap-[clamp(36px,4vw,54px)]">
+        <div className="grid gap-[clamp(24px,3vw,36px)]">
           {WORK.cards.map((card, i) => (
             <WorkCard key={i} card={card} index={i} />
           ))}
