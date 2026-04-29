@@ -56,12 +56,6 @@ export type CoverContent = z.infer<typeof CoverContentSchema>;
 
 /* ---------- About ---------- */
 
-export const PillarSchema = z.object({
-  no: z.string(),
-  heading: z.string(),
-  body: z.string(),
-});
-
 export const AboutStackEntrySchema = z.object({
   value: z.string(),
 });
@@ -69,14 +63,10 @@ export const AboutStackEntrySchema = z.object({
 export const AboutContentSchema = z.object({
   pageHead: PageBandSchema,
   pageFoot: PageBandSchema,
-  premise: z.object({
-    heading: z.string(),
-  }),
   bio: z.object({
     lede: z.string(),
     paragraphs: z.array(z.string()).min(1),
   }),
-  pillars: z.array(PillarSchema).min(1),
   stack: z.array(AboutStackEntrySchema).min(1),
 });
 export type AboutContent = z.infer<typeof AboutContentSchema>;
