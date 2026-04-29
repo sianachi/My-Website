@@ -175,6 +175,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
   position: relative;
   padding: 6px 16px;
   color: var(--ink-faint);
+  font-weight: 700;
   transition: color .25s ease;
   border-right: 1px solid rgba(255,255,255,.35);
 }
@@ -1128,9 +1129,10 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
   background: var(--bg);
 }
 
-/* Mobile-only disclosure button — hidden on desktop */
+/* Disclosure button — visible at every viewport. Cards default to
+   collapsed; clicking expands meta + notes inline. */
 .wc-toggle {
-  display: none;
+  display: flex;
   grid-column: 1 / -1;
   align-items: center;
   justify-content: space-between;
@@ -1149,6 +1151,34 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
   width: 100%;
   transition: color .2s ease, border-color .2s ease;
 }
+
+/* Default-collapsed state for meta + notes (any viewport) */
+.work-card .wc-meta,
+.work-card .wc-notes {
+  max-height: 0;
+  opacity: 0;
+  margin: 0;
+  padding-top: 0;
+  padding-bottom: 0;
+  border: 0;
+  overflow: hidden;
+  transition:
+    max-height .45s cubic-bezier(.45,0,.2,1),
+    opacity    .3s ease,
+    padding    .3s ease;
+}
+.work-card.is-expanded .wc-meta,
+.work-card.is-expanded .wc-notes {
+  max-height: 1600px;
+  opacity: 1;
+  padding-top: revert;
+  padding-bottom: revert;
+  transition:
+    max-height .55s cubic-bezier(.45,0,.2,1),
+    opacity    .4s ease .1s,
+    padding    .3s ease;
+}
+.work-card.is-expanded .wc-notes { border-top: 1px solid var(--rule); padding-top: 12px; }
 .wc-toggle:hover { color: var(--ink); border-color: var(--accent); }
 .wc-toggle-label::before { content: "§ Open full case study"; }
 .wc-toggle[aria-expanded="true"] .wc-toggle-label::before { content: "§ Close"; }
@@ -1435,35 +1465,4 @@ body.menu-open .mm-list li:nth-child(8) { transition-delay: .38s; }
   .work-card .wc-notes { grid-column: 1; }
   .work-card .wc-head { flex-wrap: wrap; }
   .work-card .wc-title { font-size: clamp(30px, 7vw, 44px); }
-
-  /* Show the disclosure button on mobile */
-  .wc-toggle { display: flex; }
-
-  /* Collapse meta + notes until the card is expanded */
-  .work-card .wc-meta,
-  .work-card .wc-notes {
-    max-height: 0;
-    opacity: 0;
-    margin: 0;
-    padding-top: 0;
-    padding-bottom: 0;
-    border: 0;
-    overflow: hidden;
-    transition:
-      max-height .45s cubic-bezier(.45,0,.2,1),
-      opacity    .3s ease,
-      padding    .3s ease;
-  }
-  .work-card.is-expanded .wc-meta,
-  .work-card.is-expanded .wc-notes {
-    max-height: 1600px;
-    opacity: 1;
-    padding-top: revert;
-    padding-bottom: revert;
-    transition:
-      max-height .55s cubic-bezier(.45,0,.2,1),
-      opacity    .4s ease .1s,
-      padding    .3s ease;
-  }
-  .work-card.is-expanded .wc-notes { border-top: 1px solid var(--rule); padding-top: 18px; }
 }
