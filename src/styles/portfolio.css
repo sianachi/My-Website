@@ -10,8 +10,8 @@
   --bg:        #0E0A28;
   --bg-2:      #15103A;
   --ink:       #E8E2FF;
-  --ink-dim:   #A9A1D6;
-  --ink-faint: #6E6896;
+  --ink-dim:   #E8E2FF;
+  --ink-faint: #E8E2FF;
   --rule:      #2A2252;
   --accent:    #E8C96A;    /* gold */
   --accent-2:  #B9A3FF;    /* lilac */
@@ -22,8 +22,8 @@
   --bg:        #1A0F0A;
   --bg-2:      #2A1A12;
   --ink:       #F5E9DC;
-  --ink-dim:   #C9A88C;
-  --ink-faint: #7E6550;
+  --ink-dim:   #F5E9DC;
+  --ink-faint: #F5E9DC;
   --rule:      #3A2418;
   --accent:    #E27A4F;    /* terracotta */
   --accent-2:  #F3C77A;    /* sand */
@@ -34,8 +34,8 @@
   --bg:        #0A1512;
   --bg-2:      #0F2420;
   --ink:       #E4EEE6;
-  --ink-dim:   #9EB8A7;
-  --ink-faint: #5F7A6C;
+  --ink-dim:   #E4EEE6;
+  --ink-faint: #E4EEE6;
   --rule:      #1C3A30;
   --accent:    #E8D37A;    /* chartreuse-gold */
   --accent-2:  #7DC9A7;    /* mint */
@@ -46,8 +46,8 @@
   --bg:        #EDE6D8;
   --bg-2:      #E3DAC7;
   --ink:       #1A1510;
-  --ink-dim:   #5E554A;
-  --ink-faint: #9A8F7E;
+  --ink-dim:   #1A1510;
+  --ink-faint: #1A1510;
   --rule:      #C7BCA4;
   --accent:    #B23A1D;    /* vermillion */
   --accent-2:  #2E4A6B;    /* steel */
@@ -58,8 +58,8 @@
   --bg:        #F6F2EB;    /* warm paper */
   --bg-2:      #ECE6DB;
   --ink:       #141230;    /* midnight ink */
-  --ink-dim:   #4A4672;
-  --ink-faint: #6B6690;    /* darkened for AA on paper */
+  --ink-dim:   #141230;
+  --ink-faint: #141230;
   --rule:      #CFC6B5;
   --accent:    #7A5A10;    /* deeper gold, AA on paper */
   --accent-2:  #5A4CC0;    /* lilac */
@@ -862,10 +862,10 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 .contact-item {
   background: var(--bg);
   display: grid;
-  grid-template-columns: 140px 1fr auto;
-  gap: 20px;
+  grid-template-columns: 120px 1fr auto;
+  gap: 18px;
   align-items: baseline;
-  padding: 20px clamp(14px, 1.8vw, 22px);
+  padding: 14px clamp(14px, 1.8vw, 22px);
   cursor: pointer;
   transition: background .25s ease, box-shadow .25s ease;
   box-shadow: inset 6px 0 0 var(--rule), inset -6px 0 0 var(--rule);
@@ -883,7 +883,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
 .ci-value {
   font-family: var(--type-display);
   font-style: italic;
-  font-size: clamp(24px, 2.4vw, 32px);
+  font-size: clamp(17px, 1.6vw, 22px);
   color: var(--ink);
   transition: color .25s ease;
   line-height: 1.1;
@@ -1037,7 +1037,7 @@ button { font: inherit; color: inherit; background: none; border: 0; cursor: poi
   letter-spacing: var(--display-tracking);
   line-height: 1.05;
   font-size: clamp(24px, 3vw, 38px);
-  color: var(--ink);
+  color: var(--accent);
   margin: 0;
   max-width: 22ch;
 }
