@@ -1,4 +1,3 @@
-import { EditableHtml } from "@/components/Editable";
 import { PageBand } from "@/components/PageBand";
 import { WorkCard } from "@/components/WorkCard";
 import { useWorkContent } from "@/lib/siteContent";
@@ -19,15 +18,7 @@ export function Work() {
       />
 
       <div className="page-body">
-        <EditableHtml
-          as="h2"
-          className="h-display max-w-[24ch]"
-          docId="work"
-          path={["introHeading"]}
-          html={WORK.introHeading}
-        />
-
-        <div className="mt-[clamp(32px,4vw,56px)] grid gap-[clamp(36px,4vw,54px)]">
+        <div className="grid gap-[clamp(36px,4vw,54px)]">
           {WORK.cards.map((card, i) => (
             <WorkCard key={i} card={card} index={i} />
           ))}

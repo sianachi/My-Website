@@ -93,7 +93,6 @@ export type WorkCardData = z.infer<typeof WorkCardSchema>;
 export const WorkContentSchema = z.object({
   pageHead: PageBandSchema,
   pageFoot: PageBandSchema,
-  introHeading: z.string(),
   cards: z.array(WorkCardSchema).min(1),
 });
 export type WorkContent = z.infer<typeof WorkContentSchema>;
