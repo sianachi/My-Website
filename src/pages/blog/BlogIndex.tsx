@@ -1,5 +1,6 @@
 import { useEffect, useState } from "react";
 import { ThemeToggle } from "@/components/ThemeToggle";
+import { useDocumentMeta } from "@/hooks/useDocumentMeta";
 import { usePalette } from "@/hooks/usePalette";
 import { blogApi } from "@/lib/blogApi";
 import type { BlogPostListItem } from "@/shared/data/blog";
@@ -16,6 +17,12 @@ type Props = {
 export function BlogIndex({ navigate }: Props) {
   const { toggle: toggleTheme } = usePalette();
   const [status, setStatus] = useState<Status>({ kind: "loading" });
+
+  useDocumentMeta({
+    title: "Field notes — Osinachi Nwagboso",
+    description:
+      "Writing on backend systems, edge infrastructure, and engineering practice.",
+  });
 
   useEffect(() => {
     const ac = new AbortController();

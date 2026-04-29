@@ -1,4 +1,5 @@
 import { useEffect, useState } from "react";
+import { useDocumentMeta } from "@/hooks/useDocumentMeta";
 import { usePalette } from "@/hooks/usePalette";
 import { blogApi } from "@/lib/blogApi";
 import { BlogHeader } from "@/pages/blog/BlogIndex";
@@ -19,6 +20,16 @@ type Props = {
 export function BlogPost({ slug, navigate }: Props) {
   const { toggle: toggleTheme } = usePalette();
   const [status, setStatus] = useState<Status>({ kind: "loading" });
+
+  const metaTitle =
+    status.kind === "ready"
+      ? `${status.post.title} — Osinachi Nwagboso`
+      : "Loading… — Osinachi Nwagboso";
+  const metaDescription =
+    status.kind === "ready" && status.post.excerpt
+      ? status.post.excerpt
+      : undefined;
+  useDocumentMeta({ title: metaTitle, description: metaDescription });
 
   useEffect(() => {
     const ac = new AbortController();
