@@ -160,6 +160,25 @@ export function ContentEditor() {
     setStatus({ kind: "ready" });
   };
 
+  const resetToDefault = async () => {
+    const confirmed = window.confirm(
+      `Reset ${active} to the default content shipped with the site? This overwrites the current saved content.`,
+    );
+    if (!confirmed) return;
+    setStatus({ kind: "saving" });
+    try {
+      const result = await adminApi.resetContent(active);
+      const formatted = JSON.stringify(result.data, null, 2);
+      cache.current[active] = formatted;
+      setText(formatted);
+      setOriginal(formatted);
+      setStatus({ kind: "saved", at: formatTime(new Date()) });
+    } catch (err) {
+      const message = err instanceof Error ? err.message : String(err);
+      setStatus({ kind: "saveError", message, issues: [] });
+    }
+  };
+
   const switchMode = (next: Mode) => {
     if (next === mode) return;
     if (next === "form") {
@@ -344,6 +363,15 @@ export function ContentEditor() {
               disabled={!dirty || status.kind === "saving"}
             >
               Discard
+            </button>
+            <button
+              type="button"
+              className="core-btn core-btn--ghost"
+              onClick={resetToDefault}
+              disabled={status.kind === "saving"}
+              title="Overwrite the current saved content with the default JSON shipped with the site"
+            >
+              Reset to default
             </button>
           </div>
 

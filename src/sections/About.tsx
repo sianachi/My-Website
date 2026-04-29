@@ -19,13 +19,6 @@ export function About() {
 
       <div className="page-body two-col">
         <div>
-          <EditableText
-            as="div"
-            className="label label-accent mb-5"
-            docId="about"
-            path={["premise", "label"]}
-            value={ABOUT.premise.label}
-          />
           <EditableHtml
             as="h2"
             className="h-display max-w-[14ch]"
@@ -81,13 +74,6 @@ export function About() {
       <div className="mt-[clamp(48px,6vw,72px)] grid grid-cols-2 max-[900px]:grid-cols-1 gap-[clamp(27px,3vw,45px)] pt-[clamp(27px,3vw,36px)] border-t-[3px] border-rule">
         {ABOUT.stack.map((s, i) => (
           <div key={i}>
-            <EditableText
-              as="div"
-              className="label label-accent mb-2.5"
-              docId="about"
-              path={["stack", i, "label"]}
-              value={s.label}
-            />
             <EditableHtml
               as="p"
               className="font-display text-[clamp(18px,1.5vw,22px)] text-ink leading-[1.4] m-0 max-w-[38ch]"

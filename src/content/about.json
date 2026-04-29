@@ -2,7 +2,6 @@
   "pageHead": ["02 — About", "·", "The work & the posture"],
   "pageFoot": ["↓\u00a0 Selected work", "", "02 / 04"],
   "premise": {
-    "label": "§ 02.1 — Premise",
     "heading": "Legible systems <em>beat</em> clever ones."
   },
   "bio": {
@@ -32,19 +31,18 @@
   ],
   "stack": [
     {
-      "label": "§ 02.2 — Languages",
+      "value": "MSc Computer Science, Coventry <span class=\"faint\">(Distinction)</span> · BEng Computer Science, Anglia Ruskin <span class=\"faint\">(First Class Hons)</span>"
+    },
+    {
       "value": "C# · TypeScript · Python · Go <span class=\"faint\">(learning)</span>"
     },
     {
-      "label": "§ 02.3 — Platforms",
       "value": "Azure · AWS · Docker · Kubernetes <span class=\"faint\">(basics)</span>"
     },
     {
-      "label": "§ 02.4 — Practices",
       "value": "REPR · Vertical slice · TDD · Observability-first"
     },
     {
-      "label": "§ 02.5 — Adjacent",
       "value": "React · FastAPI · Terraform · Ansible · Playwright"
     }
   ]

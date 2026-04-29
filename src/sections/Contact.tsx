@@ -18,13 +18,6 @@ export function Contact({ onOpenInteractive }: { onOpenInteractive: () => void }
       />
 
       <div className="page-body">
-        <EditableText
-          as="div"
-          className="label label-accent mb-4.5"
-          docId="contact"
-          path={["signalLabel"]}
-          value={CONTACT.signalLabel}
-        />
         <EditableHtml
           as="h2"
           className="h-display max-w-[16ch]"
@@ -70,13 +63,6 @@ export function Contact({ onOpenInteractive }: { onOpenInteractive: () => void }
           </div>
 
           <div>
-            <EditableText
-              as="div"
-              className="label label-accent mb-4.5"
-              docId="contact"
-              path={["signoffLabel"]}
-              value={CONTACT.signoffLabel}
-            />
             <p className="font-display italic text-[clamp(22px,2vw,26px)] leading-[1.4] text-ink max-w-[24ch]">
               <EditableText
                 docId="contact"

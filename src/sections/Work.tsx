@@ -1,4 +1,4 @@
-import { EditableHtml, EditableText } from "@/components/Editable";
+import { EditableHtml } from "@/components/Editable";
 import { PageBand } from "@/components/PageBand";
 import { WorkCard } from "@/components/WorkCard";
 import { useWorkContent } from "@/lib/siteContent";
@@ -19,13 +19,6 @@ export function Work() {
       />
 
       <div className="page-body">
-        <EditableText
-          as="div"
-          className="label label-accent mb-4.5"
-          docId="work"
-          path={["introLabel"]}
-          value={WORK.introLabel}
-        />
         <EditableHtml
           as="h2"
           className="h-display max-w-[24ch]"

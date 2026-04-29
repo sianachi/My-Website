@@ -63,7 +63,6 @@ export const PillarSchema = z.object({
 });
 
 export const AboutStackEntrySchema = z.object({
-  label: z.string(),
   value: z.string(),
 });
 
@@ -71,7 +70,6 @@ export const AboutContentSchema = z.object({
   pageHead: PageBandSchema,
   pageFoot: PageBandSchema,
   premise: z.object({
-    label: z.string(),
     heading: z.string(),
   }),
   bio: z.object({
@@ -104,7 +102,6 @@ export type WorkCardData = z.infer<typeof WorkCardSchema>;
 export const WorkContentSchema = z.object({
   pageHead: PageBandSchema,
   pageFoot: PageBandSchema,
-  introLabel: z.string(),
   introHeading: z.string(),
   cards: z.array(WorkCardSchema).min(1),
 });
@@ -124,9 +121,7 @@ export type ContactLink = z.infer<typeof ContactLinkSchema>;
 export const ContactContentSchema = z.object({
   pageHead: PageBandSchema,
   pageFoot: PageBandSchema,
-  signalLabel: z.string(),
   heading: z.string(),
-  signoffLabel: z.string(),
   signoff: z.string(),
   sig: z.string(),
   links: z.array(ContactLinkSchema).min(1),
