@@ -111,7 +111,6 @@ export type ContactLink = z.infer<typeof ContactLinkSchema>;
 export const ContactContentSchema = z.object({
   pageHead: PageBandSchema,
   pageFoot: PageBandSchema,
-  heading: z.string(),
   signoff: z.string(),
   sig: z.string(),
   links: z.array(ContactLinkSchema).min(1),
