@@ -56,7 +56,7 @@ export type CoverContent = z.infer<typeof CoverContentSchema>;
 
 /* ---------- About ---------- */
 
-export const AboutStackEntrySchema = z.object({
+export const AboutListEntrySchema = z.object({
   value: z.string(),
 });
 
@@ -67,7 +67,8 @@ export const AboutContentSchema = z.object({
     lede: z.string(),
     paragraphs: z.array(z.string()).min(1),
   }),
-  stack: z.array(AboutStackEntrySchema).min(1),
+  education: z.array(AboutListEntrySchema).min(1),
+  skills: z.array(AboutListEntrySchema).min(1),
 });
 export type AboutContent = z.infer<typeof AboutContentSchema>;
 

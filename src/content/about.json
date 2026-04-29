@@ -9,10 +9,15 @@
       "Based in Birmingham, UK."
     ]
   },
-  "stack": [
+  "education": [
     {
-      "value": "MSc Computer Science, Coventry <span class=\"faint\">(Distinction)</span> · BEng Computer Science, Anglia Ruskin <span class=\"faint\">(First Class Hons)</span>"
+      "value": "MSc Computer Science, Coventry <span class=\"faint\">(Distinction)</span>"
     },
+    {
+      "value": "BEng Computer Science, Anglia Ruskin <span class=\"faint\">(First Class Hons)</span>"
+    }
+  ],
+  "skills": [
     {
       "value": "C# · TypeScript · Python · Go <span class=\"faint\">(learning)</span>"
     },

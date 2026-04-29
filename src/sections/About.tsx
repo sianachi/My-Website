@@ -38,18 +38,42 @@ export function About() {
         </div>
       </div>
 
-      <div className="mt-[clamp(48px,6vw,72px)] grid grid-cols-2 max-[900px]:grid-cols-1 gap-[clamp(27px,3vw,45px)] pt-[clamp(27px,3vw,36px)] border-t-[3px] border-rule">
-        {ABOUT.stack.map((s, i) => (
-          <div key={i}>
-            <EditableHtml
-              as="p"
-              className="font-display text-[clamp(18px,1.5vw,22px)] text-ink leading-[1.4] m-0 max-w-[38ch]"
-              docId="about"
-              path={["stack", i, "value"]}
-              html={s.value}
-            />
-          </div>
-        ))}
+      <div className="mt-[clamp(48px,6vw,72px)] pt-[clamp(27px,3vw,36px)] border-t-[3px] border-rule">
+        <p className="font-mono text-accent text-[10.5px] tracking-[0.22em] mb-6">
+          Education
+        </p>
+        <div className="grid grid-cols-2 max-[900px]:grid-cols-1 gap-[clamp(27px,3vw,45px)]">
+          {ABOUT.education.map((s, i) => (
+            <div key={i}>
+              <EditableHtml
+                as="p"
+                className="font-display text-[clamp(18px,1.5vw,22px)] text-ink leading-[1.4] m-0 max-w-[38ch]"
+                docId="about"
+                path={["education", i, "value"]}
+                html={s.value}
+              />
+            </div>
+          ))}
+        </div>
+      </div>
+
+      <div className="mt-[clamp(36px,4vw,54px)] pt-[clamp(27px,3vw,36px)] border-t-[3px] border-rule">
+        <p className="font-mono text-accent text-[10.5px] tracking-[0.22em] mb-6">
+          Skills
+        </p>
+        <div className="grid grid-cols-2 max-[900px]:grid-cols-1 gap-[clamp(27px,3vw,45px)]">
+          {ABOUT.skills.map((s, i) => (
+            <div key={i}>
+              <EditableHtml
+                as="p"
+                className="font-display text-[clamp(18px,1.5vw,22px)] text-ink leading-[1.4] m-0 max-w-[38ch]"
+                docId="about"
+                path={["skills", i, "value"]}
+                html={s.value}
+              />
+            </div>
+          ))}
+        </div>
       </div>
 
       <PageBand
