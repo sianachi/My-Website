@@ -21,6 +21,7 @@ RUN bun install --frozen-lockfile --production
 COPY --from=build /app/dist ./dist
 COPY server ./server
 COPY src/shared ./src/shared
+COPY src/content ./src/content
 
 EXPOSE 3001
 CMD ["bun", "run", "server/index.ts"]
