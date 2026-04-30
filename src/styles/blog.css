@@ -494,25 +494,6 @@
   margin: 0;
 }
 
-/* Drop cap — applied via JS to the first <p> only when it leads the article.
-   Wraps the first grapheme in a span so we control sizing without relying on
-   the unreliable ::first-letter pseudo (which skips after images, headings,
-   and inline anchors). */
-.blog-prose__dropcap {
-  float: left;
-  font-family: var(--type-display, serif);
-  font-style: italic;
-  font-weight: 400;
-  font-size: clamp(56px, 8vw, 84px);
-  line-height: 0.9;
-  color: var(--accent);
-  margin: 6px 12px -3px 0;
-  padding: 3px 3px 0 0;
-  text-transform: uppercase;
-  /* Visual anchor: thin underline beneath the cap, like a printed flourish. */
-  border-bottom: 1px solid var(--ink-faint);
-}
-
 .blog-prose h1,
 .blog-prose h2,
 .blog-prose h3,
