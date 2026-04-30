@@ -1,0 +1,77 @@
+import { useEffect, useState } from "react";
+import type { BlogHeading } from "@/lib/markdown";
+
+const STICKY_OFFSET = 90;
+
+type Props = {
+  headings: BlogHeading[];
+};
+
+export function BlogToc({ headings }: Props) {
+  const [activeId, setActiveId] = useState<string>(headings[0]?.id ?? "");
+
+  useEffect(() => {
+    if (headings.length < 4) return;
+    const elements = headings
+      .map((h) => document.getElementById(h.id))
+      .filter((el): el is HTMLElement => el !== null);
+    if (elements.length === 0) return;
+
+    const observer = new IntersectionObserver(
+      (entries) => {
+        const visible = entries
+          .filter((e) => e.isIntersecting)
+          .sort((a, b) => a.boundingClientRect.top - b.boundingClientRect.top);
+        if (visible[0]) {
+          setActiveId(visible[0].target.id);
+          return;
+        }
+        const above = entries
+          .filter((e) => e.boundingClientRect.top < STICKY_OFFSET)
+          .sort((a, b) => b.boundingClientRect.top - a.boundingClientRect.top);
+        if (above[0]) setActiveId(above[0].target.id);
+      },
+      { rootMargin: `-${STICKY_OFFSET}px 0px -60% 0px`, threshold: 0 },
+    );
+    elements.forEach((el) => observer.observe(el));
+    return () => observer.disconnect();
+  }, [headings]);
+
+  if (headings.length < 4) return null;
+
+  const onClick = (e: React.MouseEvent<HTMLAnchorElement>, id: string) => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    e.preventDefault();
+    const top = el.getBoundingClientRect().top + window.scrollY - STICKY_OFFSET;
+    window.scrollTo({ top, behavior: "smooth" });
+    history.replaceState(null, "", `#${id}`);
+    setActiveId(id);
+  };
+
+  return (
+    <nav className="blog-toc" aria-label="Table of contents">
+      <p className="blog-toc__label">Contents</p>
+      <ul className="blog-toc__list">
+        {headings.map((h) => (
+          <li
+            key={h.id}
+            className={
+              h.id === activeId
+                ? "blog-toc__item blog-toc__item--active"
+                : "blog-toc__item"
+            }
+          >
+            <a
+              href={`#${h.id}`}
+              className="blog-toc__link"
+              onClick={(e) => onClick(e, h.id)}
+            >
+              {h.text}
+            </a>
+          </li>
+        ))}
+      </ul>
+    </nav>
+  );
+}

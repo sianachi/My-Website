@@ -4,7 +4,7 @@ import { getBlogPostsCollection } from "../lib/mongo.js";
 import { getObjectAsString } from "../lib/s3.js";
 import { renderMarkdownToHtml } from "../lib/markdown.js";
 import { absoluteUrl, injectMeta, loadIndexHtml, siteUrl } from "../lib/seo.js";
-import { blogContentKey } from "../../src/shared/data/blog.js";
+import { blogContentKey, BlogTagSchema } from "../../src/shared/data/blog.js";
 
 const HTML_HEADERS = {
   "Content-Type": "text/html; charset=utf-8",
@@ -36,6 +36,15 @@ export function createSsrMiddleware(distDir: string): RequestHandler {
 
       if (req.path === "/blog" || req.path === "/blog/") {
         const html = await renderBlogIndex(indexPath);
+        res.set(HTML_HEADERS).status(200).send(html);
+        return;
+      }
+
+      const tagMatch = /^\/blog\/tag\/([a-z0-9]+(?:-[a-z0-9]+)*)\/?$/.exec(
+        req.path,
+      );
+      if (tagMatch) {
+        const html = await renderBlogTag(indexPath, tagMatch[1]);
         res.set(HTML_HEADERS).status(200).send(html);
         return;
       }
@@ -134,7 +143,7 @@ async function renderBlogPost(
   const body = await getObjectAsString(doc.s3ContentKey ?? blogContentKey(slug));
   const noscriptHtml =
     body !== null
-      ? `<article><h1>${escapeText(doc.title)}</h1>${renderMarkdownToHtml(body)}</article>`
+      ? `<article><h1>${escapeText(doc.title)}</h1>${await renderMarkdownToHtml(body)}</article>`
       : undefined;
 
   return injectMeta(html, {
@@ -142,6 +151,7 @@ async function renderBlogPost(
     description,
     canonical,
     ogType: "article",
+    ogImage: doc.coverImage,
     publishedTime: doc.publishedAt,
     modifiedTime: doc.updatedAt,
     jsonLd: {
@@ -154,8 +164,54 @@ async function renderBlogPost(
       author: { "@type": "Person", name: SITE_NAME, url: siteUrl() },
       mainEntityOfPage: { "@type": "WebPage", "@id": canonical },
       url: canonical,
+      ...(doc.coverImage ? { image: doc.coverImage } : {}),
+      ...(doc.tags && doc.tags.length > 0 ? { keywords: doc.tags.join(", ") } : {}),
     },
     noscriptHtml,
+  });
+}
+
+async function renderBlogTag(
+  indexPath: string,
+  tag: string,
+): Promise<string> {
+  const html = await loadIndexHtml(indexPath);
+  const tagParse = BlogTagSchema.safeParse(tag);
+  const safeTag = tagParse.success ? tagParse.data : tag;
+  const canonical = absoluteUrl(`/blog/tag/${safeTag}`);
+  const title = `Posts tagged "${safeTag}" — ${SITE_NAME}`;
+  const description = `Field-notes posts tagged ${safeTag}.`;
+
+  const collection = await getBlogPostsCollection();
+  const posts = tagParse.success
+    ? await collection
+        .find(
+          { status: "published", tags: tagParse.data },
+          { projection: { _id: 1, title: 1, publishedAt: 1, updatedAt: 1 } },
+        )
+        .sort({ publishedAt: -1 })
+        .toArray()
+    : [];
+
+  return injectMeta(html, {
+    title,
+    description,
+    canonical,
+    ogType: "website",
+    jsonLd: {
+      "@context": "https://schema.org",
+      "@type": "Blog",
+      name: title,
+      url: canonical,
+      author: { "@type": "Person", name: SITE_NAME },
+      blogPost: posts.map((p) => ({
+        "@type": "BlogPosting",
+        headline: p.title,
+        url: absoluteUrl(`/blog/${p._id}`),
+        datePublished: p.publishedAt,
+        dateModified: p.updatedAt,
+      })),
+    },
   });
 }
 

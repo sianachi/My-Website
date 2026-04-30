@@ -27,7 +27,7 @@ export function BlogIndex({ navigate }: Props) {
   useEffect(() => {
     const ac = new AbortController();
     blogApi
-      .list(ac.signal)
+      .list({ signal: ac.signal })
       .then((data) => setStatus({ kind: "ready", posts: data.posts }))
       .catch((err) => {
         if (ac.signal.aborted) return;
@@ -61,40 +61,87 @@ export function BlogIndex({ navigate }: Props) {
           <p className="blog-empty">No posts yet — check back soon.</p>
         )}
         {status.kind === "ready" && status.posts.length > 0 && (
-          <ul className="blog-list" role="list">
-            {status.posts.map((post) => (
-              <li key={post.slug}>
-                <article className="blog-list__item">
-                  <a
-                    className="blog-list__link"
-                    href={`/blog/${post.slug}`}
-                    onClick={(event) => {
-                      if (
-                        event.metaKey ||
-                        event.ctrlKey ||
-                        event.shiftKey ||
-                        event.button !== 0
-                      )
-                        return;
-                      event.preventDefault();
-                      navigate(`/blog/${post.slug}`);
-                    }}
-                  >
-                    <h2 className="blog-list__title">{post.title}</h2>
-                    {post.excerpt && (
-                      <p className="blog-list__excerpt">{post.excerpt}</p>
-                    )}
-                    <p className="blog-list__meta">
-                      {formatDate(post.publishedAt ?? post.updatedAt)}
-                    </p>
-                  </a>
-                </article>
-              </li>
-            ))}
-          </ul>
+          <BlogPostList posts={status.posts} navigate={navigate} />
         )}
       </main>
     </div>
+  );
+}
+
+export function BlogPostList({
+  posts,
+  navigate,
+}: {
+  posts: BlogPostListItem[];
+  navigate: (to: string) => void;
+}) {
+  return (
+    <ul className="blog-list" role="list">
+      {posts.map((post) => (
+        <li key={post.slug}>
+          <BlogPostCard post={post} navigate={navigate} />
+        </li>
+      ))}
+    </ul>
+  );
+}
+
+function BlogPostCard({
+  post,
+  navigate,
+}: {
+  post: BlogPostListItem;
+  navigate: (to: string) => void;
+}) {
+  return (
+    <article
+      className={
+        post.coverImage
+          ? "blog-list__item blog-list__item--has-cover"
+          : "blog-list__item"
+      }
+    >
+      <a
+        className="blog-list__link"
+        href={`/blog/${post.slug}`}
+        onClick={(event) => {
+          if (
+            event.metaKey ||
+            event.ctrlKey ||
+            event.shiftKey ||
+            event.button !== 0
+          )
+            return;
+          event.preventDefault();
+          navigate(`/blog/${post.slug}`);
+        }}
+      >
+        {post.coverImage && (
+          <figure className="blog-list__thumb">
+            <img src={post.coverImage} alt="" loading="lazy" />
+          </figure>
+        )}
+        <div className="blog-list__body">
+          <h2 className="blog-list__title">{post.title}</h2>
+          {post.excerpt && (
+            <p className="blog-list__excerpt">{post.excerpt}</p>
+          )}
+          <p className="blog-list__meta">
+            {formatDate(post.publishedAt ?? post.updatedAt)}
+            {post.readingMinutes ? ` · ${post.readingMinutes} min read` : ""}
+          </p>
+          {post.tags.length > 0 && (
+            <ul className="blog-tag-row blog-tag-row--card" role="list">
+              {post.tags.map((tag) => (
+                <li key={tag}>
+                  <span className="blog-tag-pill">#{tag}</span>
+                </li>
+              ))}
+            </ul>
+          )}
+        </div>
+      </a>
+    </article>
   );
 }
 

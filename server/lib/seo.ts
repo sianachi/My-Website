@@ -39,6 +39,9 @@ export function injectMeta(html: string, meta: Meta): string {
 
   tags.push(`<link rel="canonical" href="${escapeAttr(meta.canonical)}" />`);
   tags.push(
+    `<link rel="alternate" type="application/atom+xml" title="Field notes" href="${escapeAttr(absoluteUrl("/feed.xml"))}" />`,
+  );
+  tags.push(
     `<meta property="og:title" content="${escapeAttr(meta.title)}" />`,
   );
   tags.push(

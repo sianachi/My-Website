@@ -1,5 +1,7 @@
+import { z } from "zod";
 import {
   AdminBlogListSchema,
+  BlogPostListItemSchema,
   BlogPostListSchema,
   BlogPostSchema,
   type AdminBlogList,
@@ -7,9 +9,20 @@ import {
   type BlogCreateInput,
   type BlogPost,
   type BlogPostList,
+  type BlogPostListItem,
   type BlogStatus,
   type BlogUpdateInput,
 } from "@/shared/data/blog";
+
+const NeighborsSchema = z.object({
+  prev: BlogPostListItemSchema.nullable().optional(),
+  next: BlogPostListItemSchema.nullable().optional(),
+});
+export type BlogNeighbors = z.infer<typeof NeighborsSchema>;
+
+const RelatedSchema = z.object({
+  posts: z.array(BlogPostListItemSchema),
+});
 
 export type ZodIssueLite = { path: (string | number)[]; message: string };
 
@@ -65,12 +78,33 @@ async function adminFetch(
 }
 
 export const blogApi = {
-  list: (signal?: AbortSignal): Promise<BlogPostList> =>
-    getJson("/api/blog", (v) => BlogPostListSchema.parse(v), signal),
+  list: (
+    options: { tag?: string; signal?: AbortSignal } = {},
+  ): Promise<BlogPostList> => {
+    const url = options.tag
+      ? `/api/blog?tag=${encodeURIComponent(options.tag)}`
+      : "/api/blog";
+    return getJson(url, (v) => BlogPostListSchema.parse(v), options.signal);
+  },
   get: (slug: string, signal?: AbortSignal): Promise<BlogPost> =>
     getJson(
       `/api/blog?slug=${encodeURIComponent(slug)}`,
       (v) => BlogPostSchema.parse(v),
+      signal,
+    ),
+  neighbors: (slug: string, signal?: AbortSignal): Promise<BlogNeighbors> =>
+    getJson(
+      `/api/blog/neighbors?slug=${encodeURIComponent(slug)}`,
+      (v) => NeighborsSchema.parse(v),
+      signal,
+    ),
+  related: (
+    slug: string,
+    signal?: AbortSignal,
+  ): Promise<BlogPostListItem[]> =>
+    getJson(
+      `/api/blog/related?slug=${encodeURIComponent(slug)}`,
+      (v) => RelatedSchema.parse(v).posts,
       signal,
     ),
 };

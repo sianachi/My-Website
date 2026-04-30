@@ -16,6 +16,7 @@ import { EditStatusBar } from "@/components/EditStatusBar";
 import { AdminPage } from "@/pages/AdminPage";
 import { BlogIndex } from "@/pages/blog/BlogIndex";
 import { BlogPost } from "@/pages/blog/BlogPost";
+import { BlogTag } from "@/pages/blog/BlogTag";
 import { InteractivePortfolio } from "@/pages/InteractivePortfolio";
 import { About } from "@/sections/About";
 import { Contact } from "@/sections/Contact";
@@ -61,6 +62,13 @@ export function App() {
 
     if (route.path === "/blog" || route.path === "/blog/") {
       return <BlogIndex navigate={route.navigate} />;
+    }
+
+    const tagMatch = /^\/blog\/tag\/([a-z0-9]+(?:-[a-z0-9]+)*)\/?$/.exec(
+      route.path,
+    );
+    if (tagMatch) {
+      return <BlogTag tag={tagMatch[1]} navigate={route.navigate} />;
     }
 
     if (route.path.startsWith("/blog/")) {

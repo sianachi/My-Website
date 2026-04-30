@@ -14,6 +14,7 @@ bun run start        # NODE_ENV=production single process serving dist/ + /api
 bun run typecheck    # tsc -b --noEmit
 bun run preview      # serve the production build (Vite, no API)
 bun run content:seed # upsert src/content/*.json into MongoDB
+bun run blog:migrate # backfill tags + readingMinutes on existing blog_posts (idempotent)
 ```
 
 In dev, Vite proxies `/api/*` to the Express server. In production a single Bun process serves both, so `SameSite=Lax` cookies just work.
@@ -103,11 +104,13 @@ blog/<slug>/post.md      ← markdown body, editor-managed, never user-deletable
 blog/<slug>/<filename>   ← images / attachments uploaded via the editor
 ```
 
-`blog_posts` in Mongo holds metadata only — `{ _id (slug), title, excerpt, status, createdAt, updatedAt, publishedAt?, s3ContentKey }`. No inline body.
+`blog_posts` in Mongo holds metadata only — `{ _id (slug), title, excerpt, status, createdAt, updatedAt, publishedAt?, s3ContentKey, tags[], coverImage?, readingMinutes? }`. No inline body. Run `bun run blog:migrate` once after pulling these fields to backfill existing docs.
 
-**Editor** (`src/pages/admin/BlogRichEditor.tsx`): Tiptap WYSIWYG that round-trips HTML ⇆ markdown via `marked` (load) and `turndown` (save). Admins never see raw markdown. A side-panel **file explorer** (`BlogFileExplorer.tsx`) lists assets in `blog/<slug>/`, supports drag-drop multi-upload, click-to-insert at cursor (`![](url)` for images, `[](url)` otherwise), copy URL, delete. Disabled until the post is saved (no slug yet).
+**Editor** (`src/pages/admin/BlogRichEditor.tsx`): Tiptap WYSIWYG that round-trips HTML ⇆ markdown via `marked` (load) and `turndown` (save). Admins never see raw markdown. The post form (`BlogEditor.tsx`) adds tag chips and a cover-image picker (uses the same presigned-PUT flow as assets). A side-panel **file explorer** (`BlogFileExplorer.tsx`) lists assets in `blog/<slug>/`, supports drag-drop multi-upload, click-to-insert at cursor (`![](url)` for images, `[](url)` otherwise), copy URL, delete. Disabled until the post is saved (no slug yet).
 
-**Reader** (`BlogRenderer.tsx`): renders the markdown via `src/lib/markdown.ts` (marked + DOMPurify).
+**Reader** (`BlogRenderer.tsx`): renders pre-rendered HTML returned by the API. The server pipeline (`server/lib/markdown.ts:renderPost`) does marked + GFM, footnotes (`marked-footnote`), Shiki dual-theme code highlighting (`github-light` / `github-dark` switched per palette), stable heading IDs, and ¶ permalink anchors on h2/h3. Reading time is computed once on save. The client sanitizes defensively with DOMPurify and adds click-to-copy on the ¶ anchors.
+
+**Discovery & navigation**: `/blog/tag/<tag>` for filtered lists, `/feed.xml` (Atom 1.0, last 30 published posts with full HTML), `/sitemap.xml` includes per-tag URLs, JSON-LD `BlogPosting` per post, `og:image` from `coverImage`. Each post page renders a prev/next footer (`/api/blog/neighbors`) and 3 related posts (`/api/blog/related`, ranked by shared tags then recency).
 
 **Uploads**: presigned-PUT pattern — browser POSTs `{ pathname, contentType, contentLength }` to `/api/admin/blog/upload-token`; server validates auth + body and returns `{ uploadUrl, publicUrl, key }`; browser PUTs the file directly to MinIO. `parseBlogAssetPath` rejects anything that isn't `blog/<valid-slug>/<safe-filename>`. The reserved `post.md` cannot be uploaded or deleted via the explorer.
 

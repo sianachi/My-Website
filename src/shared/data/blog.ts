@@ -13,14 +13,33 @@ export const BlogSlugSchema = z
   });
 
 /**
- * Full post returned by GET endpoints. `content` is **markdown source**;
- * the client renders it via marked + DOMPurify.
+ * Author-defined topic. Same shape as a slug — used directly as a URL path
+ * segment under /blog/tag/<tag>.
+ */
+export const BlogTagSchema = z
+  .string()
+  .min(1)
+  .max(40)
+  .regex(/^[a-z0-9]+(?:-[a-z0-9]+)*$/, {
+    message: "tag must be lowercase alphanumerics separated by single hyphens",
+  });
+
+const BlogTagsSchema = z.array(BlogTagSchema).max(10).default([]);
+
+/**
+ * Full post returned by GET endpoints. `content` is markdown source; `html`
+ * is the same body pre-rendered by the server (Shiki + footnotes + heading
+ * IDs) so the reader can ship without a markdown bundle.
  */
 export const BlogPostSchema = z.object({
   slug: BlogSlugSchema,
   title: z.string().min(1).max(200),
   excerpt: z.string().max(280).optional().or(z.literal("")),
   content: z.string(),
+  html: z.string().optional(),
+  tags: BlogTagsSchema,
+  coverImage: z.string().url().optional(),
+  readingMinutes: z.number().int().positive().optional(),
   status: z.enum(BLOG_STATUSES),
   createdAt: z.string().datetime(),
   updatedAt: z.string().datetime(),
@@ -34,6 +53,9 @@ export const BlogPostListItemSchema = BlogPostSchema.pick({
   excerpt: true,
   publishedAt: true,
   updatedAt: true,
+  tags: true,
+  coverImage: true,
+  readingMinutes: true,
 });
 export type BlogPostListItem = z.infer<typeof BlogPostListItemSchema>;
 
@@ -63,6 +85,8 @@ export const BlogCreateInputSchema = z.object({
   title: z.string().min(1).max(200),
   excerpt: z.string().max(280).optional(),
   content: z.string(),
+  tags: BlogTagsSchema.optional(),
+  coverImage: z.string().url().optional().or(z.literal("")),
 });
 export type BlogCreateInput = z.infer<typeof BlogCreateInputSchema>;
 
@@ -71,8 +95,37 @@ export const BlogUpdateInputSchema = z.object({
   excerpt: z.string().max(280).optional().or(z.literal("")),
   content: z.string().optional(),
   status: z.enum(BLOG_STATUSES).optional(),
+  tags: BlogTagsSchema.optional(),
+  coverImage: z.string().url().optional().or(z.literal("")),
 });
 export type BlogUpdateInput = z.infer<typeof BlogUpdateInputSchema>;
+
+/**
+ * Normalize a free-form list of tag inputs (admin UI lets users type chips).
+ * Trims, lowercases, replaces internal whitespace/separators with hyphens,
+ * drops empties + duplicates, caps at 10.
+ */
+export function normalizeTags(input: readonly string[] | undefined): string[] {
+  if (!input) return [];
+  const seen = new Set<string>();
+  const out: string[] = [];
+  for (const raw of input) {
+    if (typeof raw !== "string") continue;
+    const tag = raw
+      .toLowerCase()
+      .normalize("NFKD")
+      .replace(/[̀-ͯ]/g, "")
+      .replace(/[^a-z0-9]+/g, "-")
+      .replace(/^-+|-+$/g, "")
+      .slice(0, 40);
+    if (!tag) continue;
+    if (seen.has(tag)) continue;
+    seen.add(tag);
+    out.push(tag);
+    if (out.length >= 10) break;
+  }
+  return out;
+}
 
 export function slugify(input: string): string {
   return input

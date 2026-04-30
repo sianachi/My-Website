@@ -9,6 +9,7 @@ import {
   putObject,
 } from "../../lib/s3.js";
 import { requireAdmin } from "../../lib/session.js";
+import { renderPost } from "../../lib/markdown.js";
 import {
   AdminBlogListItemSchema,
   BlogCreateInputSchema,
@@ -19,6 +20,7 @@ import {
   blogContentKey,
   blogPrefix,
   isSafeBlogFilename,
+  normalizeTags,
   BLOG_BODY_FILENAME,
 } from "../../../src/shared/data/blog.js";
 
@@ -194,7 +196,11 @@ adminBlogRouter.get("/", async (req, res) => {
     const content =
       (await getObjectAsString(doc.s3ContentKey ?? blogContentKey(doc._id))) ??
       "";
-    const parsed = BlogPostSchema.safeParse({ ...toClient(doc), content });
+    const parsed = BlogPostSchema.safeParse({
+      ...toClient(doc),
+      content,
+      tags: doc.tags ?? [],
+    });
     if (!parsed.success) {
       res
         .status(500)
@@ -209,7 +215,9 @@ adminBlogRouter.get("/", async (req, res) => {
     .find({})
     .sort({ updatedAt: -1 })
     .toArray();
-  const posts = docs.map((doc) => AdminBlogListItemSchema.parse(toClient(doc)));
+  const posts = docs.map((doc) =>
+    AdminBlogListItemSchema.parse(toClient(doc)),
+  );
   res.status(200).json({ posts });
 });
 
@@ -246,6 +254,12 @@ adminBlogRouter.post("/", async (req, res) => {
     }
     const key = blogContentKey(input.data.slug);
     await putObject(key, input.data.content, "text/markdown; charset=utf-8");
+    const tags = normalizeTags(input.data.tags);
+    const coverImage =
+      input.data.coverImage && input.data.coverImage.length > 0
+        ? input.data.coverImage
+        : undefined;
+    const { readingMinutes, html } = await renderPost(input.data.content);
     const doc: BlogPostDoc = {
       _id: input.data.slug,
       title: input.data.title,
@@ -254,13 +268,18 @@ adminBlogRouter.post("/", async (req, res) => {
       status: "draft",
       createdAt: now,
       updatedAt: now,
+      tags,
+      ...(coverImage ? { coverImage } : {}),
+      readingMinutes,
     };
     await collection.insertOne(doc);
-    res
-      .status(201)
-      .json(
-        BlogPostSchema.parse({ ...toClient(doc), content: input.data.content }),
-      );
+    res.status(201).json(
+      BlogPostSchema.parse({
+        ...toClient(doc),
+        content: input.data.content,
+        html,
+      }),
+    );
     return;
   }
 
@@ -284,8 +303,19 @@ adminBlogRouter.post("/", async (req, res) => {
     }
 
     const update: Partial<BlogPostDoc> = { updatedAt: now };
+    const unset: Record<string, ""> = {};
     if (input.data.title !== undefined) update.title = input.data.title;
     if (input.data.excerpt !== undefined) update.excerpt = input.data.excerpt;
+    if (input.data.tags !== undefined) {
+      update.tags = normalizeTags(input.data.tags);
+    }
+    if (input.data.coverImage !== undefined) {
+      if (input.data.coverImage.length > 0) {
+        update.coverImage = input.data.coverImage;
+      } else {
+        unset.coverImage = "";
+      }
+    }
     if (input.data.status !== undefined) {
       update.status = input.data.status;
       if (input.data.status === "published" && !existing.publishedAt) {
@@ -303,16 +333,31 @@ adminBlogRouter.post("/", async (req, res) => {
       content = (await getObjectAsString(key)) ?? "";
     }
 
+    // Recompute reading time + HTML whenever the body changed; otherwise
+    // recompute HTML for the response but leave persisted readingMinutes alone.
+    const { readingMinutes, html } = await renderPost(content);
+    if (input.data.content !== undefined) update.readingMinutes = readingMinutes;
+
+    const mongoUpdate: Record<string, unknown> = { $set: update };
+    if (Object.keys(unset).length > 0) mongoUpdate.$unset = unset;
+
     const result = await collection.findOneAndUpdate(
       { _id: slug },
-      { $set: update },
+      mongoUpdate,
       { returnDocument: "after" },
     );
     if (!result) {
       res.status(404).json({ error: "not_found" });
       return;
     }
-    res.status(200).json(BlogPostSchema.parse({ ...toClient(result), content }));
+    res.status(200).json(
+      BlogPostSchema.parse({
+        ...toClient(result),
+        content,
+        html,
+        tags: result.tags ?? [],
+      }),
+    );
     return;
   }
 
@@ -348,7 +393,13 @@ adminBlogRouter.post("/", async (req, res) => {
     const content =
       (await getObjectAsString(result.s3ContentKey ?? blogContentKey(slug))) ??
       "";
-    res.status(200).json(BlogPostSchema.parse({ ...toClient(result), content }));
+    res.status(200).json(
+      BlogPostSchema.parse({
+        ...toClient(result),
+        content,
+        tags: result.tags ?? [],
+      }),
+    );
     return;
   }
 
