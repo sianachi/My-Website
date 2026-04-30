@@ -1,4 +1,3 @@
-import { Analytics } from "@vercel/analytics/react";
 import { MobileMenu } from "@/components/MobileMenu";
 import { Nav, NAV_ENTRIES } from "@/components/Nav";
 import { PageDivider, DIVIDERS } from "@/components/PageDivider";
@@ -36,15 +35,7 @@ export function App() {
   const route = useRoute();
   const { status, retry } = useSiteContentFetch();
 
-  const inIframe =
-    typeof window !== "undefined" && window.self !== window.top;
-
-  return (
-    <>
-      {renderRoute()}
-      {!inIframe && <Analytics />}
-    </>
-  );
+  return <>{renderRoute()}</>;
 
   function renderRoute() {
     if (route.path === "/core" || route.path.startsWith("/core/")) {
