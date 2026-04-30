@@ -1,10 +1,16 @@
 import path from "node:path";
 import type { RequestHandler } from "express";
-import { getBlogPostsCollection } from "../lib/mongo.js";
+import { getBlogPostsCollection, getContentCollection } from "../lib/mongo.js";
 import { getObjectAsString } from "../lib/s3.js";
 import { renderMarkdownToHtml } from "../lib/markdown.js";
 import { absoluteUrl, injectMeta, loadIndexHtml, siteUrl } from "../lib/seo.js";
 import { blogContentKey, BlogTagSchema } from "../../src/shared/data/blog.js";
+import {
+  AboutContentSchema,
+  ContactContentSchema,
+  CoverContentSchema,
+  WorkContentSchema,
+} from "../../src/shared/data/schemas.js";
 
 const HTML_HEADERS = {
   "Content-Type": "text/html; charset=utf-8",
@@ -73,6 +79,7 @@ export function createSsrMiddleware(distDir: string): RequestHandler {
 async function renderHome(indexPath: string): Promise<string> {
   const html = await loadIndexHtml(indexPath);
   const canonical = absoluteUrl("/");
+  const noscriptHtml = await buildHomeNoscript();
   return injectMeta(html, {
     title: HOME_TITLE,
     description: HOME_DESCRIPTION,
@@ -90,7 +97,75 @@ async function renderHome(indexPath: string): Promise<string> {
         addressCountry: "UK",
       },
     },
+    noscriptHtml,
   });
+}
+
+async function buildHomeNoscript(): Promise<string | undefined> {
+  try {
+    const collection = await getContentCollection();
+    const docs = await collection
+      .find({ _id: { $in: ["cover", "about", "work", "contact"] } })
+      .toArray();
+    if (docs.length < 4) return undefined;
+
+    const byId = new Map(docs.map((d) => [d._id, d]));
+    const cover = CoverContentSchema.safeParse(byId.get("cover"));
+    const about = AboutContentSchema.safeParse(byId.get("about"));
+    const work = WorkContentSchema.safeParse(byId.get("work"));
+    const contact = ContactContentSchema.safeParse(byId.get("contact"));
+    if (!cover.success || !about.success || !work.success || !contact.success) {
+      return undefined;
+    }
+
+    const sections: string[] = [];
+
+    sections.push(
+      `<header><h1>${SITE_NAME}</h1><p>${cover.data.lede}</p></header>`,
+    );
+
+    const aboutParts = [
+      `<p>${about.data.bio.lede}</p>`,
+      ...about.data.bio.paragraphs.map((p) => `<p>${p}</p>`),
+      `<h3>Education</h3><ul>${about.data.education
+        .map((e) => `<li>${e.value}</li>`)
+        .join("")}</ul>`,
+      `<h3>Skills</h3><ul>${about.data.skills
+        .map((s) => `<li>${s.value}</li>`)
+        .join("")}</ul>`,
+    ];
+    sections.push(`<section><h2>About</h2>${aboutParts.join("")}</section>`);
+
+    const workParts = work.data.cards.map((card) => {
+      const meta = card.meta
+        .map(
+          (m) =>
+            `<dt>${escapeText(m.label)}</dt><dd>${escapeText(m.value)}</dd>`,
+        )
+        .join("");
+      const notes = card.notes.map((n) => `<p>${n}</p>`).join("");
+      return `<article><h3>${card.title}</h3><p><small>${escapeText(card.year)}</small></p><p>${card.lede}</p><dl>${meta}</dl>${notes}</article>`;
+    });
+    sections.push(
+      `<section><h2>Selected Work</h2>${workParts.join("")}</section>`,
+    );
+
+    const links = contact.data.links
+      .map(
+        (l) =>
+          `<li>${escapeText(l.label)}: <a href="${escapeAttr(l.href)}">${escapeText(l.value)}</a></li>`,
+      )
+      .join("");
+    sections.push(
+      `<section><h2>Contact</h2><p>${escapeText(contact.data.signoff)}</p><ul>${links}</ul></section>`,
+    );
+
+    return sections.join("");
+  } catch (err) {
+    const msg = err instanceof Error ? err.message : String(err);
+    console.error(`[ssr] noscript home failed: ${msg}`);
+    return undefined;
+  }
 }
 
 async function renderBlogIndex(indexPath: string): Promise<string> {
@@ -104,6 +179,18 @@ async function renderBlogIndex(indexPath: string): Promise<string> {
     )
     .sort({ publishedAt: -1 })
     .toArray();
+
+  const noscriptHtml = posts.length
+    ? `<header><h1>Field notes</h1><p>${escapeText(BLOG_INDEX_DESCRIPTION)}</p></header><ul>${posts
+        .map((p) => {
+          const url = absoluteUrl(`/blog/${p._id}`);
+          const excerpt = p.excerpt && p.excerpt.trim()
+            ? `<p>${escapeText(p.excerpt)}</p>`
+            : "";
+          return `<li><a href="${escapeAttr(url)}">${escapeText(p.title)}</a>${excerpt}</li>`;
+        })
+        .join("")}</ul>`
+    : undefined;
 
   return injectMeta(html, {
     title: BLOG_INDEX_TITLE,
@@ -124,6 +211,7 @@ async function renderBlogIndex(indexPath: string): Promise<string> {
         dateModified: p.updatedAt,
       })),
     },
+    noscriptHtml,
   });
 }
 
@@ -217,4 +305,12 @@ async function renderBlogTag(
 
 function escapeText(value: string): string {
   return value.replace(/&/g, "&amp;").replace(/</g, "&lt;").replace(/>/g, "&gt;");
+}
+
+function escapeAttr(value: string): string {
+  return value
+    .replace(/&/g, "&amp;")
+    .replace(/"/g, "&quot;")
+    .replace(/</g, "&lt;")
+    .replace(/>/g, "&gt;");
 }
