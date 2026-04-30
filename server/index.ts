@@ -6,6 +6,8 @@ import { contentRouter } from "./routes/content.js";
 import { blogRouter } from "./routes/blog.js";
 import { cvRouter } from "./routes/cv.js";
 import { adminRouter } from "./routes/admin/index.js";
+import { seoRouter } from "./routes/seo.js";
+import { createSsrMiddleware } from "./routes/ssr.js";
 
 const PORT = Number(process.env.PORT ?? 3001);
 const SERVE_STATIC = process.env.SERVE_STATIC === "true"
@@ -24,11 +26,16 @@ api.use("/admin", adminRouter);
 
 app.use("/api", api);
 
+// /sitemap.xml + /robots.txt — useful in any mode (Vite dev only proxies /api,
+// so they're reachable via the API host directly).
+app.use(seoRouter);
+
 if (SERVE_STATIC) {
   const here = path.dirname(fileURLToPath(import.meta.url));
   const dist = path.resolve(here, "..", "dist");
   const indexHtml = path.join(dist, "index.html");
   app.use(express.static(dist, { index: false }));
+  app.use(createSsrMiddleware(dist));
   app.use((req, res, next) => {
     if (req.method !== "GET") return next();
     res.sendFile(indexHtml);

@@ -6,10 +6,12 @@ import {
 } from "@/lib/blogApi";
 import {
   BlogSlugSchema,
+  normalizeTags,
   slugify,
   type BlogPost,
   type BlogStatus,
 } from "@/shared/data/blog";
+import { presignAndUpload } from "@/lib/uploads";
 import {
   BlogFileExplorer,
   type BlogFileExplorerHandle,
@@ -48,6 +50,13 @@ export function BlogEditor({ initialSlug, onClose, onCreated }: Props) {
   const [slugTouched, setSlugTouched] = useState(false);
   const [excerpt, setExcerpt] = useState("");
   const [originalExcerpt, setOriginalExcerpt] = useState("");
+  const [tags, setTags] = useState<string[]>([]);
+  const [originalTags, setOriginalTags] = useState<string[]>([]);
+  const [tagDraft, setTagDraft] = useState("");
+  const [coverImage, setCoverImage] = useState<string>("");
+  const [originalCoverImage, setOriginalCoverImage] = useState<string>("");
+  const [coverUploading, setCoverUploading] = useState(false);
+  const [coverError, setCoverError] = useState<string | null>(null);
   const [initialMarkdown, setInitialMarkdown] = useState("");
   const [editorDirty, setEditorDirty] = useState(false);
 
@@ -70,6 +79,10 @@ export function BlogEditor({ initialSlug, onClose, onCreated }: Props) {
         setSlug(data.slug);
         setExcerpt(data.excerpt ?? "");
         setOriginalExcerpt(data.excerpt ?? "");
+        setTags(data.tags ?? []);
+        setOriginalTags(data.tags ?? []);
+        setCoverImage(data.coverImage ?? "");
+        setOriginalCoverImage(data.coverImage ?? "");
         setInitialMarkdown(data.content);
         setEditorDirty(false);
         setLoad({ kind: "ready" });
@@ -90,13 +103,26 @@ export function BlogEditor({ initialSlug, onClose, onCreated }: Props) {
   }, [title, isNew, slugTouched]);
 
   const dirty = useMemo(() => {
-    if (isNew) return title.length > 0 || editorDirty;
+    if (isNew) return title.length > 0 || editorDirty || tags.length > 0;
     return (
       title !== originalTitle ||
       excerpt !== originalExcerpt ||
+      coverImage !== originalCoverImage ||
+      !arraysEqual(tags, originalTags) ||
       editorDirty
     );
-  }, [isNew, title, excerpt, originalTitle, originalExcerpt, editorDirty]);
+  }, [
+    isNew,
+    title,
+    excerpt,
+    coverImage,
+    tags,
+    originalTitle,
+    originalExcerpt,
+    originalCoverImage,
+    originalTags,
+    editorDirty,
+  ]);
 
   useEffect(() => {
     if (!dirty) return;
@@ -130,10 +156,16 @@ export function BlogEditor({ initialSlug, onClose, onCreated }: Props) {
         title: title.trim(),
         excerpt: excerpt.trim() || undefined,
         content: markdown,
+        tags: normalizeTags(commitTagDraft(tags, tagDraft)),
       });
       setPost(created);
       setOriginalTitle(created.title);
       setOriginalExcerpt(created.excerpt ?? "");
+      setTags(created.tags);
+      setOriginalTags(created.tags);
+      setTagDraft("");
+      setCoverImage(created.coverImage ?? "");
+      setOriginalCoverImage(created.coverImage ?? "");
       editorRef.current?.setMarkdown(created.content);
       setEditorDirty(false);
       setSave({ kind: "saved", at: formatTime(new Date()), label: "Created" });
@@ -156,10 +188,13 @@ export function BlogEditor({ initialSlug, onClose, onCreated }: Props) {
     setSave({ kind: "saving", label });
     try {
       const markdown = editorRef.current?.getMarkdown() ?? "";
+      const finalTags = normalizeTags(commitTagDraft(tags, tagDraft));
       const updated = await adminBlogApi.update(post.slug, {
         title: title.trim(),
         excerpt: excerpt.trim(),
         content: markdown,
+        tags: finalTags,
+        coverImage: coverImage,
         ...(patch?.status ? { status: patch.status } : {}),
       });
       setPost(updated);
@@ -167,6 +202,11 @@ export function BlogEditor({ initialSlug, onClose, onCreated }: Props) {
       setOriginalTitle(updated.title);
       setExcerpt(updated.excerpt ?? "");
       setOriginalExcerpt(updated.excerpt ?? "");
+      setTags(updated.tags);
+      setOriginalTags(updated.tags);
+      setTagDraft("");
+      setCoverImage(updated.coverImage ?? "");
+      setOriginalCoverImage(updated.coverImage ?? "");
       editorRef.current?.setMarkdown(updated.content);
       setEditorDirty(false);
       setSave({
@@ -208,12 +248,19 @@ export function BlogEditor({ initialSlug, onClose, onCreated }: Props) {
   const saving = save.kind === "saving";
   const status: BlogStatus = post?.status ?? "draft";
 
+  const folioLabel = post && post.folio > 0
+    ? `No. ${pad(post.folio)}`
+    : isNew
+      ? "New post"
+      : "Post";
+  const proofSavedLabel = save.kind === "saved" ? `Last saved ${save.at}` : "—";
+
   return (
     <section className="core-card core-card--wide core-blog-editor">
       <div className="core-section-head">
         <div>
           <p className="label label-accent core-meta">
-            § Blog · {isNew ? "New post" : "Edit"}
+            § Editor · {folioLabel}
           </p>
           <h2 className="core-heading core-heading--sm">
             {title || (isNew ? "Untitled draft" : "Untitled")}
@@ -231,7 +278,7 @@ export function BlogEditor({ initialSlug, onClose, onCreated }: Props) {
           <span className="core-field__label">Title</span>
           <input
             type="text"
-            className="core-form-input"
+            className="core-blog-editor__title-input"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
             placeholder="Untitled draft"
@@ -242,7 +289,7 @@ export function BlogEditor({ initialSlug, onClose, onCreated }: Props) {
           <span className="core-field__label">Slug</span>
           <input
             type="text"
-            className="core-form-input"
+            className="core-blog-editor__slug-input"
             value={slug}
             onChange={(e) => {
               setSlugTouched(true);
@@ -262,7 +309,7 @@ export function BlogEditor({ initialSlug, onClose, onCreated }: Props) {
           <span className="core-field__label">Excerpt (optional)</span>
           <input
             type="text"
-            className="core-form-input"
+            className="core-blog-editor__excerpt-input"
             value={excerpt}
             onChange={(e) => setExcerpt(e.target.value)}
             placeholder="One-line summary, shown on the index page"
@@ -270,6 +317,125 @@ export function BlogEditor({ initialSlug, onClose, onCreated }: Props) {
             disabled={saving}
           />
         </label>
+
+        <div className="core-field core-field--wide">
+          <span className="core-field__label">Tags (optional)</span>
+          <div className="core-tag-input">
+            {tags.map((tag) => (
+              <span key={tag} className="core-tag-chip">
+                #{tag}
+                <button
+                  type="button"
+                  aria-label={`Remove tag ${tag}`}
+                  className="core-tag-chip__x"
+                  onClick={() => setTags(tags.filter((t) => t !== tag))}
+                  disabled={saving}
+                >
+                  ×
+                </button>
+              </span>
+            ))}
+            <input
+              type="text"
+              className="core-tag-input__field"
+              value={tagDraft}
+              onChange={(e) => setTagDraft(e.target.value)}
+              onKeyDown={(e) => {
+                if (e.key === "Enter" || e.key === ",") {
+                  e.preventDefault();
+                  const next = normalizeTags([...tags, tagDraft]);
+                  setTags(next);
+                  setTagDraft("");
+                }
+                if (e.key === "Backspace" && tagDraft === "" && tags.length > 0) {
+                  setTags(tags.slice(0, -1));
+                }
+              }}
+              onBlur={() => {
+                if (tagDraft.trim()) {
+                  setTags(normalizeTags([...tags, tagDraft]));
+                  setTagDraft("");
+                }
+              }}
+              placeholder={
+                tags.length === 0 ? "type, then Enter — e.g. backend, edge" : ""
+              }
+              disabled={saving || tags.length >= 10}
+            />
+          </div>
+          <span className="core-field__hint">
+            Up to 10 tags. Used for /blog/tag/&lt;tag&gt; pages and related-posts.
+          </span>
+        </div>
+
+        <div className="core-field core-field--wide">
+          <span className="core-field__label">Cover image (optional)</span>
+          {coverImage ? (
+            <div className="core-cover-preview">
+              <img src={coverImage} alt="" />
+              <button
+                type="button"
+                className="core-btn core-btn--ghost"
+                onClick={() => setCoverImage("")}
+                disabled={saving}
+              >
+                Remove
+              </button>
+            </div>
+          ) : (
+            <input
+              type="file"
+              accept="image/*"
+              disabled={saving || coverUploading || isNew || !post}
+              onChange={async (e) => {
+                const file = e.target.files?.[0];
+                e.target.value = "";
+                if (!file || !post) return;
+                setCoverError(null);
+                setCoverUploading(true);
+                try {
+                  const ext =
+                    file.name.split(".").pop()?.toLowerCase().replace(/[^a-z0-9]/g, "") ||
+                    "img";
+                  const pathname = `blog/${post.slug}/cover-${Date.now()}.${ext}`;
+                  const result = await presignAndUpload({
+                    tokenUrl: "/api/admin/blog/upload-token",
+                    file,
+                    pathname,
+                  });
+                  setCoverImage(result.publicUrl);
+                } catch (err) {
+                  setCoverError(err instanceof Error ? err.message : String(err));
+                } finally {
+                  setCoverUploading(false);
+                }
+              }}
+            />
+          )}
+          {coverUploading && (
+            <span className="core-field__hint">Uploading…</span>
+          )}
+          {coverError && (
+            <span className="core-field__hint core-field__hint--error">
+              {coverError}
+            </span>
+          )}
+          {isNew && (
+            <span className="core-field__hint">
+              Save the draft first to enable cover-image upload.
+            </span>
+          )}
+        </div>
+      </div>
+
+      <div className="core-blog-editor__proof" aria-label="Editor status">
+        <span className="core-blog-editor__proof-folio">{folioLabel}</span>
+        <span className="core-blog-editor__proof-status">
+          {status}
+        </span>
+        <span className="core-blog-editor__proof-saved">
+          {proofSavedLabel}
+        </span>
       </div>
 
       <BlogRichEditor
@@ -392,6 +558,21 @@ export function BlogEditor({ initialSlug, onClose, onCreated }: Props) {
 
 function formatTime(d: Date): string {
   return d.toLocaleTimeString(undefined, { hour12: false });
+}
+
+function pad(n: number): string {
+  return String(Math.max(0, Math.floor(n))).padStart(3, "0");
+}
+
+function arraysEqual(a: readonly string[], b: readonly string[]): boolean {
+  if (a.length !== b.length) return false;
+  for (let i = 0; i < a.length; i += 1) if (a[i] !== b[i]) return false;
+  return true;
+}
+
+function commitTagDraft(tags: readonly string[], draft: string): string[] {
+  if (!draft.trim()) return [...tags];
+  return [...tags, draft];
 }
 
 function handleSaveError(

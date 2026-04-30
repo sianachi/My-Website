@@ -40,7 +40,7 @@ export function Cover() {
           ))}
         </div>
 
-        <h1 className="display m-0 text-[clamp(64px,12vw,172px)] max-[900px]:text-[clamp(52px,13vw,88px)]">
+        <h1 className="display m-0 text-[clamp(54px,10.2vw,146px)] max-[900px]:text-[clamp(52px,13vw,88px)]">
           <span className="block text-accent">
             <EditableText
               as="em"

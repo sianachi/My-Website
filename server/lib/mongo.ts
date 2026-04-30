@@ -64,9 +64,13 @@ export async function getSessionCollection(): Promise<Collection<SessionDoc>> {
 
 /**
  * Mongo doc holds metadata only. The post body is markdown stored in S3 at
- * `blogContentKey(slug)` — see src/shared/data/blog.ts.
+ * `blogContentKey(slug)` — see src/shared/data/blog.ts. `html` is derived
+ * on read; `readingMinutes` is computed once per save.
  */
-export type BlogPostDoc = Omit<BlogPost, "slug" | "content"> & {
+export type BlogPostDoc = Omit<
+  BlogPost,
+  "slug" | "content" | "html" | "folio" | "folioTotal"
+> & {
   _id: string;
   s3ContentKey: string;
 };

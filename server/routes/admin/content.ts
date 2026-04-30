@@ -10,12 +10,23 @@ import {
   isContentDocId,
   type ContentDocId,
 } from "../../../src/shared/data/schemas.js";
+import { ABOUT } from "../../../src/shared/data/about.js";
+import { CONTACT } from "../../../src/shared/data/contact.js";
+import { COVER } from "../../../src/shared/data/cover.js";
+import { WORK } from "../../../src/shared/data/work.js";
 
 const SCHEMAS: Record<ContentDocId, ZodType> = {
   cover: CoverContentSchema,
   about: AboutContentSchema,
   work: WorkContentSchema,
   contact: ContactContentSchema,
+};
+
+const DEFAULTS: Record<ContentDocId, unknown> = {
+  cover: COVER,
+  about: ABOUT,
+  work: WORK,
+  contact: CONTACT,
 };
 
 export const adminContentRouter = Router();
@@ -50,4 +61,26 @@ adminContentRouter.post("/", async (req, res) => {
 
   res.setHeader("Cache-Control", "no-store");
   res.status(200).json({ ok: true });
+});
+
+adminContentRouter.post("/reset", async (req, res) => {
+  const session = await requireAdmin(req, res);
+  if (!session) return;
+
+  const body = (req.body ?? {}) as { docId?: unknown };
+  if (!isContentDocId(body.docId)) {
+    res.status(400).json({ error: "unknown_doc_id" });
+    return;
+  }
+
+  const data = DEFAULTS[body.docId];
+  const collection = await getContentCollection();
+  await collection.replaceOne(
+    { _id: body.docId },
+    { _id: body.docId, ...(data as Record<string, unknown>) },
+    { upsert: true },
+  );
+
+  res.setHeader("Cache-Control", "no-store");
+  res.status(200).json({ ok: true, data });
 });

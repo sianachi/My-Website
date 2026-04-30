@@ -56,30 +56,19 @@ export type CoverContent = z.infer<typeof CoverContentSchema>;
 
 /* ---------- About ---------- */
 
-export const PillarSchema = z.object({
-  no: z.string(),
-  heading: z.string(),
-  body: z.string(),
-});
-
-export const AboutStackEntrySchema = z.object({
-  label: z.string(),
+export const AboutListEntrySchema = z.object({
   value: z.string(),
 });
 
 export const AboutContentSchema = z.object({
   pageHead: PageBandSchema,
   pageFoot: PageBandSchema,
-  premise: z.object({
-    label: z.string(),
-    heading: z.string(),
-  }),
   bio: z.object({
     lede: z.string(),
     paragraphs: z.array(z.string()).min(1),
   }),
-  pillars: z.array(PillarSchema).min(1),
-  stack: z.array(AboutStackEntrySchema).min(1),
+  education: z.array(AboutListEntrySchema).min(1),
+  skills: z.array(AboutListEntrySchema).min(1),
 });
 export type AboutContent = z.infer<typeof AboutContentSchema>;
 
@@ -104,8 +93,6 @@ export type WorkCardData = z.infer<typeof WorkCardSchema>;
 export const WorkContentSchema = z.object({
   pageHead: PageBandSchema,
   pageFoot: PageBandSchema,
-  introLabel: z.string(),
-  introHeading: z.string(),
   cards: z.array(WorkCardSchema).min(1),
 });
 export type WorkContent = z.infer<typeof WorkContentSchema>;
@@ -124,9 +111,6 @@ export type ContactLink = z.infer<typeof ContactLinkSchema>;
 export const ContactContentSchema = z.object({
   pageHead: PageBandSchema,
   pageFoot: PageBandSchema,
-  signalLabel: z.string(),
-  heading: z.string(),
-  signoffLabel: z.string(),
   signoff: z.string(),
   sig: z.string(),
   links: z.array(ContactLinkSchema).min(1),

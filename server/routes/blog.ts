@@ -1,9 +1,11 @@
 import { Router } from "express";
 import { getBlogPostsCollection, type BlogPostDoc } from "../lib/mongo.js";
 import { getObjectAsString } from "../lib/s3.js";
+import { renderPost } from "../lib/markdown.js";
 import {
   BlogPostListItemSchema,
   BlogPostSchema,
+  BlogTagSchema,
   blogContentKey,
 } from "../../src/shared/data/blog.js";
 
@@ -11,8 +13,83 @@ const CACHE_HEADER = "public, s-maxage=3600, stale-while-revalidate=86400";
 
 export const blogRouter = Router();
 
+blogRouter.get("/neighbors", async (req, res) => {
+  const slug = readQuery(req.query.slug);
+  if (!slug) {
+    res.status(400).json({ error: "slug is required" });
+    return;
+  }
+  const collection = await getBlogPostsCollection();
+  const current = await collection.findOne({ _id: slug, status: "published" });
+  if (!current || !current.publishedAt) {
+    res.status(404).json({ error: "not_found" });
+    return;
+  }
+  const [newer, older] = await Promise.all([
+    collection
+      .find({
+        status: "published",
+        publishedAt: { $gt: current.publishedAt },
+      })
+      .sort({ publishedAt: 1 })
+      .limit(1)
+      .toArray(),
+    collection
+      .find({
+        status: "published",
+        publishedAt: { $lt: current.publishedAt },
+      })
+      .sort({ publishedAt: -1 })
+      .limit(1)
+      .toArray(),
+  ]);
+  res.setHeader("Cache-Control", CACHE_HEADER);
+  res.status(200).json({
+    next: newer[0] ? listItem(newer[0]) : null,
+    prev: older[0] ? listItem(older[0]) : null,
+  });
+});
+
+blogRouter.get("/related", async (req, res) => {
+  const slug = readQuery(req.query.slug);
+  if (!slug) {
+    res.status(400).json({ error: "slug is required" });
+    return;
+  }
+  const collection = await getBlogPostsCollection();
+  const current = await collection.findOne({ _id: slug, status: "published" });
+  if (!current) {
+    res.status(404).json({ error: "not_found" });
+    return;
+  }
+  const tags = current.tags ?? [];
+
+  const others = await collection
+    .find({ _id: { $ne: slug }, status: "published" })
+    .sort({ publishedAt: -1 })
+    .toArray();
+
+  const ranked = others
+    .map((doc) => ({
+      doc,
+      shared: countShared(doc.tags ?? [], tags),
+    }))
+    .sort((a, b) => {
+      if (b.shared !== a.shared) return b.shared - a.shared;
+      const ap = a.doc.publishedAt ?? "";
+      const bp = b.doc.publishedAt ?? "";
+      return ap < bp ? 1 : ap > bp ? -1 : 0;
+    })
+    .slice(0, 3)
+    .map((r) => listItem(r.doc));
+
+  res.setHeader("Cache-Control", CACHE_HEADER);
+  res.status(200).json({ posts: ranked });
+});
+
 blogRouter.get("/", async (req, res) => {
   const slugParam = readQuery(req.query.slug);
+  const tagParam = readQuery(req.query.tag);
   const collection = await getBlogPostsCollection();
 
   if (slugParam) {
@@ -31,20 +108,57 @@ blogRouter.get("/", async (req, res) => {
       res.status(503).json({ message: "Post body missing" });
       return;
     }
-    const post = BlogPostSchema.parse({ ...toClient(doc), content });
+    const { html, readingMinutes } = await renderPost(content);
+    // Folio = 1-based ordinal across the published list ordered by publishedAt
+    // ascending. Oldest = 001, newest = total. Counted with the same filter
+    // the public listing uses so the numbers match between index and reader.
+    const folioTotal = await collection.countDocuments({ status: "published" });
+    const olderCount = doc.publishedAt
+      ? await collection.countDocuments({
+          status: "published",
+          publishedAt: { $lt: doc.publishedAt },
+        })
+      : 0;
+    const folio = olderCount + 1;
+    const post = BlogPostSchema.parse({
+      ...toClient(doc),
+      content,
+      html,
+      readingMinutes: doc.readingMinutes ?? readingMinutes,
+      folio,
+      folioTotal,
+    });
     res.setHeader("Cache-Control", CACHE_HEADER);
     res.status(200).json(post);
     return;
   }
 
+  const filter: Record<string, unknown> = { status: "published" };
+  if (tagParam) {
+    const tag = BlogTagSchema.safeParse(tagParam);
+    if (!tag.success) {
+      res.status(400).json({ error: "invalid_tag" });
+      return;
+    }
+    filter.tags = tag.data;
+  }
+
   const docs = await collection
-    .find({ status: "published" })
+    .find(filter)
     .sort({ publishedAt: -1 })
     .toArray();
-  const posts = docs.map((doc) => BlogPostListItemSchema.parse(toClient(doc)));
+  // Newest sorts first; folio counts up from oldest (1) to newest (N).
+  const folioTotal = docs.length;
+  const posts = docs.map((doc, idx) =>
+    listItem(doc, folioTotal - idx, folioTotal),
+  );
   res.setHeader("Cache-Control", CACHE_HEADER);
   res.status(200).json({ posts });
 });
+
+function listItem(doc: BlogPostDoc, folio = 0, folioTotal = 0) {
+  return BlogPostListItemSchema.parse({ ...toClient(doc), folio, folioTotal });
+}
 
 function readQuery(value: unknown): string | null {
   if (typeof value === "string" && value.length > 0) return value;
@@ -54,4 +168,12 @@ function readQuery(value: unknown): string | null {
 function toClient(doc: Partial<BlogPostDoc> & { _id: string }) {
   const { _id, s3ContentKey: _key, ...rest } = doc;
   return { slug: _id, ...rest };
+}
+
+function countShared(a: readonly string[], b: readonly string[]): number {
+  if (a.length === 0 || b.length === 0) return 0;
+  const set = new Set(a);
+  let n = 0;
+  for (const t of b) if (set.has(t)) n += 1;
+  return n;
 }

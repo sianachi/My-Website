@@ -89,6 +89,14 @@ async function saveContent(
 
 const getContent = (docId: ContentDocId) => getJson<unknown>(`/api/${docId}`);
 
+async function resetContent(
+  docId: ContentDocId,
+): Promise<{ ok: true; data: unknown }> {
+  return postJson<{ ok: true; data: unknown }>("/api/admin/content/reset", {
+    docId,
+  });
+}
+
 export const adminApi = {
   status: () => getJson<AdminStatus>("/api/admin/status"),
   me: () => getJson<AdminMe>("/api/admin/me"),
@@ -111,4 +119,5 @@ export const adminApi = {
   logout: () => postJson<{ ok: true }>("/api/admin/logout"),
   getContent,
   saveContent,
+  resetContent,
 };

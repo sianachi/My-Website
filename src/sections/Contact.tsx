@@ -1,4 +1,4 @@
-import { EditableHtml, EditableText } from "@/components/Editable";
+import { EditableText } from "@/components/Editable";
 import { PageBand } from "@/components/PageBand";
 import { useContactContent } from "@/lib/siteContent";
 import { scrollToSection } from "@/lib/scroll";
@@ -18,22 +18,7 @@ export function Contact({ onOpenInteractive }: { onOpenInteractive: () => void }
       />
 
       <div className="page-body">
-        <EditableText
-          as="div"
-          className="label label-accent mb-4.5"
-          docId="contact"
-          path={["signalLabel"]}
-          value={CONTACT.signalLabel}
-        />
-        <EditableHtml
-          as="h2"
-          className="h-display max-w-[16ch]"
-          docId="contact"
-          path={["heading"]}
-          html={CONTACT.heading}
-        />
-
-        <div className="mt-[clamp(40px,5vw,64px)] grid grid-cols-[1.2fr_1fr] max-[900px]:grid-cols-1 gap-[clamp(36px,5vw,72px)] pt-9 border-t-[3px] border-rule">
+        <div className="grid grid-cols-[1.2fr_1fr] max-[900px]:grid-cols-1 gap-[clamp(36px,5vw,72px)]">
           <div className="contact-list">
             {CONTACT.links.map((link, i) => (
               <a
@@ -70,13 +55,6 @@ export function Contact({ onOpenInteractive }: { onOpenInteractive: () => void }
           </div>
 
           <div>
-            <EditableText
-              as="div"
-              className="label label-accent mb-4.5"
-              docId="contact"
-              path={["signoffLabel"]}
-              value={CONTACT.signoffLabel}
-            />
             <p className="font-display italic text-[clamp(22px,2vw,26px)] leading-[1.4] text-ink max-w-[24ch]">
               <EditableText
                 docId="contact"

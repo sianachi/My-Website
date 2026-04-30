@@ -4,7 +4,6 @@ import {
   useImperativeHandle,
   useMemo,
   useRef,
-  type CSSProperties,
 } from "react";
 import {
   EditorContent,
@@ -311,14 +310,14 @@ function Toolbar({ editor }: ToolbarProps) {
     disabled = false,
     title,
     children,
-    style,
+    danger = false,
   }: {
     onClick: () => void;
     isActive?: boolean;
     disabled?: boolean;
     title: string;
     children: React.ReactNode;
-    style?: CSSProperties;
+    danger?: boolean;
   }) => (
     <button
       type="button"
@@ -327,10 +326,9 @@ function Toolbar({ editor }: ToolbarProps) {
       aria-pressed={isActive}
       onClick={onClick}
       disabled={disabled}
-      style={style}
       className={`core-rte-toolbar__btn${
         isActive ? " core-rte-toolbar__btn--active" : ""
-      }`}
+      }${danger ? " core-rte-toolbar__btn--danger" : ""}`}
     >
       {children}
     </button>
@@ -359,32 +357,41 @@ function Toolbar({ editor }: ToolbarProps) {
     editor.chain().focus().setImage({ src: url, alt }).run();
   };
 
-  const headingLevel = ([1, 2, 3] as const).find((lvl) =>
-    editor.isActive("heading", { level: lvl }),
-  );
-  const blockValue = headingLevel ? `h${headingLevel}` : "p";
+  const isHeading = (lvl: 1 | 2 | 3) => editor.isActive("heading", { level: lvl });
+  const isParagraph = !editor.isActive("heading");
 
   return (
     <div className="core-rte-toolbar" role="toolbar" aria-label="Formatting">
-      <select
-        className="core-rte-toolbar__select"
-        value={blockValue}
-        onChange={(e) => {
-          const v = e.target.value;
-          if (v === "p") {
-            editor.chain().focus().setParagraph().run();
-          } else {
-            const lvl = Number(v.slice(1)) as 1 | 2 | 3;
-            editor.chain().focus().toggleHeading({ level: lvl }).run();
-          }
-        }}
-        aria-label="Block style"
-      >
-        <option value="p">Paragraph</option>
-        <option value="h1">Heading 1</option>
-        <option value="h2">Heading 2</option>
-        <option value="h3">Heading 3</option>
-      </select>
+      <div className="core-rte-toolbar__group" role="group" aria-label="Block style">
+        <Btn
+          title="Paragraph"
+          isActive={isParagraph}
+          onClick={() => editor.chain().focus().setParagraph().run()}
+        >
+          P
+        </Btn>
+        <Btn
+          title="Heading 1"
+          isActive={isHeading(1)}
+          onClick={() => editor.chain().focus().toggleHeading({ level: 1 }).run()}
+        >
+          H1
+        </Btn>
+        <Btn
+          title="Heading 2"
+          isActive={isHeading(2)}
+          onClick={() => editor.chain().focus().toggleHeading({ level: 2 }).run()}
+        >
+          H2
+        </Btn>
+        <Btn
+          title="Heading 3"
+          isActive={isHeading(3)}
+          onClick={() => editor.chain().focus().toggleHeading({ level: 3 }).run()}
+        >
+          H3
+        </Btn>
+      </div>
 
       <span className="core-rte-toolbar__sep" aria-hidden="true" />
 
@@ -392,33 +399,29 @@ function Toolbar({ editor }: ToolbarProps) {
         title="Bold (⌘B)"
         isActive={editor.isActive("bold")}
         onClick={() => editor.chain().focus().toggleBold().run()}
-        style={{ fontWeight: 700 }}
       >
-        B
+        bold
       </Btn>
       <Btn
         title="Italic (⌘I)"
         isActive={editor.isActive("italic")}
         onClick={() => editor.chain().focus().toggleItalic().run()}
-        style={{ fontStyle: "italic" }}
       >
-        I
+        italic
       </Btn>
       <Btn
         title="Strikethrough"
         isActive={editor.isActive("strike")}
         onClick={() => editor.chain().focus().toggleStrike().run()}
-        style={{ textDecoration: "line-through" }}
       >
-        S
+        strike
       </Btn>
       <Btn
         title="Inline code"
         isActive={editor.isActive("code")}
         onClick={() => editor.chain().focus().toggleCode().run()}
-        style={{ fontFamily: "ui-monospace, Menlo, monospace" }}
       >
-        {"</>"}
+        code
       </Btn>
 
       <span className="core-rte-toolbar__sep" aria-hidden="true" />
@@ -428,34 +431,34 @@ function Toolbar({ editor }: ToolbarProps) {
         isActive={editor.isActive("bulletList")}
         onClick={() => editor.chain().focus().toggleBulletList().run()}
       >
-        •
+        list
       </Btn>
       <Btn
         title="Numbered list"
         isActive={editor.isActive("orderedList")}
         onClick={() => editor.chain().focus().toggleOrderedList().run()}
       >
-        1.
+        ordered
       </Btn>
       <Btn
         title="Quote"
         isActive={editor.isActive("blockquote")}
         onClick={() => editor.chain().focus().toggleBlockquote().run()}
       >
-        ❝
+        quote
       </Btn>
       <Btn
         title="Code block"
         isActive={editor.isActive("codeBlock")}
         onClick={() => editor.chain().focus().toggleCodeBlock().run()}
       >
-        {"{ }"}
+        block
       </Btn>
       <Btn
         title="Horizontal rule"
         onClick={() => editor.chain().focus().setHorizontalRule().run()}
       >
-        —
+        rule
       </Btn>
 
       <span className="core-rte-toolbar__sep" aria-hidden="true" />
@@ -465,17 +468,17 @@ function Toolbar({ editor }: ToolbarProps) {
         isActive={editor.isActive("link")}
         onClick={setLink}
       >
-        🔗
+        link
       </Btn>
       <Btn
         title="Remove link"
         disabled={!editor.isActive("link")}
         onClick={() => editor.chain().focus().unsetLink().run()}
       >
-        ⌧
+        unlink
       </Btn>
       <Btn title="Insert image (URL)" onClick={insertImage}>
-        🖼
+        image
       </Btn>
 
       {editor.isActive("image") && <ImageControls editor={editor} />}
@@ -487,14 +490,14 @@ function Toolbar({ editor }: ToolbarProps) {
         disabled={!editor.can().undo()}
         onClick={() => editor.chain().focus().undo().run()}
       >
-        ↺
+        undo
       </Btn>
       <Btn
         title="Redo (⇧⌘Z)"
         disabled={!editor.can().redo()}
         onClick={() => editor.chain().focus().redo().run()}
       >
-        ↻
+        redo
       </Btn>
 
       <span className="core-rte-toolbar__sep" aria-hidden="true" />
@@ -505,7 +508,7 @@ function Toolbar({ editor }: ToolbarProps) {
           editor.chain().focus().clearNodes().unsetAllMarks().run()
         }
       >
-        ⌫
+        clear
       </Btn>
     </div>
   );
@@ -538,98 +541,82 @@ function ImageControls({ editor }: { editor: Editor }) {
 
   const remove = () => editor.chain().focus().deleteSelection().run();
 
+  const Img = ({
+    title,
+    isActive = false,
+    disabled = false,
+    onClick,
+    danger = false,
+    children,
+  }: {
+    title: string;
+    isActive?: boolean;
+    disabled?: boolean;
+    onClick: () => void;
+    danger?: boolean;
+    children: React.ReactNode;
+  }) => (
+    <button
+      type="button"
+      title={title}
+      aria-label={title}
+      aria-pressed={isActive}
+      disabled={disabled}
+      onClick={onClick}
+      className={`core-rte-toolbar__btn${
+        isActive ? " core-rte-toolbar__btn--active" : ""
+      }${danger ? " core-rte-toolbar__btn--danger" : ""}`}
+    >
+      {children}
+    </button>
+  );
+
   return (
     <>
       <span className="core-rte-toolbar__sep" aria-hidden="true" />
-      <span
-        className="core-rte-toolbar__hint"
-        title="Image options"
-        aria-hidden="true"
-      >
-        IMG
+      <span className="core-rte-toolbar__hint" aria-hidden="true">
+        img
       </span>
-      <button
-        type="button"
+      <Img
         title="Align left"
-        aria-label="Align left"
-        aria-pressed={align === "left"}
+        isActive={align === "left"}
         onClick={() => setAlign("left")}
-        className={`core-rte-toolbar__btn${align === "left" ? " core-rte-toolbar__btn--active" : ""}`}
       >
-        ⇤
-      </button>
-      <button
-        type="button"
+        left
+      </Img>
+      <Img
         title="Align center"
-        aria-label="Align center"
-        aria-pressed={align === "center"}
+        isActive={align === "center"}
         onClick={() => setAlign("center")}
-        className={`core-rte-toolbar__btn${align === "center" ? " core-rte-toolbar__btn--active" : ""}`}
       >
-        ⇔
-      </button>
-      <button
-        type="button"
+        center
+      </Img>
+      <Img
         title="Align right"
-        aria-label="Align right"
-        aria-pressed={align === "right"}
+        isActive={align === "right"}
         onClick={() => setAlign("right")}
-        className={`core-rte-toolbar__btn${align === "right" ? " core-rte-toolbar__btn--active" : ""}`}
       >
-        ⇥
-      </button>
-      <button
-        type="button"
-        title="Clear alignment"
-        aria-label="Clear alignment"
-        onClick={() => setAlign(null)}
-        disabled={!align}
-        className="core-rte-toolbar__btn"
-      >
-        ⌧
-      </button>
+        right
+      </Img>
+      <Img title="Clear alignment" disabled={!align} onClick={() => setAlign(null)}>
+        reset
+      </Img>
       <span className="core-rte-toolbar__sep" aria-hidden="true" />
-      <button
-        type="button"
-        title="Small (33%)"
-        onClick={() => setSize("small")}
-        className="core-rte-toolbar__btn"
-      >
-        ⅓
-      </button>
-      <button
-        type="button"
-        title="Medium (66%)"
-        onClick={() => setSize("medium")}
-        className="core-rte-toolbar__btn"
-      >
-        ⅔
-      </button>
-      <button
-        type="button"
-        title="Full width"
-        onClick={() => setSize("full")}
-        className="core-rte-toolbar__btn"
-      >
-        ▭
-      </button>
-      <button
-        type="button"
-        title="Natural size"
-        onClick={() => setSize("natural")}
-        className="core-rte-toolbar__btn"
-      >
-        ⤺
-      </button>
-      <button
-        type="button"
-        title="Delete image"
-        onClick={remove}
-        className="core-rte-toolbar__btn"
-        style={{ color: "#c44a36" }}
-      >
-        ×
-      </button>
+      <Img title="One third" onClick={() => setSize("small")}>
+        1/3
+      </Img>
+      <Img title="Two thirds" onClick={() => setSize("medium")}>
+        2/3
+      </Img>
+      <Img title="Full width" onClick={() => setSize("full")}>
+        full
+      </Img>
+      <Img title="Natural size" onClick={() => setSize("natural")}>
+        natural
+      </Img>
+      <Img title="Delete image" onClick={remove} danger>
+        delete
+      </Img>
     </>
   );
 }

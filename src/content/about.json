@@ -1,10 +1,6 @@
 {
   "pageHead": ["02 — About", "·", "The work & the posture"],
   "pageFoot": ["↓\u00a0 Selected work", "", "02 / 04"],
-  "premise": {
-    "label": "§ 02.1 — Premise",
-    "heading": "Legible systems <em>beat</em> clever ones."
-  },
   "bio": {
     "lede": "Backend engineer with 4+ years of production C# and .NET — <em>performance-sensitive</em>, encrypted, memory-constrained.",
     "paragraphs": [
@@ -13,38 +9,25 @@
       "Based in Birmingham, UK."
     ]
   },
-  "pillars": [
+  "education": [
     {
-      "no": "No. 01",
-      "heading": "Measure, then cut",
-      "body": "Eliminated a memory leak in a .NET image pipeline by replacing per-frame allocations with pooled <em>IMemoryOwner</em> buffers — verified with dotMemory, not vibes."
+      "value": "MSc Computer Science, Coventry <span class=\"faint\">(Distinction)</span>"
     },
     {
-      "no": "No. 02",
-      "heading": "Contracts before code",
-      "body": "ASP.NET Core Minimal APIs using the REPR pattern. xUnit, Moq, TestContainers, FluentAssertions — team-wide standards, rigorous peer review."
-    },
-    {
-      "no": "No. 03",
-      "heading": "Legible from a distance",
-      "body": "Mentoring juniors on design patterns, testing strategies, and the difference between a service that's fast and one that's merely quick."
+      "value": "BEng Computer Science, Anglia Ruskin <span class=\"faint\">(First Class Hons)</span>"
     }
   ],
-  "stack": [
+  "skills": [
     {
-      "label": "§ 02.2 — Languages",
       "value": "C# · TypeScript · Python · Go <span class=\"faint\">(learning)</span>"
     },
     {
-      "label": "§ 02.3 — Platforms",
       "value": "Azure · AWS · Docker · Kubernetes <span class=\"faint\">(basics)</span>"
     },
     {
-      "label": "§ 02.4 — Practices",
       "value": "REPR · Vertical slice · TDD · Observability-first"
     },
     {
-      "label": "§ 02.5 — Adjacent",
       "value": "React · FastAPI · Terraform · Ansible · Playwright"
     }
   ]

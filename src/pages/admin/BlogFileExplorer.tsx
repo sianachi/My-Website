@@ -263,39 +263,42 @@ export const BlogFileExplorer = forwardRef<BlogFileExplorerHandle, Props>(
       )}
 
       {files.length > 0 && (
-        <ul className="core-files__list">
+        <ul className="core-files__grid">
           {files.map((f) => (
-            <li key={f.key} className="core-files__row">
+            <li key={f.key} className="core-files__tile">
               <button
                 type="button"
-                className="core-files__name"
+                className="core-files__tile-name"
                 onClick={() => onInsert(f)}
                 title="Insert as markdown at caret"
               >
-                {isImage(f.filename) ? (
-                  <img
-                    src={f.url}
-                    alt=""
-                    className="core-files__thumb"
-                    loading="lazy"
-                  />
-                ) : (
-                  <span className="core-files__icon">⎙</span>
-                )}
-                <span className="core-files__filename">{f.filename}</span>
+                <span className="core-files__tile-frame">
+                  {isImage(f.filename) ? (
+                    <img src={f.url} alt="" loading="lazy" />
+                  ) : (
+                    <span className="core-files__sigil">
+                      [{sigilFor(f.filename)}]
+                    </span>
+                  )}
+                </span>
+                <span className="core-files__tile-filename">
+                  {f.filename}
+                </span>
+                <span className="core-files__tile-meta">
+                  {formatBytes(f.size)}
+                </span>
               </button>
-              <span className="core-files__meta">{formatBytes(f.size)}</span>
-              <div className="core-files__row-actions">
+              <div className="core-files__tile-actions">
                 <button
                   type="button"
-                  className="core-btn core-btn--ghost core-btn--xs"
+                  className="core-files__tile-action"
                   onClick={() => void onCopy(f)}
                 >
-                  {copied === f.filename ? "Copied" : "Copy URL"}
+                  {copied === f.filename ? "Copied" : "Copy"}
                 </button>
                 <button
                   type="button"
-                  className="core-btn core-btn--ghost core-btn--xs"
+                  className="core-files__tile-action core-files__tile-action--danger"
                   onClick={() => void onDelete(f)}
                 >
                   Delete
@@ -353,4 +356,18 @@ function extFromMime(mime: string): string {
   if (mime === "text/markdown") return "md";
   if (mime === "application/zip") return "zip";
   return "bin";
+}
+
+/**
+ * Typographic sigil for non-image asset tiles. Mirrors `extFromMime` but
+ * works from the filename (which is what the listing endpoint returns).
+ * Uppercased and capped at 4 chars so e.g. unknown extensions still render
+ * as a tidy bracketed mark rather than a long string.
+ */
+function sigilFor(filename: string): string {
+  const dot = filename.lastIndexOf(".");
+  if (dot < 0) return "FILE";
+  const ext = filename.slice(dot + 1).toUpperCase().replace(/[^A-Z0-9]/g, "");
+  if (!ext) return "FILE";
+  return ext.slice(0, 4);
 }
