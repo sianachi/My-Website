@@ -196,10 +196,20 @@ adminBlogRouter.get("/", async (req, res) => {
     const content =
       (await getObjectAsString(doc.s3ContentKey ?? blogContentKey(doc._id))) ??
       "";
+    // Folio derivation: position across all admin docs sorted by updatedAt
+    // ascending — oldest = 001. Matches the admin list ordering (which is
+    // updatedAt desc, so display = total - index in the list).
+    const folioTotal = await collection.countDocuments({});
+    const olderCount = await collection.countDocuments({
+      updatedAt: { $lt: doc.updatedAt },
+    });
+    const folio = olderCount + 1;
     const parsed = BlogPostSchema.safeParse({
       ...toClient(doc),
       content,
       tags: doc.tags ?? [],
+      folio,
+      folioTotal,
     });
     if (!parsed.success) {
       res
@@ -215,8 +225,13 @@ adminBlogRouter.get("/", async (req, res) => {
     .find({})
     .sort({ updatedAt: -1 })
     .toArray();
-  const posts = docs.map((doc) =>
-    AdminBlogListItemSchema.parse(toClient(doc)),
+  const folioTotal = docs.length;
+  const posts = docs.map((doc, idx) =>
+    AdminBlogListItemSchema.parse({
+      ...toClient(doc),
+      folio: folioTotal - idx,
+      folioTotal,
+    }),
   );
   res.status(200).json({ posts });
 });
@@ -273,11 +288,13 @@ adminBlogRouter.post("/", async (req, res) => {
       readingMinutes,
     };
     await collection.insertOne(doc);
+    const folio = await folioFor(collection, doc);
     res.status(201).json(
       BlogPostSchema.parse({
         ...toClient(doc),
         content: input.data.content,
         html,
+        ...folio,
       }),
     );
     return;
@@ -350,12 +367,14 @@ adminBlogRouter.post("/", async (req, res) => {
       res.status(404).json({ error: "not_found" });
       return;
     }
+    const folio = await folioFor(collection, result);
     res.status(200).json(
       BlogPostSchema.parse({
         ...toClient(result),
         content,
         html,
         tags: result.tags ?? [],
+        ...folio,
       }),
     );
     return;
@@ -393,11 +412,13 @@ adminBlogRouter.post("/", async (req, res) => {
     const content =
       (await getObjectAsString(result.s3ContentKey ?? blogContentKey(slug))) ??
       "";
+    const folio = await folioFor(collection, result);
     res.status(200).json(
       BlogPostSchema.parse({
         ...toClient(result),
         content,
         tags: result.tags ?? [],
+        ...folio,
       }),
     );
     return;
@@ -405,6 +426,21 @@ adminBlogRouter.post("/", async (req, res) => {
 
   res.status(400).json({ error: "unknown_action" });
 });
+
+/**
+ * Compute folio + folioTotal for an admin response. Mirrors the listing's
+ * updatedAt-desc ordering: oldest = 001, newest = total.
+ */
+async function folioFor(
+  collection: Awaited<ReturnType<typeof getBlogPostsCollection>>,
+  doc: BlogPostDoc,
+): Promise<{ folio: number; folioTotal: number }> {
+  const folioTotal = await collection.countDocuments({});
+  const olderCount = await collection.countDocuments({
+    updatedAt: { $lt: doc.updatedAt },
+  });
+  return { folio: olderCount + 1, folioTotal };
+}
 
 function ensureSlug(value: unknown): string | null {
   const parsed = BlogSlugSchema.safeParse(value);

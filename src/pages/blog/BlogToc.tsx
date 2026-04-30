@@ -3,15 +3,24 @@ import type { BlogHeading } from "@/lib/markdown";
 
 const STICKY_OFFSET = 90;
 
+type Variant = "rail" | "inline";
+
 type Props = {
   headings: BlogHeading[];
+  /**
+   * `rail` — sticky desktop ToC (hidden below 960px via blog.css media query).
+   * `inline` — mobile-only collapsible <details> placed above the prose;
+   * hidden at the same desktop breakpoint so the two never compete.
+   */
+  variant?: Variant;
 };
 
-export function BlogToc({ headings }: Props) {
+export function BlogToc({ headings, variant = "rail" }: Props) {
   const [activeId, setActiveId] = useState<string>(headings[0]?.id ?? "");
 
   useEffect(() => {
-    if (headings.length < 4) return;
+    if (variant !== "rail") return; // active tracking only matters for the rail
+    if (headings.length < 2) return;
     const elements = headings
       .map((h) => document.getElementById(h.id))
       .filter((el): el is HTMLElement => el !== null);
@@ -35,9 +44,9 @@ export function BlogToc({ headings }: Props) {
     );
     elements.forEach((el) => observer.observe(el));
     return () => observer.disconnect();
-  }, [headings]);
+  }, [headings, variant]);
 
-  if (headings.length < 4) return null;
+  if (headings.length < 2) return null;
 
   const onClick = (e: React.MouseEvent<HTMLAnchorElement>, id: string) => {
     const el = document.getElementById(id);
@@ -47,12 +56,43 @@ export function BlogToc({ headings }: Props) {
     window.scrollTo({ top, behavior: "smooth" });
     history.replaceState(null, "", `#${id}`);
     setActiveId(id);
+    // On the inline (mobile) variant, collapse the <details> after picking.
+    if (variant === "inline") {
+      const details = e.currentTarget.closest("details");
+      if (details) details.open = false;
+    }
   };
+
+  if (variant === "inline") {
+    return (
+      <details className="blog-toc-inline">
+        <summary className="blog-toc-inline__summary">
+          <span className="blog-toc-inline__label">Contents</span>
+          <span className="blog-toc-inline__count">
+            {headings.length} {headings.length === 1 ? "section" : "sections"}
+          </span>
+        </summary>
+        <ol className="blog-toc-inline__list">
+          {headings.map((h) => (
+            <li key={h.id} className="blog-toc-inline__item">
+              <a
+                href={`#${h.id}`}
+                className="blog-toc-inline__link"
+                onClick={(e) => onClick(e, h.id)}
+              >
+                {h.text}
+              </a>
+            </li>
+          ))}
+        </ol>
+      </details>
+    );
+  }
 
   return (
     <nav className="blog-toc" aria-label="Table of contents">
       <p className="blog-toc__label">Contents</p>
-      <ul className="blog-toc__list">
+      <ol className="blog-toc__list">
         {headings.map((h) => (
           <li
             key={h.id}
@@ -71,7 +111,7 @@ export function BlogToc({ headings }: Props) {
             </a>
           </li>
         ))}
-      </ul>
+      </ol>
     </nav>
   );
 }

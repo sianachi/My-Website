@@ -67,7 +67,10 @@ export async function getSessionCollection(): Promise<Collection<SessionDoc>> {
  * `blogContentKey(slug)` — see src/shared/data/blog.ts. `html` is derived
  * on read; `readingMinutes` is computed once per save.
  */
-export type BlogPostDoc = Omit<BlogPost, "slug" | "content" | "html"> & {
+export type BlogPostDoc = Omit<
+  BlogPost,
+  "slug" | "content" | "html" | "folio" | "folioTotal"
+> & {
   _id: string;
   s3ContentKey: string;
 };

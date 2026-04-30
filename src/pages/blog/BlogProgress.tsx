@@ -12,7 +12,7 @@ export function BlogProgress() {
       const doc = document.documentElement;
       const max = doc.scrollHeight - doc.clientHeight;
       const ratio = max > 0 ? Math.min(1, Math.max(0, window.scrollY / max)) : 0;
-      fill.style.height = `${ratio * 100}%`;
+      fill.style.transform = `scaleX(${ratio})`;
     };
     const onScroll = () => {
       if (frame) return;

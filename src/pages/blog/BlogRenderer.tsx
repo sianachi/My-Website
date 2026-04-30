@@ -23,12 +23,13 @@ export function BlogRenderer({ html, markdown }: Props) {
 
   const sanitized = useMemo(() => {
     const raw = html ?? (markdown ? renderMarkdown(markdown) : "");
-    return DOMPurify.sanitize(raw, {
+    const cleaned = DOMPurify.sanitize(raw, {
       USE_PROFILES: { html: true },
       ADD_ATTR: ["target", "rel", "data-align"],
       // Shiki output uses inline style + class for token colors.
       ADD_TAGS: [],
     });
+    return injectDropCap(cleaned);
   }, [html, markdown]);
 
   useEffect(() => {
@@ -76,4 +77,60 @@ export function BlogRenderer({ html, markdown }: Props) {
       )}
     </>
   );
+}
+
+/**
+ * Wrap the first grapheme of the leading paragraph in a drop-cap span. Skips
+ * silently if the article opens with a heading, image, blockquote, or anything
+ * other than a <p> — we don't want to drop-cap a section title or punctuation.
+ *
+ * ::first-letter is unreliable across the variety of leading content the
+ * markdown pipeline produces (footnote refs, inline anchors, smart quotes),
+ * so we do it in JS once after sanitization.
+ */
+function injectDropCap(htmlString: string): string {
+  if (!htmlString || typeof DOMParser === "undefined") return htmlString;
+  try {
+    const parser = new DOMParser();
+    const doc = parser.parseFromString(`<body>${htmlString}</body>`, "text/html");
+    const body = doc.body;
+    const first = body.firstElementChild;
+    if (!first || first.tagName !== "P") return htmlString;
+
+    // Walk to the first text node inside the paragraph. Skip if there's no
+    // usable leading text (e.g. paragraph starts with an inline image or a
+    // footnote ref).
+    const walker = doc.createTreeWalker(first, NodeFilter.SHOW_TEXT);
+    const textNode = walker.nextNode() as Text | null;
+    if (!textNode || !textNode.data) return htmlString;
+
+    // Take the first grapheme via Array.from to handle combining marks +
+    // surrogate pairs. Skip leading whitespace; require a letter as the cap.
+    const graphemes = Array.from(textNode.data);
+    let i = 0;
+    let leadingWs = "";
+    while (i < graphemes.length && /\s/.test(graphemes[i])) {
+      leadingWs += graphemes[i];
+      i += 1;
+    }
+    if (i >= graphemes.length) return htmlString;
+    const cap = graphemes[i];
+    if (!/\p{L}/u.test(cap)) return htmlString;
+    const tail = graphemes.slice(i + 1).join("");
+
+    const span = doc.createElement("span");
+    span.className = "blog-prose__dropcap";
+    span.textContent = cap;
+
+    const parent = textNode.parentNode!;
+    const tailNode = doc.createTextNode(tail);
+    parent.insertBefore(tailNode, textNode);
+    parent.insertBefore(span, tailNode);
+    if (leadingWs) parent.insertBefore(doc.createTextNode(leadingWs), span);
+    parent.removeChild(textNode);
+
+    return body.innerHTML;
+  } catch {
+    return htmlString;
+  }
 }

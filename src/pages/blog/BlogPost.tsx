@@ -72,6 +72,13 @@ export function BlogPost({ slug, navigate }: Props) {
           <BlogProgress />
           <main>
             <article className="blog-article">
+              <div className="blog-article__page">
+              {status.post.folio > 0 && (
+                <div className="blog-folio-corner" aria-hidden="true">
+                  No. {pad(status.post.folio)}
+                  {status.post.folioTotal > 0 ? ` / ${pad(status.post.folioTotal)}` : ""}
+                </div>
+              )}
               {status.post.coverImage && (
                 <figure className="blog-cover">
                   <img src={status.post.coverImage} alt="" loading="eager" />
@@ -114,6 +121,7 @@ export function BlogPost({ slug, navigate }: Props) {
                   </ul>
                 )}
               </header>
+              <BlogToc headings={headings} variant="inline" />
               <div className="blog-article__body">
                 <BlogToc headings={headings} />
                 <BlogRenderer
@@ -122,9 +130,23 @@ export function BlogPost({ slug, navigate }: Props) {
                 />
               </div>
               <footer className="blog-article__foot">
+                <a
+                  className="blog-back-to-top"
+                  href="#top"
+                  onClick={(e) => {
+                    e.preventDefault();
+                    window.scrollTo({ top: 0, behavior: "smooth" });
+                  }}
+                >
+                  <span className="blog-back-to-top__rule" aria-hidden="true" />
+                  <span className="blog-back-to-top__label">
+                    Back to top
+                  </span>
+                </a>
                 <BlogPostNav slug={slug} navigate={navigate} />
                 <BlogRelated slug={slug} navigate={navigate} />
               </footer>
+              </div>
             </article>
           </main>
         </>
@@ -166,12 +188,16 @@ export function BlogPost({ slug, navigate }: Props) {
 function formatDate(iso: string | undefined): string {
   if (!iso) return "";
   try {
-    return new Date(iso).toLocaleDateString(undefined, {
-      year: "numeric",
-      month: "long",
-      day: "numeric",
-    });
+    const d = new Date(iso);
+    const y = d.getFullYear();
+    const m = String(d.getMonth() + 1).padStart(2, "0");
+    const day = String(d.getDate()).padStart(2, "0");
+    return `${y}.${m}.${day}`;
   } catch {
     return iso;
   }
+}
+
+function pad(n: number): string {
+  return String(Math.max(0, Math.floor(n))).padStart(3, "0");
 }

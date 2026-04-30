@@ -109,13 +109,24 @@ blogRouter.get("/", async (req, res) => {
       return;
     }
     const { html, readingMinutes } = await renderPost(content);
+    // Folio = 1-based ordinal across the published list ordered by publishedAt
+    // ascending. Oldest = 001, newest = total. Counted with the same filter
+    // the public listing uses so the numbers match between index and reader.
+    const folioTotal = await collection.countDocuments({ status: "published" });
+    const olderCount = doc.publishedAt
+      ? await collection.countDocuments({
+          status: "published",
+          publishedAt: { $lt: doc.publishedAt },
+        })
+      : 0;
+    const folio = olderCount + 1;
     const post = BlogPostSchema.parse({
       ...toClient(doc),
       content,
       html,
-      // Persisted readingMinutes wins; otherwise return the just-computed one
-      // so older docs (pre-migration) still ship a value to the reader.
       readingMinutes: doc.readingMinutes ?? readingMinutes,
+      folio,
+      folioTotal,
     });
     res.setHeader("Cache-Control", CACHE_HEADER);
     res.status(200).json(post);
@@ -136,13 +147,17 @@ blogRouter.get("/", async (req, res) => {
     .find(filter)
     .sort({ publishedAt: -1 })
     .toArray();
-  const posts = docs.map((doc) => listItem(doc));
+  // Newest sorts first; folio counts up from oldest (1) to newest (N).
+  const folioTotal = docs.length;
+  const posts = docs.map((doc, idx) =>
+    listItem(doc, folioTotal - idx, folioTotal),
+  );
   res.setHeader("Cache-Control", CACHE_HEADER);
   res.status(200).json({ posts });
 });
 
-function listItem(doc: BlogPostDoc) {
-  return BlogPostListItemSchema.parse(toClient(doc));
+function listItem(doc: BlogPostDoc, folio = 0, folioTotal = 0) {
+  return BlogPostListItemSchema.parse({ ...toClient(doc), folio, folioTotal });
 }
 
 function readQuery(value: unknown): string | null {

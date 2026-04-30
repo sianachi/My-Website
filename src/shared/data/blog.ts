@@ -44,6 +44,13 @@ export const BlogPostSchema = z.object({
   createdAt: z.string().datetime(),
   updatedAt: z.string().datetime(),
   publishedAt: z.string().datetime().optional(),
+  /**
+   * Folio is a simple 1-based ordinal: oldest published post is 001, newest
+   * is N. Derived server-side at read time, never persisted, optional on the
+   * wire so older clients/responses still parse during staged deploys.
+   */
+  folio: z.number().int().nonnegative().default(0),
+  folioTotal: z.number().int().nonnegative().default(0),
 });
 export type BlogPost = z.infer<typeof BlogPostSchema>;
 
@@ -56,6 +63,8 @@ export const BlogPostListItemSchema = BlogPostSchema.pick({
   tags: true,
   coverImage: true,
   readingMinutes: true,
+  folio: true,
+  folioTotal: true,
 });
 export type BlogPostListItem = z.infer<typeof BlogPostListItemSchema>;
 
@@ -72,6 +81,8 @@ export const AdminBlogListItemSchema = BlogPostSchema.pick({
   createdAt: true,
   updatedAt: true,
   publishedAt: true,
+  folio: true,
+  folioTotal: true,
 });
 export type AdminBlogListItem = z.infer<typeof AdminBlogListItemSchema>;
 

@@ -248,12 +248,19 @@ export function BlogEditor({ initialSlug, onClose, onCreated }: Props) {
   const saving = save.kind === "saving";
   const status: BlogStatus = post?.status ?? "draft";
 
+  const folioLabel = post && post.folio > 0
+    ? `No. ${pad(post.folio)}`
+    : isNew
+      ? "New post"
+      : "Post";
+  const proofSavedLabel = save.kind === "saved" ? `Last saved ${save.at}` : "—";
+
   return (
     <section className="core-card core-card--wide core-blog-editor">
       <div className="core-section-head">
         <div>
           <p className="label label-accent core-meta">
-            § Blog · {isNew ? "New post" : "Edit"}
+            § Editor · {folioLabel}
           </p>
           <h2 className="core-heading core-heading--sm">
             {title || (isNew ? "Untitled draft" : "Untitled")}
@@ -271,7 +278,7 @@ export function BlogEditor({ initialSlug, onClose, onCreated }: Props) {
           <span className="core-field__label">Title</span>
           <input
             type="text"
-            className="core-form-input"
+            className="core-blog-editor__title-input"
             value={title}
             onChange={(e) => setTitle(e.target.value)}
             placeholder="Untitled draft"
@@ -282,7 +289,7 @@ export function BlogEditor({ initialSlug, onClose, onCreated }: Props) {
           <span className="core-field__label">Slug</span>
           <input
             type="text"
-            className="core-form-input"
+            className="core-blog-editor__slug-input"
             value={slug}
             onChange={(e) => {
               setSlugTouched(true);
@@ -302,7 +309,7 @@ export function BlogEditor({ initialSlug, onClose, onCreated }: Props) {
           <span className="core-field__label">Excerpt (optional)</span>
           <input
             type="text"
-            className="core-form-input"
+            className="core-blog-editor__excerpt-input"
             value={excerpt}
             onChange={(e) => setExcerpt(e.target.value)}
             placeholder="One-line summary, shown on the index page"
@@ -419,6 +426,16 @@ export function BlogEditor({ initialSlug, onClose, onCreated }: Props) {
             </span>
           )}
         </div>
+      </div>
+
+      <div className="core-blog-editor__proof" aria-label="Editor status">
+        <span className="core-blog-editor__proof-folio">{folioLabel}</span>
+        <span className="core-blog-editor__proof-status">
+          {status}
+        </span>
+        <span className="core-blog-editor__proof-saved">
+          {proofSavedLabel}
+        </span>
       </div>
 
       <BlogRichEditor
@@ -541,6 +558,10 @@ export function BlogEditor({ initialSlug, onClose, onCreated }: Props) {
 
 function formatTime(d: Date): string {
   return d.toLocaleTimeString(undefined, { hour12: false });
+}
+
+function pad(n: number): string {
+  return String(Math.max(0, Math.floor(n))).padStart(3, "0");
 }
 
 function arraysEqual(a: readonly string[], b: readonly string[]): boolean {

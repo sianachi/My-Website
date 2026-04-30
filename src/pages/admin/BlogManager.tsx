@@ -55,7 +55,9 @@ export function BlogManager({ onOpen, onNew }: Props) {
     >
       <div className="core-section-head">
         <div>
-          <p className="label label-accent core-meta">§ Blog</p>
+          <p className="label label-accent core-meta">
+            § Posts · {new Date().getFullYear()}
+          </p>
           <h2 id="core-blog-heading" className="core-heading core-heading--sm">
             Manage posts.
           </h2>
@@ -113,12 +115,13 @@ export function BlogManager({ onOpen, onNew }: Props) {
 
       {status.kind === "ready" && visible.length > 0 && (
         <ul className="core-post-list" role="list">
-          {visible.map((post) => (
+          {visible.map((post, idx) => (
             <li key={post.slug}>
               <BlogRow
                 post={post}
                 onOpen={() => onOpen(post.slug)}
                 onChanged={load}
+                ordinal={post.folio || visible.length - idx}
               />
             </li>
           ))}
@@ -132,10 +135,12 @@ function BlogRow({
   post,
   onOpen,
   onChanged,
+  ordinal,
 }: {
   post: AdminBlogListItem;
   onOpen: () => void;
   onChanged: () => void;
+  ordinal: number;
 }) {
   const [busy, setBusy] = useState(false);
   const [error, setError] = useState<string | null>(null);
@@ -162,6 +167,9 @@ function BlogRow({
 
   return (
     <article className="core-post-row">
+      <span className="core-post-row__folio" aria-hidden="true">
+        {pad(ordinal)}
+      </span>
       <div className="core-post-row__head">
         <button
           type="button"
@@ -224,12 +232,16 @@ function StatusBadge({ status }: { status: BlogStatus }) {
 
 function formatDate(iso: string): string {
   try {
-    return new Date(iso).toLocaleDateString(undefined, {
-      year: "numeric",
-      month: "short",
-      day: "numeric",
-    });
+    const d = new Date(iso);
+    const y = d.getFullYear();
+    const m = String(d.getMonth() + 1).padStart(2, "0");
+    const day = String(d.getDate()).padStart(2, "0");
+    return `${y}.${m}.${day}`;
   } catch {
     return iso;
   }
+}
+
+function pad(n: number): string {
+  return String(Math.max(0, Math.floor(n))).padStart(3, "0");
 }
