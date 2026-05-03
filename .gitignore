@@ -22,6 +22,7 @@ dist-ssr
 
 # k8s secrets (filled from secrets.example.yaml)
 deployment/k8s/secrets.yaml
+deployment/k8s/backup-secrets.yaml
 
 # logs
 npm-debug.log*

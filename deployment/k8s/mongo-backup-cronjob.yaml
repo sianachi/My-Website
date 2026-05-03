@@ -1,0 +1,105 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: mongo-backup
+  namespace: portfolio
+spec:
+  schedule: "0 3 * * *"
+  timeZone: "Etc/UTC"
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 5
+  jobTemplate:
+    spec:
+      backoffLimit: 2
+      template:
+        spec:
+          restartPolicy: OnFailure
+          containers:
+            - name: backup
+              image: mongo:7
+              imagePullPolicy: IfNotPresent
+              env:
+                - name: MONGO_USERNAME
+                  valueFrom:
+                    secretKeyRef:
+                      name: mongo-root
+                      key: username
+                - name: MONGO_PASSWORD
+                  valueFrom:
+                    secretKeyRef:
+                      name: mongo-root
+                      key: password
+                - name: R2_ENDPOINT
+                  valueFrom:
+                    secretKeyRef:
+                      name: backup-secrets
+                      key: R2_ENDPOINT
+                - name: R2_BUCKET
+                  valueFrom:
+                    secretKeyRef:
+                      name: backup-secrets
+                      key: R2_BUCKET
+                - name: R2_ACCESS_KEY_ID
+                  valueFrom:
+                    secretKeyRef:
+                      name: backup-secrets
+                      key: R2_ACCESS_KEY_ID
+                - name: R2_SECRET_ACCESS_KEY
+                  valueFrom:
+                    secretKeyRef:
+                      name: backup-secrets
+                      key: R2_SECRET_ACCESS_KEY
+              command:
+                - /bin/bash
+                - -c
+                - |
+                  set -euo pipefail
+
+                  echo "[backup] installing curl + mc..."
+                  apt-get update -qq
+                  apt-get install -y --no-install-recommends -qq curl ca-certificates
+                  curl -fsSL https://dl.min.io/client/mc/release/linux-amd64/mc -o /usr/local/bin/mc
+                  chmod +x /usr/local/bin/mc
+
+                  echo "[backup] configuring r2 alias..."
+                  mc alias set r2 "$R2_ENDPOINT" "$R2_ACCESS_KEY_ID" "$R2_SECRET_ACCESS_KEY" --api S3v4
+
+                  TS=$(date -u +%Y%m%dT%H%M%SZ)
+                  KEY="mongo/portfolio-${TS}.gz"
+                  LOCAL="/backup/portfolio-${TS}.gz"
+
+                  echo "[backup] dumping to ${LOCAL}..."
+                  mongodump \
+                    --host=mongo.portfolio.svc.cluster.local:27017 \
+                    --username="$MONGO_USERNAME" \
+                    --password="$MONGO_PASSWORD" \
+                    --authenticationDatabase=admin \
+                    --archive="${LOCAL}" \
+                    --gzip
+
+                  SIZE=$(stat -c%s "${LOCAL}")
+                  echo "[backup] dump complete: ${SIZE} bytes"
+                  if [ "${SIZE}" -lt 1024 ]; then
+                    echo "[backup] ERROR: dump suspiciously small (<1KB). Aborting upload." >&2
+                    exit 1
+                  fi
+
+                  echo "[backup] uploading → r2/${R2_BUCKET}/${KEY}"
+                  mc cp "${LOCAL}" "r2/${R2_BUCKET}/${KEY}"
+
+                  echo "[backup] done: r2/${R2_BUCKET}/${KEY} (${SIZE} bytes)"
+              volumeMounts:
+                - name: backup-tmp
+                  mountPath: /backup
+              resources:
+                requests:
+                  cpu: 100m
+                  memory: 128Mi
+                limits:
+                  cpu: 500m
+                  memory: 512Mi
+          volumes:
+            - name: backup-tmp
+              emptyDir:
+                sizeLimit: 2Gi
