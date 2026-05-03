@@ -1,0 +1,83 @@
+apiVersion: batch/v1
+kind: CronJob
+metadata:
+  name: minio-backup
+  namespace: portfolio
+spec:
+  schedule: "30 3 * * *"
+  timeZone: "Etc/UTC"
+  concurrencyPolicy: Forbid
+  successfulJobsHistoryLimit: 3
+  failedJobsHistoryLimit: 5
+  jobTemplate:
+    spec:
+      backoffLimit: 2
+      template:
+        spec:
+          restartPolicy: OnFailure
+          containers:
+            - name: backup
+              image: minio/mc:latest
+              imagePullPolicy: IfNotPresent
+              env:
+                - name: MINIO_USERNAME
+                  valueFrom:
+                    secretKeyRef:
+                      name: minio-root
+                      key: username
+                - name: MINIO_PASSWORD
+                  valueFrom:
+                    secretKeyRef:
+                      name: minio-root
+                      key: password
+                - name: R2_ENDPOINT
+                  valueFrom:
+                    secretKeyRef:
+                      name: backup-secrets
+                      key: R2_ENDPOINT
+                - name: R2_BUCKET
+                  valueFrom:
+                    secretKeyRef:
+                      name: backup-secrets
+                      key: R2_BUCKET
+                - name: R2_ACCESS_KEY_ID
+                  valueFrom:
+                    secretKeyRef:
+                      name: backup-secrets
+                      key: R2_ACCESS_KEY_ID
+                - name: R2_SECRET_ACCESS_KEY
+                  valueFrom:
+                    secretKeyRef:
+                      name: backup-secrets
+                      key: R2_SECRET_ACCESS_KEY
+              command:
+                - /bin/sh
+                - -c
+                - |
+                  set -eu
+
+                  echo "[backup] configuring aliases..."
+                  mc alias set source http://minio.portfolio.svc.cluster.local:9000 "$MINIO_USERNAME" "$MINIO_PASSWORD"
+                  mc alias set r2 "$R2_ENDPOINT" "$R2_ACCESS_KEY_ID" "$R2_SECRET_ACCESS_KEY" --api S3v4
+
+                  TS=$(date -u +%Y%m%dT%H%M%SZ)
+                  PREFIX="minio/portfolio-${TS}"
+
+                  echo "[backup] mirroring source/portfolio → r2/${R2_BUCKET}/${PREFIX}/"
+                  mc mirror source/portfolio "r2/${R2_BUCKET}/${PREFIX}/"
+
+                  COUNT=$(mc ls --recursive "r2/${R2_BUCKET}/${PREFIX}/" | wc -l)
+                  echo "[backup] snapshot contains ${COUNT} objects"
+                  if [ "${COUNT}" -lt 1 ]; then
+                    echo "[backup] ERROR: snapshot is empty" >&2
+                    exit 1
+                  fi
+
+                  echo "[backup] done: r2/${R2_BUCKET}/${PREFIX}/ (${COUNT} objects)"
+              resources:
+                requests:
+                  cpu: 100m
+                  memory: 128Mi
+                limits:
+                  cpu: 500m
+                  memory: 512Mi
