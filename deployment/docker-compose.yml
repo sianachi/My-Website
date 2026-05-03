@@ -21,9 +21,9 @@ services:
       # Browsers PUT directly to MinIO, so the bucket origin must allow CORS.
       # Tighten this on the VPS to your actual SPA origin.
       MINIO_API_CORS_ALLOW_ORIGIN: ${MINIO_CORS_ORIGIN:-*}
-    # Host ports default to 9000/9001 — override via env if collisions
-    # (e.g. Portainer also defaults to 9000). The container ports stay fixed
-    # so the minio-init service and any in-network clients still hit :9000.
+    # Host ports default to 9000/9001 — override via env if another local
+    # service already binds those. The container ports stay fixed so the
+    # minio-init service and any in-network clients still hit :9000.
     ports:
       - "${MINIO_API_PORT:-9000}:9000"
       - "${MINIO_CONSOLE_PORT:-9001}:9001"

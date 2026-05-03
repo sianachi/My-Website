@@ -52,7 +52,7 @@ docker compose -f deployment/docker-compose.yml up -d
 ```
 
 - `mongo:7` on `:27017`
-- MinIO on `:9000` (S3 API) / `:9001` (console). Override host ports with `MINIO_API_PORT` / `MINIO_CONSOLE_PORT` if they collide (Portainer also defaults to 9000).
+- MinIO on `:9000` (S3 API) / `:9001` (console). Override host ports with `MINIO_API_PORT` / `MINIO_CONSOLE_PORT` if they collide with another local service.
 - `minio-init` one-shot creates the bucket (`S3_BUCKET`, default `portfolio`) and sets it to public-read. Idempotent — safe to re-run on every `up`.
 
 Copy `.env.example` to `.env.local` and seed Mongo once with `bun run content:seed`.
@@ -121,6 +121,19 @@ Primary path: `/core/cv` → pick a PDF → **Upload**. Same presigned-PUT flow 
 ## Deployment
 
 Production runs on a k3s VPS — a single Bun container behind Traefik with cert-manager handling Let's Encrypt, alongside in-cluster Mongo and MinIO StatefulSets. `deployment/Dockerfile` builds the app image and `deployment/k8s/` holds the manifests; `secrets.example.yaml` is a template (the filled-in `secrets.yaml` is gitignored).
+
+## Backups
+
+Two CronJobs in the `portfolio` namespace push daily backups to a Cloudflare R2 bucket (`osinachi-backups`):
+
+- **`mongo-backup`** — 03:00 UTC. `mongodump --archive --gzip` of the cluster Mongo, staged to a local `emptyDir`, sanity-checked, then `mc cp` to `r2/osinachi-backups/mongo/portfolio-<TS>.gz`.
+- **`minio-backup`** — 03:30 UTC. `mc mirror` of the MinIO `portfolio` bucket into a fresh dated prefix at `r2/osinachi-backups/minio/portfolio-<TS>/`.
+
+R2 credentials live in the `backup-secrets` k8s secret (gitignored; template at `deployment/k8s/backup-secrets.example.yaml`). Mongo credentials are reused from `mongo-root` to avoid duplication.
+
+R2 lifecycle rules transition both prefixes to Infrequent Access after 60 days — kept indefinitely, lower storage cost.
+
+Runbook in `deployment/k8s/README.md`: rotating R2 credentials, triggering a manual backup run, testing a restore.
 
 ## CI/CD
 
