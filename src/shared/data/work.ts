@@ -1,5 +1,5 @@
 import workContent from "../../content/work.json" with { type: "json" };
-import { WorkContentSchema } from "./schemas.js";
+import { WorkContentSchema } from "./schemas";
 
 export const WORK = WorkContentSchema.parse(workContent);
 export const WORK_CARDS = WORK.cards;

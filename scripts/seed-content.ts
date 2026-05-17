@@ -1,8 +1,8 @@
 import { MongoClient } from "mongodb";
-import { ABOUT } from "../src/shared/data/about.js";
-import { CONTACT } from "../src/shared/data/contact.js";
-import { COVER } from "../src/shared/data/cover.js";
-import { WORK } from "../src/shared/data/work.js";
+import { ABOUT } from "../src/shared/data/about";
+import { CONTACT } from "../src/shared/data/contact";
+import { COVER } from "../src/shared/data/cover";
+import { WORK } from "../src/shared/data/work";
 
 const uri = process.env.MONGODB_URI;
 if (!uri) {

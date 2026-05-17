@@ -6,9 +6,9 @@
  *   bun run scripts/migrate-blog-meta.ts
  */
 import { MongoClient } from "mongodb";
-import { renderPost } from "../server/lib/markdown.js";
-import { getObjectAsString } from "../server/lib/s3.js";
-import { blogContentKey } from "../src/shared/data/blog.js";
+import { renderPost } from "../src/server/lib/markdown";
+import { getObjectAsString } from "../src/server/lib/s3";
+import { blogContentKey } from "../src/shared/data/blog";
 
 const uri = process.env.MONGODB_URI;
 if (!uri) {
