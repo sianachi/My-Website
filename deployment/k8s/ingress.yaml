@@ -21,4 +21,4 @@ spec:
               service:
                 name: portfolio-app
                 port:
-                  number: 3000
+                  number: 3001
