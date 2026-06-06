@@ -1,25 +1,21 @@
-import { useCallback, useEffect, useState } from "react";
+"use client";
 
-function currentPath(): string {
-  if (typeof window === "undefined") return "/";
-  return window.location.pathname || "/";
-}
+import { useCallback } from "react";
+import { usePathname, useRouter } from "next/navigation";
 
+/**
+ * Compatibility shim over Next's router so components written for the old
+ * history.pushState SPA router keep working unchanged. Returns the current
+ * pathname and an imperative `navigate`.
+ */
 export function useRoute() {
-  const [path, setPath] = useState<string>(currentPath);
-
-  useEffect(() => {
-    const onPop = () => setPath(currentPath());
-    window.addEventListener("popstate", onPop);
-    return () => window.removeEventListener("popstate", onPop);
-  }, []);
-
-  const navigate = useCallback((to: string) => {
-    if (to === window.location.pathname) return;
-    window.history.pushState({}, "", to);
-    setPath(to);
-    window.scrollTo(0, 0);
-  }, []);
-
-  return { path, navigate };
+  const pathname = usePathname();
+  const router = useRouter();
+  const navigate = useCallback(
+    (to: string) => {
+      router.push(to);
+    },
+    [router],
+  );
+  return { path: pathname || "/", navigate };
 }

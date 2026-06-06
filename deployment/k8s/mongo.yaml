@@ -62,6 +62,7 @@ spec:
         name: data
       spec:
         accessModes: ["ReadWriteOnce"]
+        storageClassName: local-path-retain
         resources:
           requests:
             storage: 5Gi

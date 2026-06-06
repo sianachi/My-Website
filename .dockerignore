@@ -1,0 +1,19 @@
+# Build context = repo root (docker build -f deployment/Dockerfile .).
+# Keep the context small; next build only needs app/, src/, public/, and configs.
+.git
+node_modules
+.next
+dist
+.env
+.env.*
+!.env.example
+.DS_Store
+.vscode
+.idea
+.claude
+*.log
+brand-kit
+.github
+deployment
+README.md
+CLAUDE.md

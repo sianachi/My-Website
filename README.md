@@ -1,42 +1,40 @@
 # Osinachi · Portfolio 2026
 
-Vite + React 19 + TypeScript SPA fronting an Express 5 API. Tailwind v4, Zod-validated content in MongoDB, S3-compatible blob storage (MinIO locally / on the VPS), Tiptap WYSIWYG blog editor, passkey-gated admin console at `/core`. Single Bun process serves the SPA + `/api/*` in production. Deployed to k3s on a VPS via GHCR.
+Next.js 16 (App Router) + React 19 + TypeScript. Tailwind v4, Zod-validated content in MongoDB, S3-compatible blob storage (MinIO locally / on the VPS), Tiptap WYSIWYG blog editor, passkey-gated admin console at `/core`. Server-rendered pages + `/api/*` route handlers in one process. Deployed to k3s on a VPS via GHCR.
 
 ## Run
 
 ```bash
 bun install
-bun run dev          # Vite (web) + Express API together via concurrently
-bun run dev:web      # Vite alone
-bun run dev:api      # bun --watch run server/index.ts (port 3001)
-bun run build        # tsc -b && vite build
-bun run start        # NODE_ENV=production single process serving dist/ + /api
-bun run typecheck    # tsc -b --noEmit
-bun run preview      # serve the production build (Vite, no API)
+bun run dev          # next dev — app + API on http://localhost:3000
+bun run build        # next build — produces .next/standalone
+bun run start        # next start — serve the production build
+bun run typecheck    # tsc --noEmit
 bun run content:seed # upsert src/content/*.json into MongoDB
 bun run blog:migrate # backfill tags + readingMinutes on existing blog_posts (idempotent)
 ```
 
-In dev, Vite proxies `/api/*` to the Express server. In production a single Bun process serves both, so `SameSite=Lax` cookies just work.
+Pages and `/api/*` are served by the same Next.js process — same origin, so `SameSite=Lax` cookies just work. Bun is the package manager; the app runs on Node.
 
 ## Layout
 
 ```
-server/             Express 5 app
-  index.ts          entry — mounts /api/*, serves dist/ in prod
-  routes/           content, blog, cv, admin/*
-  lib/              mongo, session, webauthn, s3
+app/                App Router
+  page.tsx          home; blog/, interactive/, core/[[...slug]]/
+  api/              route handlers (content, blog, cv, admin/*)
+  sitemap.ts robots.ts feed.xml/   SEO endpoints
 src/
+  server/           lib/ (mongo, session, webauthn, s3, markdown), content.ts, blog.ts, seo.ts
   content/*.json    seed copy, parsed by Zod at load time
-  shared/data/      schemas + content adapters (frontend + api)
-  lib/              api client, siteContent, adminAuth, uploads, markdown
-  pages/            AdminPage (/core), admin/* (console + editors), blog/*
+  shared/data/      Zod schemas + content adapters
+  lib/              api client, siteContent, palette, adminAuth, uploads, markdown
+  screens/          HomeClient, AdminPage (/core), admin/* (console + editors), blog/*
   sections/         Cover, About, Work, Contact
   components/       InlineEditor, Nav, MobileMenu, ...
   styles/           portfolio.css (design system) + admin.css + blog.css
 deployment/
   docker-compose.yml  local Mongo + MinIO + bucket init
-  Dockerfile          production image
+  Dockerfile          production image (Node, Next standalone)
   k8s/                manifests for the VPS
 scripts/
   seed-content.ts     JSON → MongoDB
@@ -52,7 +50,7 @@ docker compose -f deployment/docker-compose.yml up -d
 ```
 
 - `mongo:7` on `:27017`
-- MinIO on `:9000` (S3 API) / `:9001` (console). Override host ports with `MINIO_API_PORT` / `MINIO_CONSOLE_PORT` if they collide (Portainer also defaults to 9000).
+- MinIO on `:9000` (S3 API) / `:9001` (console). Override host ports with `MINIO_API_PORT` / `MINIO_CONSOLE_PORT` if they collide with another local service.
 - `minio-init` one-shot creates the bucket (`S3_BUCKET`, default `portfolio`) and sets it to public-read. Idempotent — safe to re-run on every `up`.
 
 Copy `.env.example` to `.env.local` and seed Mongo once with `bun run content:seed`.
@@ -60,18 +58,18 @@ Copy `.env.example` to `.env.local` and seed Mongo once with `bun run content:se
 ## Environment
 
 ```
-MONGODB_URI          content API + seed script
-RP_ID                WebAuthn relying-party id (hostname, no scheme)
-RP_NAME              display name shown in the passkey prompt
-RP_ORIGIN            full origin the SPA loads from
-S3_ENDPOINT          MinIO/S3 endpoint the server uses
-S3_BUCKET            bucket name (default `portfolio`)
-S3_ACCESS_KEY_ID     S3 credentials (server-side)
+MONGODB_URI               content data + seed script
+RP_ID                     WebAuthn relying-party id (hostname, no scheme)
+RP_NAME                   display name shown in the passkey prompt
+RP_ORIGIN                 full origin the app loads from (dev: http://localhost:3000)
+S3_ENDPOINT               MinIO/S3 endpoint the server uses
+S3_BUCKET                 bucket name (default `portfolio`)
+S3_ACCESS_KEY_ID          S3 credentials (server-side)
 S3_SECRET_ACCESS_KEY
-S3_PUBLIC_URL        optional — base URL the browser uses if MinIO is behind a different hostname/proxy. Defaults to S3_ENDPOINT.
-S3_REGION            optional — defaults to us-east-1. MinIO ignores it; the AWS SDK requires a value.
-PORT                 optional — API listen port. Defaults to 3001.
-VITE_ANALYTICS_URL   optional — admin console "Analytics" deep-link. Defaults to https://vercel.com/dashboard.
+S3_PUBLIC_URL             optional — base URL the browser uses if MinIO is behind a different hostname/proxy. Defaults to S3_ENDPOINT.
+S3_REGION                 optional — defaults to us-east-1. MinIO ignores it; the AWS SDK requires a value.
+PORT                      optional — listen port. Defaults to 3000.
+NEXT_PUBLIC_ANALYTICS_URL optional — admin console "Analytics" deep-link. Defaults to https://vercel.com/dashboard.
 ```
 
 The Zod schemas in `src/shared/data/schemas.ts` are the contract between API and client. Changing one means re-seeding Mongo, otherwise the public site renders an error screen.
@@ -122,10 +120,23 @@ Primary path: `/core/cv` → pick a PDF → **Upload**. Same presigned-PUT flow 
 
 Production runs on a k3s VPS — a single Bun container behind Traefik with cert-manager handling Let's Encrypt, alongside in-cluster Mongo and MinIO StatefulSets. `deployment/Dockerfile` builds the app image and `deployment/k8s/` holds the manifests; `secrets.example.yaml` is a template (the filled-in `secrets.yaml` is gitignored).
 
+## Backups
+
+Two CronJobs in the `portfolio` namespace push daily backups to a Cloudflare R2 bucket (`osinachi-backups`):
+
+- **`mongo-backup`** — 03:00 UTC. `mongodump --archive --gzip` of the cluster Mongo, staged to a local `emptyDir`, sanity-checked, then `mc cp` to `r2/osinachi-backups/mongo/portfolio-<TS>.gz`.
+- **`minio-backup`** — 03:30 UTC. `mc mirror` of the MinIO `portfolio` bucket into a fresh dated prefix at `r2/osinachi-backups/minio/portfolio-<TS>/`.
+
+R2 credentials live in the `backup-secrets` k8s secret (gitignored; template at `deployment/k8s/backup-secrets.example.yaml`). Mongo credentials are reused from `mongo-root` to avoid duplication.
+
+R2 lifecycle rules transition both prefixes to Infrequent Access after 60 days — kept indefinitely, lower storage cost.
+
+Runbook in `deployment/k8s/README.md`: rotating R2 credentials, triggering a manual backup run, testing a restore.
+
 ## CI/CD
 
 `.github/workflows/docker-publish.yml` builds and pushes the image to GHCR on every push to `master` and on manual `workflow_dispatch`. Tags: `:latest` (default branch only), `:sha-<short>`, `:<branch>`. Uses the built-in `GITHUB_TOKEN` — no PAT required, GHA-backed build cache. Doc-only and manifest-only changes don't trigger a rebuild.
 
 ## Path alias
 
-`@/` → `src/` (`vite.config.ts` and `tsconfig.app.json`). The Express server doesn't use `@/` — it imports `src/shared/...` via relative paths.
+`@/` → `src/` (`tsconfig.json`). Used everywhere — `app/` route files, server lib, and client components alike.

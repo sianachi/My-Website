@@ -1,5 +1,5 @@
 import contactContent from "../../content/contact.json" with { type: "json" };
-import { ContactContentSchema } from "./schemas.js";
+import { ContactContentSchema } from "./schemas";
 
 export const CONTACT = ContactContentSchema.parse(contactContent);
 export const CONTACT_LINKS = CONTACT.links;
