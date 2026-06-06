@@ -1,5 +1,5 @@
 import { getPublishedPostDocs } from "@/server/blog";
-import { absoluteUrl } from "@/server/seo";
+import { absoluteUrl, escapeXml } from "@/server/seo";
 
 export const dynamic = "force-dynamic";
 
@@ -8,9 +8,9 @@ function entry(
   opts: { lastmod?: string; priority: number },
 ): string {
   const lastmod = opts.lastmod
-    ? `\n    <lastmod>${opts.lastmod}</lastmod>`
+    ? `\n    <lastmod>${escapeXml(opts.lastmod)}</lastmod>`
     : "";
-  return `  <url>\n    <loc>${url}</loc>${lastmod}\n    <priority>${opts.priority}</priority>\n  </url>`;
+  return `  <url>\n    <loc>${escapeXml(url)}</loc>${lastmod}\n    <priority>${opts.priority}</priority>\n  </url>`;
 }
 
 export async function GET(): Promise<Response> {
